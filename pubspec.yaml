@@ -38,7 +38,14 @@ dependencies:
   image_picker: ^0.8.9
   intl_phone_field: ^3.1.0
   font_awesome_flutter: ^10.4.0
+  firebase_core: ^2.14.0
 
+  dropdown_search: ^5.0.6
+  firebase_storage: ^11.2.4
+  flutter_bloc: ^8.1.1
+  equatable: ^2.0.5
+  path: ^1.8.0
+  cloud_firestore: ^4.8.2
 dev_dependencies:
   flutter_test:
     sdk: flutter

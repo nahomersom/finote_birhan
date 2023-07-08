@@ -1,7 +1,9 @@
 import 'dart:io';
 
+import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:hisnate_kifele/Business%20Logic/Bloc/cubit/file_uploader_cubit.dart';
 import 'package:hisnate_kifele/Data/Data%20Providers/colors.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
@@ -22,13 +24,44 @@ class RegistrationScreen extends StatefulWidget {
   State<RegistrationScreen> createState() => _RegistrationScreenState();
 }
 
-class _RegistrationScreenState extends State<RegistrationScreen> with TickerProviderStateMixin {
+class _RegistrationScreenState extends State<RegistrationScreen>
+
+    with TickerProviderStateMixin {
   int currentStep = 0;
-  final firstName = TextEditingController();
-  final familyFirstName = TextEditingController();
-  final comment = TextEditingController();
+  final FileUploaderCubit _fileUploaderCubit = FileUploaderCubit();
+  //abal information
+  final _yekerestenaNameControl = TextEditingController();
+  final _fullNameControl = TextEditingController();
+  final _ageControl = TextEditingController();
+  final _genderControl = TextEditingController();
   final _phoneNumberControl = TextEditingController();
-  String  phoneNumber =  "";
+  final _birthPlaceControl = TextEditingController();
+  final _birthDateControl = TextEditingController();
+  final _subCityControl = TextEditingController();
+  final _woredaControl = TextEditingController();
+  final _kebeleControl = TextEditingController();
+  final _houseNumberControl = TextEditingController();
+  final _emergencyContactFullNameControl = TextEditingController();
+  final _emergencyContactPhoneNumberControl = TextEditingController();
+
+  //abal family information
+  final _familyYekerestenaNameControl = TextEditingController();
+  final _familyFullNameControl = TextEditingController();
+  final _relationShipControl = TextEditingController();
+  final _familyAgeControl = TextEditingController();
+  final _familyGenderControl = TextEditingController();
+  final _familyPhoneNumberControl = TextEditingController();
+  final _familyBirthPlaceControl = TextEditingController();
+  final _familyBirthDateControl = TextEditingController();
+  final _familySubCityControl = TextEditingController();
+  final _familyWoredaControl = TextEditingController();
+  final _familyKebeleControl = TextEditingController();
+  final _familyHouseNumberControl = TextEditingController();
+
+  //general
+  final _commentControl = TextEditingController();
+
+  String phoneNumber = "";
   String? sexValue;
   String? kefleKetemaValue;
 
@@ -295,7 +328,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> with TickerProv
                     height: height * 0.05,
                   ),
                   TextFormField(
-                    controller: firstName,
+                    controller: _yekerestenaNameControl,
                     decoration: const InputDecoration(
                         border: OutlineInputBorder(), label: Text('የክርስትና ስም')),
                   ),
@@ -303,7 +336,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> with TickerProv
                     height: height * 0.02,
                   ),
                   TextFormField(
-                    controller: firstName,
+                    controller: _fullNameControl,
                     decoration: const InputDecoration(
                         border: OutlineInputBorder(), label: Text('ሙሉ ስም')),
                   ),
@@ -311,13 +344,25 @@ class _RegistrationScreenState extends State<RegistrationScreen> with TickerProv
                     height: height * 0.02,
                   ),
                   TextFormField(
-                    controller: firstName,
+                    controller: _ageControl,
                     keyboardType: TextInputType.number,
                     decoration: const InputDecoration(
                         border: OutlineInputBorder(), label: Text('ዕድሜ')),
                   ),
                   SizedBox(
                     height: height * 0.02,
+                  ),
+                  DropdownSearch<dynamic>.multiSelection(
+                      clearButtonProps: ClearButtonProps(isVisible: true),
+                      popupProps: PopupPropsMultiSelection.modalBottomSheet(
+                        isFilterOnline: true,
+                        showSearchBox: true,
+                        searchFieldProps: TextFieldProps(
+                          controller: _ageControl,
+                        ),
+                      )),
+                  DropdownSearch<int>(
+                    items: [1, 2, 3, 4, 5, 6, 7],
                   ),
                   InputDecorator(
                     decoration: const InputDecoration(
@@ -329,15 +374,14 @@ class _RegistrationScreenState extends State<RegistrationScreen> with TickerProv
                       child: DropdownButton<String>(
                         value: sexValue,
                         isDense: true,
-                        hint:const Text('ጾታ'),
+                        hint: const Text('ጾታ'),
                         isExpanded: true,
                         items: const [
                           DropdownMenuItem(value: "Male", child: Text("ወንድ")),
-                          DropdownMenuItem(
-                              value: "Female",
-                              child: Text("ሴት")),
+                          DropdownMenuItem(value: "Female", child: Text("ሴት")),
                         ],
                         onChanged: (newValue) {
+                          _genderControl.text = newValue ?? _genderControl.text;
                           setState(() {
                             sexValue = newValue;
                           });
@@ -351,10 +395,8 @@ class _RegistrationScreenState extends State<RegistrationScreen> with TickerProv
                   IntlPhoneField(
                     controller: _phoneNumberControl,
                     autovalidateMode: AutovalidateMode.onUserInteraction,
-                    decoration:  const InputDecoration(
+                    decoration: const InputDecoration(
                       labelText: 'ስልክ ቁጥር',
-
-
                       border: OutlineInputBorder(
                         borderSide: BorderSide(),
                       ),
@@ -368,7 +410,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> with TickerProv
                     height: height * 0.02,
                   ),
                   TextFormField(
-                    controller: firstName,
+                    controller: _birthPlaceControl,
                     decoration: const InputDecoration(
                         border: OutlineInputBorder(), label: Text('የትውልድ ስፍራ')),
                   ),
@@ -376,7 +418,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> with TickerProv
                     height: height * 0.02,
                   ),
                   TextFormField(
-                    controller: firstName,
+                    controller: _birthDateControl,
                     decoration: const InputDecoration(
                         border: OutlineInputBorder(), label: Text('የትውልድ ዘመን')),
                   ),
@@ -393,18 +435,17 @@ class _RegistrationScreenState extends State<RegistrationScreen> with TickerProv
                       child: DropdownButton<String>(
                         value: kefleKetemaValue,
                         isDense: true,
-                        hint:const Text('ክፈለ ከተማ'),
+                        hint: const Text('ክፈለ ከተማ'),
                         isExpanded: true,
                         items: const [
                           DropdownMenuItem(value: "ledeta", child: Text("ልደታ")),
                           DropdownMenuItem(
-                              value: "addis ketema",
-                              child: Text("አዲስ ከተማ")),
-                          DropdownMenuItem(
-                              value: "arada",
-                              child: Text("አራዳ")),
+                              value: "addis ketema", child: Text("አዲስ ከተማ")),
+                          DropdownMenuItem(value: "arada", child: Text("አራዳ")),
                         ],
                         onChanged: (newValue) {
+                          _subCityControl.text =
+                              newValue ?? _subCityControl.text;
                           setState(() {
                             sexValue = newValue;
                           });
@@ -416,7 +457,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> with TickerProv
                     height: height * 0.02,
                   ),
                   TextFormField(
-                    controller: firstName,
+                    controller: _woredaControl,
                     keyboardType: TextInputType.number,
                     decoration: const InputDecoration(
                         border: OutlineInputBorder(), label: Text('ወረዳ')),
@@ -425,7 +466,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> with TickerProv
                     height: height * 0.02,
                   ),
                   TextFormField(
-                    controller: firstName,
+                    controller: _kebeleControl,
                     keyboardType: TextInputType.number,
                     decoration: const InputDecoration(
                         border: OutlineInputBorder(), label: Text('ቀበሌ')),
@@ -434,7 +475,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> with TickerProv
                     height: height * 0.02,
                   ),
                   TextFormField(
-                    controller: firstName,
+                    controller: _houseNumberControl,
                     keyboardType: TextInputType.number,
                     decoration: const InputDecoration(
                         border: OutlineInputBorder(), label: Text('የቤት ቁጥር')),
@@ -442,22 +483,20 @@ class _RegistrationScreenState extends State<RegistrationScreen> with TickerProv
                   SizedBox(
                     height: height * 0.02,
                   ),
-
                   TextFormField(
-                    controller: firstName,
+                    controller: _emergencyContactFullNameControl,
                     decoration: const InputDecoration(
-                        border: OutlineInputBorder(), label: Text('የአደጋ ጊዜ ተጠሪ')),
+                        border: OutlineInputBorder(),
+                        label: Text('የአደጋ ጊዜ ተጠሪ')),
                   ),
                   SizedBox(
                     height: height * 0.02,
                   ),
                   IntlPhoneField(
-                    controller: _phoneNumberControl,
+                    controller: _emergencyContactPhoneNumberControl,
                     autovalidateMode: AutovalidateMode.onUserInteraction,
-                    decoration:  const InputDecoration(
+                    decoration: const InputDecoration(
                       labelText: 'የአደጋ ጊዜ ተጠሪ ስልክ ቁጥር',
-
-
                       border: OutlineInputBorder(
                         borderSide: BorderSide(),
                       ),
@@ -492,17 +531,17 @@ class _RegistrationScreenState extends State<RegistrationScreen> with TickerProv
                         child: CircleAvatar(
                             backgroundImage: hasImage
                                 ? FileImage(
-                              image!,
-                            )
+                                    image!,
+                                  )
                                 : Image.network('').image,
                             backgroundColor: Color(0xffE6E6E6),
                             child: hasImage
                                 ? SizedBox()
                                 : const Icon(
-                              Icons.person,
-                              size: 60,
-                              color: Color(0xffCCCCCC),
-                            )),
+                                    Icons.person,
+                                    size: 60,
+                                    color: Color(0xffCCCCCC),
+                                  )),
                       ),
                       Positioned(
                         bottom: 0,
@@ -523,9 +562,9 @@ class _RegistrationScreenState extends State<RegistrationScreen> with TickerProv
                                     padding: EdgeInsets.all(20),
                                     child: Column(
                                       crossAxisAlignment:
-                                      CrossAxisAlignment.start,
+                                          CrossAxisAlignment.start,
                                       mainAxisAlignment:
-                                      MainAxisAlignment.start,
+                                          MainAxisAlignment.start,
                                       children: [
                                         Center(
                                           child: Text('ፎቶዎን ከየት ይወስዳሉ?',
@@ -533,8 +572,8 @@ class _RegistrationScreenState extends State<RegistrationScreen> with TickerProv
                                                   .textTheme
                                                   .displaySmall
                                                   ?.copyWith(
-                                                  color: ColorResources
-                                                      .textColor)),
+                                                      color: ColorResources
+                                                          .textColor)),
                                         ),
                                         SizedBox(
                                           height: 15,
@@ -558,11 +597,11 @@ class _RegistrationScreenState extends State<RegistrationScreen> with TickerProv
                                                       .textTheme
                                                       .bodyLarge
                                                       ?.copyWith(
-                                                      fontSize: 18,
-                                                      fontWeight:
-                                                      FontWeight.w600,
-                                                      color: ColorResources
-                                                          .textColor))
+                                                          fontSize: 18,
+                                                          fontWeight:
+                                                              FontWeight.w600,
+                                                          color: ColorResources
+                                                              .textColor))
                                             ],
                                           ),
                                         ),
@@ -590,11 +629,11 @@ class _RegistrationScreenState extends State<RegistrationScreen> with TickerProv
                                                       .textTheme
                                                       .bodyLarge
                                                       ?.copyWith(
-                                                      fontSize: 18,
-                                                      fontWeight:
-                                                      FontWeight.w600,
-                                                      color: ColorResources
-                                                          .textColor))
+                                                          fontSize: 18,
+                                                          fontWeight:
+                                                              FontWeight.w600,
+                                                          color: ColorResources
+                                                              .textColor))
                                             ],
                                           ),
                                         )
@@ -622,7 +661,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> with TickerProv
                     height: height * 0.05,
                   ),
                   TextFormField(
-                    controller: firstName,
+                    controller: _familyYekerestenaNameControl,
                     decoration: const InputDecoration(
                         border: OutlineInputBorder(), label: Text('የክርስትና ስም')),
                   ),
@@ -630,14 +669,13 @@ class _RegistrationScreenState extends State<RegistrationScreen> with TickerProv
                     height: height * 0.02,
                   ),
                   TextFormField(
-                    controller: firstName,
+                    controller: _familyFullNameControl,
                     decoration: const InputDecoration(
                         border: OutlineInputBorder(), label: Text('ሙሉ ስም')),
-
-                  ),   SizedBox(
+                  ),
+                  SizedBox(
                     height: height * 0.02,
                   ),
-
                   InputDecorator(
                     decoration: const InputDecoration(
                       border: OutlineInputBorder(
@@ -648,24 +686,21 @@ class _RegistrationScreenState extends State<RegistrationScreen> with TickerProv
                       child: DropdownButton<String>(
                         value: sexValue,
                         isDense: true,
-                        hint:const Text('ከአባሉ ጋር ያለው ግንኙነት'),
+                        hint: const Text('ከአባሉ ጋር ያለው ግንኙነት'),
                         isExpanded: true,
                         items: const [
                           DropdownMenuItem(value: "mother", child: Text("እናት")),
+                          DropdownMenuItem(value: "father", child: Text("አባት")),
                           DropdownMenuItem(
-                              value: "father",
-                              child: Text("አባት")),
+                              value: "brother", child: Text("ወንድም")),
+                          DropdownMenuItem(value: "sister", child: Text("አህት")),
                           DropdownMenuItem(
-                              value: "brother",
-                              child: Text("ወንድም")),
-                          DropdownMenuItem(
-                              value: "sister",
-                              child: Text("አህት")),
-                          DropdownMenuItem(
-                              value: "Female",
-                              child: Text("ዘመድና")),
+                              value: "Female", child: Text("ዘመድና")),
                         ],
                         onChanged: (newValue) {
+                          _relationShipControl.text =
+                              newValue ?? _relationShipControl.text;
+                        ;
                           setState(() {
                             sexValue = newValue;
                           });
@@ -677,7 +712,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> with TickerProv
                     height: height * 0.02,
                   ),
                   TextFormField(
-                    controller: firstName,
+                    controller: _familyAgeControl,
                     keyboardType: TextInputType.number,
                     decoration: const InputDecoration(
                         border: OutlineInputBorder(), label: Text('ዕድሜ')),
@@ -695,15 +730,15 @@ class _RegistrationScreenState extends State<RegistrationScreen> with TickerProv
                       child: DropdownButton<String>(
                         value: sexValue,
                         isDense: true,
-                        hint:const Text('ጾታ'),
+                        hint: const Text('ጾታ'),
                         isExpanded: true,
                         items: const [
                           DropdownMenuItem(value: "Male", child: Text("ወንድ")),
-                          DropdownMenuItem(
-                              value: "Female",
-                              child: Text("ሴት")),
+                          DropdownMenuItem(value: "Female", child: Text("ሴት")),
                         ],
                         onChanged: (newValue) {
+                          _familyGenderControl.text =
+                              newValue ?? _familyGenderControl.text;
                           setState(() {
                             sexValue = newValue;
                           });
@@ -715,12 +750,10 @@ class _RegistrationScreenState extends State<RegistrationScreen> with TickerProv
                     height: height * 0.02,
                   ),
                   IntlPhoneField(
-                    controller: _phoneNumberControl,
+                    controller: _familyPhoneNumberControl,
                     autovalidateMode: AutovalidateMode.onUserInteraction,
-                    decoration:  const InputDecoration(
+                    decoration: const InputDecoration(
                       labelText: 'ስልክ ቁጥር',
-
-
                       border: OutlineInputBorder(
                         borderSide: BorderSide(),
                       ),
@@ -734,7 +767,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> with TickerProv
                     height: height * 0.02,
                   ),
                   TextFormField(
-                    controller: firstName,
+                    controller: _familyBirthPlaceControl,
                     decoration: const InputDecoration(
                         border: OutlineInputBorder(), label: Text('የትውልድ ስፍራ')),
                   ),
@@ -742,7 +775,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> with TickerProv
                     height: height * 0.02,
                   ),
                   TextFormField(
-                    controller: firstName,
+                    controller: _familyBirthDateControl,
                     decoration: const InputDecoration(
                         border: OutlineInputBorder(), label: Text('የትውልድ ዘመን')),
                   ),
@@ -759,18 +792,17 @@ class _RegistrationScreenState extends State<RegistrationScreen> with TickerProv
                       child: DropdownButton<String>(
                         value: kefleKetemaValue,
                         isDense: true,
-                        hint:const Text('ክፈለ ከተማ'),
+                        hint: const Text('ክፈለ ከተማ'),
                         isExpanded: true,
                         items: const [
                           DropdownMenuItem(value: "ledeta", child: Text("ልደታ")),
                           DropdownMenuItem(
-                              value: "addis ketema",
-                              child: Text("አዲስ ከተማ")),
-                          DropdownMenuItem(
-                              value: "arada",
-                              child: Text("አራዳ")),
+                              value: "addis ketema", child: Text("አዲስ ከተማ")),
+                          DropdownMenuItem(value: "arada", child: Text("አራዳ")),
                         ],
                         onChanged: (newValue) {
+                          _familySubCityControl.text =
+                              newValue ?? _familySubCityControl.text;
                           setState(() {
                             sexValue = newValue;
                           });
@@ -782,7 +814,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> with TickerProv
                     height: height * 0.02,
                   ),
                   TextFormField(
-                    controller: firstName,
+                    controller: _familyWoredaControl,
                     keyboardType: TextInputType.number,
                     decoration: const InputDecoration(
                         border: OutlineInputBorder(), label: Text('ወረዳ')),
@@ -791,7 +823,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> with TickerProv
                     height: height * 0.02,
                   ),
                   TextFormField(
-                    controller: firstName,
+                    controller: _familyKebeleControl,
                     keyboardType: TextInputType.number,
                     decoration: const InputDecoration(
                         border: OutlineInputBorder(), label: Text('ቀበሌ')),
@@ -800,13 +832,11 @@ class _RegistrationScreenState extends State<RegistrationScreen> with TickerProv
                     height: height * 0.02,
                   ),
                   TextFormField(
-                    controller: firstName,
+                    controller: _familyHouseNumberControl,
                     keyboardType: TextInputType.number,
                     decoration: const InputDecoration(
                         border: OutlineInputBorder(), label: Text('የቤት ቁጥር')),
                   ),
-
-
                 ],
               ),
             )),
@@ -825,7 +855,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> with TickerProv
               child: Column(
                 children: <Widget>[
                   TextFormField(
-                    controller: comment,
+                    controller: _commentControl,
                     decoration: const InputDecoration(label: Text('አስተያየት')),
                   )
                 ],
@@ -840,6 +870,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> with TickerProv
 
       print('********************8file');
       print(image);
+    await  _fileUploaderCubit.uploadFile(imageTemp);
       setState(() => {this.image = imageTemp, hasImage = true});
     } on PlatformException catch (e) {
       print('Failed to pick image: $e');
