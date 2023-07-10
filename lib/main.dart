@@ -1,9 +1,10 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:hisnate_kifele/Data/Data%20Providers/light_theme.dart';
+import 'package:hisnate_kifele/Presentation/Routes/routes.dart';
+import 'package:hisnate_kifele/Presentation/Screens/Workspace/UI/workspace.dart';
 
 import 'Presentation/Screens/Home/UI/Dashboard.dart';
-import 'Presentation/Screens/Home/UI/WorkSpace.dart';
 import 'Presentation/Screens/Registration/UI/registeration.dart';
 
 
@@ -20,10 +21,11 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return MaterialApp.router(
       title: 'Flutter Demo',
       theme: lightTheme,
-      home:  const RegistrationScreen(),
+      routerConfig: goRouter,
+      debugShowCheckedModeBanner: false,
     );
   }
 }

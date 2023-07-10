@@ -5,7 +5,7 @@ class AbalRepository{
   final FirestoreService abalService;
 
   AbalRepository({required this.abalService});
-  Future<QuerySnapshot> getKifiles() => abalService.getDocumentsByCollection(collectionName: 'kifiles');
-
+  Future<QuerySnapshot> getKifiles() => abalService.getDocumentsByCollection(collectionName: 'yeabale kifile');
+  Future<QuerySnapshot> getNestedKifiles(documentName,childCollectionNAme) => abalService.getNestedDocumentsByCollection(parentCollection: 'yeabale kifile', documentName: documentName, childCollectionName: childCollectionNAme);
 
 }
