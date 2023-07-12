@@ -1,6 +1,4 @@
 import 'dart:io';
-
-import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -10,6 +8,7 @@ import 'package:hisnate_kifele/Data/Data%20Providers/colors.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
 
+import '../../../../Business Logic/Algorithm/file-uploader.dart';
 import '../../../../Business Logic/Bloc/cubit/abal_registration/abal_registration_cubit.dart';
 
 class RegistrationScreen extends StatefulWidget {
@@ -31,7 +30,7 @@ class RegistrationScreen extends StatefulWidget {
 class _RegistrationScreenState extends State<RegistrationScreen>
     with TickerProviderStateMixin {
   int currentStep = 0;
-  final FileUploaderCubit _fileUploaderCubit = FileUploaderCubit();
+  final FileUploader fileUploader = FileUploader();
   //abal information
   final _yekerestenaNameControl = TextEditingController();
   final _fullNameControl = TextEditingController();
@@ -69,14 +68,19 @@ class _RegistrationScreenState extends State<RegistrationScreen>
   final _commentControl = TextEditingController();
 
   String phoneNumber = "";
-  String? sexValue;
+  String? sexValue = "Male";
   String? kifileValue;
-  String? kefleKetemaValue;
+  String? kefleKetemaValue = "ledeta";
+  String? relationshipValue = "";
 
-  File? image;
-  bool hasImage = false;
-
+  File? abalImage;
+  File? welageImage;
+  bool hasAbalImage = false;
+  bool hasWelageImage = false;
   bool isCompleted = false;
+
+  bool isWelageFormSubmitted = false;
+  bool isAbalFormSubmitted = false;
 
   String? dropdownValidator(String? value) {
     return 'ይህ ቦታ መሞላት አለበትn';
@@ -122,7 +126,21 @@ class _RegistrationScreenState extends State<RegistrationScreen>
                 elevation: 0,
                 type: StepperType.horizontal,
                 steps: registrationSteps(sizeH, sizeW, state.nestedKifiles),
-                onStepTapped: (step) => setState(() => currentStep = step),
+                onStepTapped: (step) => {
+                  // if (_abalFormKey.currentState == null)
+                  //   {print("_formKey.currentState is null!")}
+                  // else if (currentStep == 0 &&
+                  //     _abalFormKey.currentState!.validate())
+                  //   {
+                  //     setState(() => currentStep = step),
+                  //   }
+                  // else if (currentStep == 1 &&
+                  //     _welageFormKey.currentState!.validate())
+                  //   {
+                  //     setState(() => currentStep = step),
+                  //   }
+                  setState(() => currentStep = step),
+                },
                 currentStep: currentStep,
                 onStepContinue: () {
                   final lastStep = currentStep ==
@@ -161,18 +179,26 @@ class _RegistrationScreenState extends State<RegistrationScreen>
                                 Theme.of(context).colorScheme.secondary,
                           ),
                           onPressed: () => {
-                            if (_abalFormKey.currentState == null)
-                              {print("_formKey.currentState is null!")}
-                            else if (currentStep == 0 &&
-                                _abalFormKey.currentState!.validate())
-                              {
-                                details.onStepContinue,
-                              }
-                            else if (currentStep == 1 &&
-                                _welageFormKey.currentState!.validate())
-                              {
-                                details.onStepContinue,
-                              }
+                            //check if the the form is valid
+                            _abalFormKey.currentState == null
+                                ? null
+                                : (currentStep == 0 &&
+                                            _abalFormKey.currentState!
+                                                .validate() &&
+                                            hasAbalImage) ||
+                                        (currentStep == 1 &&
+                                            _welageFormKey.currentState!
+                                                .validate() &&
+                                            hasWelageImage)
+                                    ? details.onStepContinue!()
+                                    : submit(),
+                            setState(() {
+                              currentStep == 0
+                                  ? isAbalFormSubmitted = true
+                                  : currentStep == 1
+                                      ? isWelageFormSubmitted = true
+                                      : null;
+                            })
                           },
                           child: Text(
                             isLastStep ? 'አጠናቅ' : 'ቀጣይ',
@@ -244,13 +270,13 @@ class _RegistrationScreenState extends State<RegistrationScreen>
                           height: 130,
                           width: 130,
                           child: CircleAvatar(
-                              backgroundImage: hasImage
+                              backgroundImage: hasAbalImage
                                   ? FileImage(
-                                      image!,
+                                      abalImage!,
                                     )
                                   : Image.network('').image,
                               backgroundColor: Color(0xffE6E6E6),
-                              child: hasImage
+                              child: hasAbalImage
                                   ? SizedBox()
                                   : const Icon(
                                       Icons.person,
@@ -296,7 +322,7 @@ class _RegistrationScreenState extends State<RegistrationScreen>
                                           InkWell(
                                             onTap: () async {
                                               await pickImage(
-                                                  ImageSource.camera);
+                                                  ImageSource.camera, true);
                                             },
                                             child: Row(
                                               children: [
@@ -329,7 +355,7 @@ class _RegistrationScreenState extends State<RegistrationScreen>
                                           InkWell(
                                             onTap: () async {
                                               await pickImage(
-                                                  ImageSource.gallery);
+                                                  ImageSource.gallery, true);
                                             },
                                             child: Row(
                                               children: [
@@ -378,40 +404,44 @@ class _RegistrationScreenState extends State<RegistrationScreen>
                       ],
                     ),
                     SizedBox(
+                      height: height * 0.015,
+                    ),
+                    !hasAbalImage && isAbalFormSubmitted
+                        ? const Text(
+                            '**ፎቶ ያስፈልጋል**',
+                            style: TextStyle(color: Colors.redAccent),
+                          )
+                        : const SizedBox(),
+                    SizedBox(
                       height: height * 0.05,
                     ),
-                    InputDecorator(
-                      decoration: const InputDecoration(
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(4.0)),
+                    DropdownButtonHideUnderline(
+                      child: DropdownButtonFormField(
+                        decoration: const InputDecoration(
+                          border: OutlineInputBorder(),
                         ),
-                      ),
-                      child: DropdownButtonHideUnderline(
-                        child: DropdownButtonFormField(
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'ይህ ቦታ መሞላት አለበት';
-                            }
-                            return null;
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'ይህ ቦታ መሞላት አለበት';
+                          }
+                          return null;
+                        },
+                        value: kifileValue,
+                        isDense: true,
+                        hint: const Text('ክፍል'),
+                        isExpanded: true,
+                        items: kifiles.map(
+                          (e) {
+                            return DropdownMenuItem<String>(
+                                value: e['id'], child: Text(e['name']));
                           },
-                          value: kifileValue,
-                          isDense: true,
-                          hint: const Text('ክፍል'),
-                          isExpanded: true,
-                          items: kifiles.map(
-                            (e) {
-                              return DropdownMenuItem<String>(
-                                  value: e['id'], child: Text(e['name']));
-                            },
-                          ).toList(),
-                          onChanged: (newValue) {
-                            _kifileControl.text =
-                                newValue ?? _kifileControl.text;
-                            setState(() {
-                              kifileValue = newValue;
-                            });
-                          },
-                        ),
+                        ).toList(),
+                        onChanged: (newValue) {
+                          _kifileControl.text = newValue ?? _kifileControl.text;
+                          setState(() {
+                            kifileValue = newValue;
+                          });
+                        },
                       ),
                     ),
                     SizedBox(
@@ -461,37 +491,31 @@ class _RegistrationScreenState extends State<RegistrationScreen>
                     SizedBox(
                       height: height * 0.02,
                     ),
-                    InputDecorator(
-                      decoration: const InputDecoration(
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(4.0)),
+                    DropdownButtonHideUnderline(
+                      child: DropdownButtonFormField(
+                        decoration: const InputDecoration(
+                          border: OutlineInputBorder(),
                         ),
-                      ),
-                      child: DropdownButtonHideUnderline(
-                        child: DropdownButtonFormField(
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'ይህ ቦታ መሞላት አለበት';
-                            }
-                            return null;
-                          },
-                          value: sexValue,
-                          isDense: true,
-                          hint: const Text('ጾታ'),
-                          isExpanded: true,
-                          items: const [
-                            DropdownMenuItem(value: "Male", child: Text("ወንድ")),
-                            DropdownMenuItem(
-                                value: "Female", child: Text("ሴት")),
-                          ],
-                          onChanged: (newValue) {
-                            _genderControl.text =
-                                newValue ?? _genderControl.text;
-                            setState(() {
-                              sexValue = newValue;
-                            });
-                          },
-                        ),
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'ይህ ቦታ መሞላት አለበት';
+                          }
+                          return null;
+                        },
+                        value: sexValue,
+                        isDense: true,
+                        hint: const Text('ጾታ'),
+                        isExpanded: true,
+                        items: const [
+                          DropdownMenuItem(value: "Male", child: Text("ወንድ")),
+                          DropdownMenuItem(value: "Female", child: Text("ሴት")),
+                        ],
+                        onChanged: (newValue) {
+                          _genderControl.text = newValue ?? _genderControl.text;
+                          setState(() {
+                            sexValue = newValue;
+                          });
+                        },
                       ),
                     ),
                     SizedBox(
@@ -544,40 +568,34 @@ class _RegistrationScreenState extends State<RegistrationScreen>
                     SizedBox(
                       height: height * 0.02,
                     ),
-                    InputDecorator(
-                      decoration: const InputDecoration(
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(4.0)),
+                    DropdownButtonHideUnderline(
+                      child: DropdownButtonFormField(
+                        decoration: const InputDecoration(
+                          border: OutlineInputBorder(),
                         ),
-                      ),
-                      child: DropdownButtonHideUnderline(
-                        child: DropdownButtonFormField(
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'ይህ ቦታ መሞላት አለበት';
-                            }
-                            return null;
-                          },
-                          value: kefleKetemaValue,
-                          isDense: true,
-                          hint: const Text('ክፈለ ከተማ'),
-                          isExpanded: true,
-                          items: const [
-                            DropdownMenuItem(
-                                value: "ledeta", child: Text("ልደታ")),
-                            DropdownMenuItem(
-                                value: "addis ketema", child: Text("አዲስ ከተማ")),
-                            DropdownMenuItem(
-                                value: "arada", child: Text("አራዳ")),
-                          ],
-                          onChanged: (newValue) {
-                            _subCityControl.text =
-                                newValue ?? _subCityControl.text;
-                            setState(() {
-                              sexValue = newValue;
-                            });
-                          },
-                        ),
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'ይህ ቦታ መሞላት አለበት';
+                          }
+                          return null;
+                        },
+                        value: kefleKetemaValue,
+                        isDense: true,
+                        hint: const Text('ክፈለ ከተማ'),
+                        isExpanded: true,
+                        items: const [
+                          DropdownMenuItem(value: "ledeta", child: Text("ልደታ")),
+                          DropdownMenuItem(
+                              value: "addis ketema", child: Text("አዲስ ከተማ")),
+                          DropdownMenuItem(value: "arada", child: Text("አራዳ")),
+                        ],
+                        onChanged: (newValue) {
+                          _subCityControl.text =
+                              newValue ?? _subCityControl.text;
+                          setState(() {
+                            kefleKetemaValue = newValue;
+                          });
+                        },
                       ),
                     ),
                     SizedBox(
@@ -683,13 +701,13 @@ class _RegistrationScreenState extends State<RegistrationScreen>
                           height: 130,
                           width: 130,
                           child: CircleAvatar(
-                              backgroundImage: hasImage
+                              backgroundImage: hasWelageImage
                                   ? FileImage(
-                                      image!,
+                                      welageImage!,
                                     )
                                   : Image.network('').image,
                               backgroundColor: Color(0xffE6E6E6),
-                              child: hasImage
+                              child: hasWelageImage
                                   ? SizedBox()
                                   : const Icon(
                                       Icons.person,
@@ -735,7 +753,7 @@ class _RegistrationScreenState extends State<RegistrationScreen>
                                           InkWell(
                                             onTap: () async {
                                               await pickImage(
-                                                  ImageSource.camera);
+                                                  ImageSource.camera, false);
                                             },
                                             child: Row(
                                               children: [
@@ -768,7 +786,7 @@ class _RegistrationScreenState extends State<RegistrationScreen>
                                           InkWell(
                                             onTap: () async {
                                               await pickImage(
-                                                  ImageSource.gallery);
+                                                  ImageSource.gallery, false);
                                             },
                                             child: Row(
                                               children: [
@@ -817,6 +835,15 @@ class _RegistrationScreenState extends State<RegistrationScreen>
                       ],
                     ),
                     SizedBox(
+                      height: height * 0.015,
+                    ),
+                    !hasWelageImage && isWelageFormSubmitted
+                        ? const Text(
+                            '**ፎቶ ያስፈልጋል**',
+                            style: TextStyle(color: Colors.redAccent),
+                          )
+                        : const SizedBox(),
+                    SizedBox(
                       height: height * 0.05,
                     ),
                     TextFormField(
@@ -848,45 +875,37 @@ class _RegistrationScreenState extends State<RegistrationScreen>
                     SizedBox(
                       height: height * 0.02,
                     ),
-                    InputDecorator(
-                      decoration: const InputDecoration(
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(4.0)),
+                    DropdownButtonHideUnderline(
+                      child: DropdownButtonFormField(
+                        decoration: const InputDecoration(
+                          border: OutlineInputBorder(),
                         ),
-                      ),
-                      child: DropdownButtonHideUnderline(
-                        child: DropdownButtonFormField(
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'ይህ ቦታ መሞላት አለበት';
-                            }
-                            return null;
-                          },
-                          value: sexValue,
-                          isDense: true,
-                          hint: const Text('ከአባሉ ጋር ያለው ግንኙነት'),
-                          isExpanded: true,
-                          items: const [
-                            DropdownMenuItem(
-                                value: "mother", child: Text("እናት")),
-                            DropdownMenuItem(
-                                value: "father", child: Text("አባት")),
-                            DropdownMenuItem(
-                                value: "brother", child: Text("ወንድም")),
-                            DropdownMenuItem(
-                                value: "sister", child: Text("አህት")),
-                            DropdownMenuItem(
-                                value: "Female", child: Text("ዘመድና")),
-                          ],
-                          onChanged: (newValue) {
-                            _relationShipControl.text =
-                                newValue ?? _relationShipControl.text;
-                            ;
-                            setState(() {
-                              sexValue = newValue;
-                            });
-                          },
-                        ),
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'ይህ ቦታ መሞላት አለበት';
+                          }
+                          return null;
+                        },
+                        isDense: true,
+                        hint: const Text('ከአባሉ ጋር ያለው ግንኙነት'),
+                        isExpanded: true,
+                        items: const [
+                          DropdownMenuItem(value: "mother", child: Text("እናት")),
+                          DropdownMenuItem(value: "father", child: Text("አባት")),
+                          DropdownMenuItem(
+                              value: "brother", child: Text("ወንድም")),
+                          DropdownMenuItem(value: "sister", child: Text("አህት")),
+                          DropdownMenuItem(
+                              value: "Female", child: Text("ዘመድና")),
+                        ],
+                        onChanged: (newValue) {
+                          _relationShipControl.text =
+                              newValue ?? _relationShipControl.text;
+
+                          setState(() {
+                            relationshipValue = newValue;
+                          });
+                        },
                       ),
                     ),
                     SizedBox(
@@ -907,37 +926,32 @@ class _RegistrationScreenState extends State<RegistrationScreen>
                     SizedBox(
                       height: height * 0.02,
                     ),
-                    InputDecorator(
-                      decoration: const InputDecoration(
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(4.0)),
+                    DropdownButtonHideUnderline(
+                      child: DropdownButtonFormField(
+                        decoration: const InputDecoration(
+                          border: OutlineInputBorder(),
                         ),
-                      ),
-                      child: DropdownButtonHideUnderline(
-                        child: DropdownButtonFormField(
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'ይህ ቦታ መሞላት አለበት';
-                            }
-                            return null;
-                          },
-                          value: sexValue,
-                          isDense: true,
-                          hint: const Text('ጾታ'),
-                          isExpanded: true,
-                          items: const [
-                            DropdownMenuItem(value: "Male", child: Text("ወንድ")),
-                            DropdownMenuItem(
-                                value: "Female", child: Text("ሴት")),
-                          ],
-                          onChanged: (newValue) {
-                            _familyGenderControl.text =
-                                newValue ?? _familyGenderControl.text;
-                            setState(() {
-                              sexValue = newValue;
-                            });
-                          },
-                        ),
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'ይህ ቦታ መሞላት አለበት';
+                          }
+                          return null;
+                        },
+                        value: sexValue,
+                        isDense: true,
+                        hint: const Text('ጾታ'),
+                        isExpanded: true,
+                        items: const [
+                          DropdownMenuItem(value: "Male", child: Text("ወንድ")),
+                          DropdownMenuItem(value: "Female", child: Text("ሴት")),
+                        ],
+                        onChanged: (newValue) {
+                          _familyGenderControl.text =
+                              newValue ?? _familyGenderControl.text;
+                          setState(() {
+                            sexValue = newValue;
+                          });
+                        },
                       ),
                     ),
                     SizedBox(
@@ -990,40 +1004,34 @@ class _RegistrationScreenState extends State<RegistrationScreen>
                     SizedBox(
                       height: height * 0.02,
                     ),
-                    InputDecorator(
-                      decoration: const InputDecoration(
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(4.0)),
+                    DropdownButtonHideUnderline(
+                      child: DropdownButtonFormField(
+                        decoration: const InputDecoration(
+                          border: OutlineInputBorder(),
                         ),
-                      ),
-                      child: DropdownButtonHideUnderline(
-                        child: DropdownButtonFormField(
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'ይህ ቦታ መሞላት አለበት';
-                            }
-                            return null;
-                          },
-                          value: kefleKetemaValue,
-                          isDense: true,
-                          hint: const Text('ክፈለ ከተማ'),
-                          isExpanded: true,
-                          items: const [
-                            DropdownMenuItem(
-                                value: "ledeta", child: Text("ልደታ")),
-                            DropdownMenuItem(
-                                value: "addis ketema", child: Text("አዲስ ከተማ")),
-                            DropdownMenuItem(
-                                value: "arada", child: Text("አራዳ")),
-                          ],
-                          onChanged: (newValue) {
-                            _familySubCityControl.text =
-                                newValue ?? _familySubCityControl.text;
-                            setState(() {
-                              sexValue = newValue;
-                            });
-                          },
-                        ),
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'ይህ ቦታ መሞላት አለበት';
+                          }
+                          return null;
+                        },
+                        value: kefleKetemaValue,
+                        isDense: true,
+                        hint: const Text('ክፈለ ከተማ'),
+                        isExpanded: true,
+                        items: const [
+                          DropdownMenuItem(value: "ledeta", child: Text("ልደታ")),
+                          DropdownMenuItem(
+                              value: "addis ketema", child: Text("አዲስ ከተማ")),
+                          DropdownMenuItem(value: "arada", child: Text("አራዳ")),
+                        ],
+                        onChanged: (newValue) {
+                          _familySubCityControl.text =
+                              newValue ?? _familySubCityControl.text;
+                          setState(() {
+                            kefleKetemaValue = newValue;
+                          });
+                        },
                       ),
                     ),
                     SizedBox(
@@ -1103,18 +1111,37 @@ class _RegistrationScreenState extends State<RegistrationScreen>
               ),
             ))
       ];
-  Future pickImage(ImageSource source) async {
+  Future pickImage(ImageSource source, bool isForAbal) async {
     try {
       final image = await ImagePicker().pickImage(source: source);
+
       if (image == null) return;
+
       final imageTemp = File(image.path);
 
-      print('********************8file');
-      print(image);
-      await _fileUploaderCubit.uploadFile(imageTemp);
-      setState(() => {this.image = imageTemp, hasImage = true});
+      setState(() => {
+            if (isForAbal)
+              {
+                abalImage = imageTemp,
+                hasAbalImage = true,
+              }
+            else
+              {welageImage = imageTemp, hasWelageImage = true}
+          });
+
+      if (!mounted) return;
+
+      Navigator.pop(context);
     } on PlatformException catch (e) {
       print('Failed to pick image: $e');
     }
   }
+
+  Future submit() async {
+    print('===============called');
+    await fileUploader.uploadFile('ህጻናት/አባል', abalImage);
+    await fileUploader.uploadFile('ህጻናት/ወላጅ', abalImage);
+  }
+
+
 }

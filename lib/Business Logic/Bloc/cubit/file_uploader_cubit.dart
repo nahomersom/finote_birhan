@@ -12,14 +12,14 @@ class FileUploaderCubit extends Cubit<FileUploaderState> {
 
   ));
 
-  Future uploadFile(File? photo) async {
+  Future uploadFile(location,File? photo) async {
     print('==========================================================================================================================');
     print(photo);
     print('==========================================================================================================================');
 
     if (photo == null) return;
     final fileName = basename(photo.path);
-    final destination = 'Sample/Images/$fileName';
+    final destination = '$location/$fileName';
 
     try {
       final ref = firebase_storage.FirebaseStorage.instance
