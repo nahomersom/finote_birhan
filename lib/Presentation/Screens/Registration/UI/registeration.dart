@@ -1,12 +1,15 @@
 import 'dart:io';
-
-import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:hisnate_kifele/Business%20Logic/Bloc/cubit/file_uploader_cubit.dart';
 import 'package:hisnate_kifele/Data/Data%20Providers/colors.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
+
+import '../../../../Business Logic/Algorithm/file-uploader.dart';
+import '../../../../Business Logic/Bloc/cubit/abal_registration/abal_registration_cubit.dart';
 
 class RegistrationScreen extends StatefulWidget {
   const RegistrationScreen({super.key});
@@ -25,10 +28,9 @@ class RegistrationScreen extends StatefulWidget {
 }
 
 class _RegistrationScreenState extends State<RegistrationScreen>
-
     with TickerProviderStateMixin {
   int currentStep = 0;
-  final FileUploaderCubit _fileUploaderCubit = FileUploaderCubit();
+  final FileUploader fileUploader = FileUploader();
   //abal information
   final _yekerestenaNameControl = TextEditingController();
   final _fullNameControl = TextEditingController();
@@ -43,6 +45,7 @@ class _RegistrationScreenState extends State<RegistrationScreen>
   final _houseNumberControl = TextEditingController();
   final _emergencyContactFullNameControl = TextEditingController();
   final _emergencyContactPhoneNumberControl = TextEditingController();
+  final _kifileControl = TextEditingController();
 
   //abal family information
   final _familyYekerestenaNameControl = TextEditingController();
@@ -58,17 +61,30 @@ class _RegistrationScreenState extends State<RegistrationScreen>
   final _familyKebeleControl = TextEditingController();
   final _familyHouseNumberControl = TextEditingController();
 
+  final _abalFormKey = GlobalKey<FormState>();
+  final _welageFormKey = GlobalKey<FormState>();
+
   //general
   final _commentControl = TextEditingController();
 
   String phoneNumber = "";
-  String? sexValue;
-  String? kefleKetemaValue;
+  String? sexValue = "Male";
+  String? kifileValue;
+  String? kefleKetemaValue = "ledeta";
+  String? relationshipValue = "";
 
-  File? image;
-  bool hasImage = false;
-
+  File? abalImage;
+  File? welageImage;
+  bool hasAbalImage = false;
+  bool hasWelageImage = false;
   bool isCompleted = false;
+
+  bool isWelageFormSubmitted = false;
+  bool isAbalFormSubmitted = false;
+
+  String? dropdownValidator(String? value) {
+    return 'ይህ ቦታ መሞላት አለበትn';
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -81,101 +97,157 @@ class _RegistrationScreenState extends State<RegistrationScreen>
     // fast, so that you can just rebuild anything that needs updating rather
     // than having to individually change instances of widgets.
     return Scaffold(
-        appBar: AppBar(
-          backgroundColor: Colors.transparent,
-          elevation: 0,
-          centerTitle: true,
-          title: Text(
-            'የአባል መመዝገቢያ',
-            textAlign: TextAlign.center,
-            style: Theme.of(context).textTheme.displayMedium?.copyWith(),
-          ),
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        centerTitle: true,
+        title: Text(
+          'የአባል መመዝገቢያ',
+          textAlign: TextAlign.center,
+          style: Theme.of(context).textTheme.displayMedium?.copyWith(),
         ),
-        body: SafeArea(
-          child: Theme(
-            data: ThemeData(
-              iconTheme: Theme.of(context).iconTheme.copyWith(size: 18.0),
-              colorScheme: Theme.of(context).colorScheme.copyWith(
-                    tertiary: Colors.red,
-                    primary: ColorResources.secondaryColor,
-                    onSurface: ColorResources.secondaryColor.withOpacity(0.02),
-                    background: Colors.red,
-                    secondary: ColorResources.secondaryColor,
-                  ),
-            ),
-            child: Stepper(
-              elevation: 0,
-              type: StepperType.horizontal,
-              steps: registrationSteps(sizeH, sizeW),
-              onStepTapped: (step) => setState(() => currentStep = step),
-              currentStep: currentStep,
-              onStepContinue: () {
-                final lastStep =
-                    currentStep == registrationSteps(sizeH, sizeW).length - 1;
-                if (lastStep) {
-                  //TODO:send data to the server
-                  setState(() {
-                    isCompleted = true;
-                  });
-                  return;
-                }
-                setState(() => currentStep += 1);
-              },
-              onStepCancel: () => {
-                currentStep == 0 ? null : setState(() => currentStep -= 1),
-              },
-              controlsBuilder: (context, ControlsDetails details) {
-                final bool isLastStep = details.currentStep ==
-                    registrationSteps(sizeH, sizeW).length - 1;
-                return Container(
-                  margin: const EdgeInsets.only(top: 50),
-                  child: Row(
-                    children: [
-                      Expanded(
-                          child: TextButton(
-                        style: TextButton.styleFrom(
-                          padding: const EdgeInsets.all(0),
-                          shape: const RoundedRectangleBorder(
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(10))),
-                          backgroundColor:
-                              Theme.of(context).colorScheme.secondary,
-                        ),
-                        onPressed: details.onStepContinue,
-                        child: Text(
-                          isLastStep ? 'አጠናቅ' : 'ቀጣይ',
-                          style: Theme.of(context)
-                              .textTheme
-                              .titleSmall
-                              ?.copyWith(color: ColorResources.primaryColor),
-                        ),
-                      )),
-                      const SizedBox(
-                        width: 12,
-                      ),
-                      if (currentStep != 0)
+      ),
+      body: SafeArea(
+        child: Theme(
+          data: ThemeData(
+            iconTheme: Theme.of(context).iconTheme.copyWith(size: 18.0),
+            colorScheme: Theme.of(context).colorScheme.copyWith(
+                  tertiary: Colors.red,
+                  primary: ColorResources.secondaryColor,
+                  onSurface: ColorResources.secondaryColor.withOpacity(0.02),
+                  background: Colors.red,
+                  secondary: ColorResources.secondaryColor,
+                ),
+          ),
+          child: BlocBuilder<AbalCubit, AbalRegistrationState>(
+              builder: (BuildContext context, state) {
+            if (state.abalRegistrationStatus.isSuccess) {
+              return Stepper(
+                elevation: 0,
+                type: StepperType.horizontal,
+                steps: registrationSteps(sizeH, sizeW, state.nestedKifiles),
+                onStepTapped: (step) => {
+                  // if (_abalFormKey.currentState == null)
+                  //   {print("_formKey.currentState is null!")}
+                  // else if (currentStep == 0 &&
+                  //     _abalFormKey.currentState!.validate())
+                  //   {
+                  //     setState(() => currentStep = step),
+                  //   }
+                  // else if (currentStep == 1 &&
+                  //     _welageFormKey.currentState!.validate())
+                  //   {
+                  //     setState(() => currentStep = step),
+                  //   }
+                  setState(() => currentStep = step),
+                },
+                currentStep: currentStep,
+                onStepContinue: () {
+                  final lastStep = currentStep ==
+                      registrationSteps(sizeH, sizeW, state.nestedKifiles)
+                              .length -
+                          1;
+                  if (lastStep) {
+                    //TODO:send data to the server
+                    setState(() {
+                      isCompleted = true;
+                    });
+                    return;
+                  }
+                  setState(() => currentStep += 1);
+                },
+                onStepCancel: () => {
+                  currentStep == 0 ? null : setState(() => currentStep -= 1),
+                },
+                controlsBuilder: (context, ControlsDetails details) {
+                  final bool isLastStep = details.currentStep ==
+                      registrationSteps(sizeH, sizeW, state.nestedKifiles)
+                              .length -
+                          1;
+                  return Container(
+                    margin: const EdgeInsets.only(top: 50),
+                    child: Row(
+                      children: [
                         Expanded(
                             child: TextButton(
                           style: TextButton.styleFrom(
-                              padding: const EdgeInsets.all(0),
-                              shape: const RoundedRectangleBorder(
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(10))),
-                              backgroundColor: ColorResources.secondaryColor
-                                  .withOpacity(0.1)),
-                          onPressed: details.onStepCancel,
-                          child: const Text('መመለስ'),
+                            padding: const EdgeInsets.all(0),
+                            shape: const RoundedRectangleBorder(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(10))),
+                            backgroundColor:
+                                Theme.of(context).colorScheme.secondary,
+                          ),
+                          onPressed: () => {
+                            //check if the the form is valid
+                            _abalFormKey.currentState == null
+                                ? null
+                                : (currentStep == 0 &&
+                                            _abalFormKey.currentState!
+                                                .validate() &&
+                                            hasAbalImage) ||
+                                        (currentStep == 1 &&
+                                            _welageFormKey.currentState!
+                                                .validate() &&
+                                            hasWelageImage)
+                                    ? details.onStepContinue!()
+                                    : submit(),
+                            setState(() {
+                              currentStep == 0
+                                  ? isAbalFormSubmitted = true
+                                  : currentStep == 1
+                                      ? isWelageFormSubmitted = true
+                                      : null;
+                            })
+                          },
+                          child: Text(
+                            isLastStep ? 'አጠናቅ' : 'ቀጣይ',
+                            style: Theme.of(context)
+                                .textTheme
+                                .titleSmall
+                                ?.copyWith(color: ColorResources.primaryColor),
+                          ),
                         )),
-                    ],
+                        const SizedBox(
+                          width: 12,
+                        ),
+                        if (currentStep != 0)
+                          Expanded(
+                              child: TextButton(
+                            style: TextButton.styleFrom(
+                                padding: const EdgeInsets.all(0),
+                                shape: const RoundedRectangleBorder(
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(10))),
+                                backgroundColor: ColorResources.secondaryColor
+                                    .withOpacity(0.1)),
+                            onPressed: details.onStepCancel,
+                            child: const Text('መመለስ'),
+                          )),
+                      ],
+                    ),
+                  );
+                },
+              );
+            }
+            return const Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  SpinKitFadingCircle(
+                    color: ColorResources.secondaryColor,
                   ),
-                );
-              },
-            ),
-          ),
-        ));
+                  SizedBox(
+                    height: 10,
+                  ),
+                  Text('ዝግጅት ላይ')
+                ]);
+          }),
+        ),
+      ),
+    );
   }
 
-  List<Step> registrationSteps(height, width) => [
+  List<Step> registrationSteps(height, width, List kifiles) => [
         Step(
             state: currentStep > 0 ? StepState.complete : StepState.indexed,
             isActive: currentStep >= 0,
@@ -187,191 +259,249 @@ class _RegistrationScreenState extends State<RegistrationScreen>
                         ?.copyWith(color: ColorResources.secondaryColor)
                     : Theme.of(context).textTheme.titleSmall?.copyWith(
                         color: ColorResources.textColor.withOpacity(0.6))),
-            content: SingleChildScrollView(
-              child: Column(
-                children: <Widget>[
-                  Stack(
-                    children: [
-                      SizedBox(
-                        height: 130,
-                        width: 130,
-                        child: CircleAvatar(
-                            backgroundImage: hasImage
-                                ? FileImage(
-                                    image!,
-                                  )
-                                : Image.network('').image,
-                            backgroundColor: Color(0xffE6E6E6),
-                            child: hasImage
-                                ? SizedBox()
-                                : const Icon(
-                                    Icons.person,
-                                    size: 60,
-                                    color: Color(0xffCCCCCC),
-                                  )),
-                      ),
-                      Positioned(
-                        bottom: 0,
-                        right: 0,
-                        child: GestureDetector(
-                          onTap: () => showModalBottomSheet(
-                              backgroundColor: Colors.transparent,
-                              context: context,
-                              builder: (context) {
-                                return Container(
-                                  height: 160,
-                                  decoration: const BoxDecoration(
-                                      color: ColorResources.primaryColor,
-                                      borderRadius: BorderRadius.only(
-                                          topRight: Radius.circular(20),
-                                          topLeft: Radius.circular(20))),
-                                  child: Padding(
-                                    padding: EdgeInsets.all(20),
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.start,
-                                      children: [
-                                        Center(
-                                          child: Text('ፎቶዎን ከየት ይወስዳሉ?',
-                                              style: Theme.of(context)
-                                                  .textTheme
-                                                  .displaySmall
-                                                  ?.copyWith(
-                                                      color: ColorResources
-                                                          .textColor)),
-                                        ),
-                                        SizedBox(
-                                          height: 15,
-                                        ),
-                                        InkWell(
-                                          onTap: () async {
-                                            await pickImage(ImageSource.camera);
-                                          },
-                                          child: Row(
-                                            children: [
-                                              Icon(
-                                                Icons.camera_alt_outlined,
-                                                size: 25,
-                                                color: ColorResources.textColor,
-                                              ),
-                                              SizedBox(
-                                                width: 15,
-                                              ),
-                                              Text('ካሜራ ያንሱ',
-                                                  style: Theme.of(context)
-                                                      .textTheme
-                                                      .bodyLarge
-                                                      ?.copyWith(
-                                                          fontSize: 18,
-                                                          fontWeight:
-                                                              FontWeight.w600,
-                                                          color: ColorResources
-                                                              .textColor))
-                                            ],
+            content: Form(
+              key: _abalFormKey,
+              child: SingleChildScrollView(
+                child: Column(
+                  children: <Widget>[
+                    Stack(
+                      children: [
+                        SizedBox(
+                          height: 130,
+                          width: 130,
+                          child: CircleAvatar(
+                              backgroundImage: hasAbalImage
+                                  ? FileImage(
+                                      abalImage!,
+                                    )
+                                  : Image.network('').image,
+                              backgroundColor: Color(0xffE6E6E6),
+                              child: hasAbalImage
+                                  ? SizedBox()
+                                  : const Icon(
+                                      Icons.person,
+                                      size: 60,
+                                      color: Color(0xffCCCCCC),
+                                    )),
+                        ),
+                        Positioned(
+                          bottom: 0,
+                          right: 0,
+                          child: GestureDetector(
+                            onTap: () => showModalBottomSheet(
+                                backgroundColor: Colors.transparent,
+                                context: context,
+                                builder: (context) {
+                                  return Container(
+                                    height: 160,
+                                    decoration: const BoxDecoration(
+                                        color: ColorResources.primaryColor,
+                                        borderRadius: BorderRadius.only(
+                                            topRight: Radius.circular(20),
+                                            topLeft: Radius.circular(20))),
+                                    child: Padding(
+                                      padding: EdgeInsets.all(20),
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.start,
+                                        children: [
+                                          Center(
+                                            child: Text('ፎቶዎን ከየት ይወስዳሉ?',
+                                                style: Theme.of(context)
+                                                    .textTheme
+                                                    .displaySmall
+                                                    ?.copyWith(
+                                                        color: ColorResources
+                                                            .textColor)),
                                           ),
-                                        ),
-                                        SizedBox(
-                                          height: 15,
-                                        ),
-                                        InkWell(
-                                          onTap: () async {
-                                            await pickImage(
-                                                ImageSource.gallery);
-                                          },
-                                          child: Row(
-                                            children: [
-                                              Icon(
-                                                Icons
-                                                    .photo_size_select_actual_outlined,
-                                                size: 25,
-                                                color: ColorResources.textColor,
-                                              ),
-                                              SizedBox(
-                                                width: 15,
-                                              ),
-                                              Text('ከጋለሪ ይውሰዱ',
-                                                  style: Theme.of(context)
-                                                      .textTheme
-                                                      .bodyLarge
-                                                      ?.copyWith(
-                                                          fontSize: 18,
-                                                          fontWeight:
-                                                              FontWeight.w600,
-                                                          color: ColorResources
-                                                              .textColor))
-                                            ],
+                                          SizedBox(
+                                            height: 15,
                                           ),
-                                        )
-                                      ],
+                                          InkWell(
+                                            onTap: () async {
+                                              await pickImage(
+                                                  ImageSource.camera, true);
+                                            },
+                                            child: Row(
+                                              children: [
+                                                Icon(
+                                                  Icons.camera_alt_outlined,
+                                                  size: 25,
+                                                  color:
+                                                      ColorResources.textColor,
+                                                ),
+                                                SizedBox(
+                                                  width: 15,
+                                                ),
+                                                Text('ካሜራ ያንሱ',
+                                                    style: Theme.of(context)
+                                                        .textTheme
+                                                        .bodyLarge
+                                                        ?.copyWith(
+                                                            fontSize: 18,
+                                                            fontWeight:
+                                                                FontWeight.w600,
+                                                            color:
+                                                                ColorResources
+                                                                    .textColor))
+                                              ],
+                                            ),
+                                          ),
+                                          SizedBox(
+                                            height: 15,
+                                          ),
+                                          InkWell(
+                                            onTap: () async {
+                                              await pickImage(
+                                                  ImageSource.gallery, true);
+                                            },
+                                            child: Row(
+                                              children: [
+                                                Icon(
+                                                  Icons
+                                                      .photo_size_select_actual_outlined,
+                                                  size: 25,
+                                                  color:
+                                                      ColorResources.textColor,
+                                                ),
+                                                SizedBox(
+                                                  width: 15,
+                                                ),
+                                                Text('ከጋለሪ ይውሰዱ',
+                                                    style: Theme.of(context)
+                                                        .textTheme
+                                                        .bodyLarge
+                                                        ?.copyWith(
+                                                            fontSize: 18,
+                                                            fontWeight:
+                                                                FontWeight.w600,
+                                                            color:
+                                                                ColorResources
+                                                                    .textColor))
+                                              ],
+                                            ),
+                                          )
+                                        ],
+                                      ),
                                     ),
-                                  ),
-                                );
-                              }),
-                          child: const SizedBox(
-                            height: 50,
-                            width: 50,
-                            child: CircleAvatar(
-                              backgroundColor: ColorResources.secondaryColor,
-                              child: Icon(
-                                Icons.camera_alt_outlined,
-                                color: ColorResources.primaryColor,
+                                  );
+                                }),
+                            child: const SizedBox(
+                              height: 50,
+                              width: 50,
+                              child: CircleAvatar(
+                                backgroundColor: ColorResources.secondaryColor,
+                                child: Icon(
+                                  Icons.camera_alt_outlined,
+                                  color: ColorResources.primaryColor,
+                                ),
                               ),
                             ),
                           ),
+                        )
+                      ],
+                    ),
+                    SizedBox(
+                      height: height * 0.015,
+                    ),
+                    !hasAbalImage && isAbalFormSubmitted
+                        ? const Text(
+                            '**ፎቶ ያስፈልጋል**',
+                            style: TextStyle(color: Colors.redAccent),
+                          )
+                        : const SizedBox(),
+                    SizedBox(
+                      height: height * 0.05,
+                    ),
+                    DropdownButtonHideUnderline(
+                      child: DropdownButtonFormField(
+                        decoration: const InputDecoration(
+                          border: OutlineInputBorder(),
                         ),
-                      )
-                    ],
-                  ),
-                  SizedBox(
-                    height: height * 0.05,
-                  ),
-                  TextFormField(
-                    controller: _yekerestenaNameControl,
-                    decoration: const InputDecoration(
-                        border: OutlineInputBorder(), label: Text('የክርስትና ስም')),
-                  ),
-                  SizedBox(
-                    height: height * 0.02,
-                  ),
-                  TextFormField(
-                    controller: _fullNameControl,
-                    decoration: const InputDecoration(
-                        border: OutlineInputBorder(), label: Text('ሙሉ ስም')),
-                  ),
-                  SizedBox(
-                    height: height * 0.02,
-                  ),
-                  TextFormField(
-                    controller: _ageControl,
-                    keyboardType: TextInputType.number,
-                    decoration: const InputDecoration(
-                        border: OutlineInputBorder(), label: Text('ዕድሜ')),
-                  ),
-                  SizedBox(
-                    height: height * 0.02,
-                  ),
-                  DropdownSearch<dynamic>.multiSelection(
-                      clearButtonProps: ClearButtonProps(isVisible: true),
-                      popupProps: PopupPropsMultiSelection.modalBottomSheet(
-                        isFilterOnline: true,
-                        showSearchBox: true,
-                        searchFieldProps: TextFieldProps(
-                          controller: _ageControl,
-                        ),
-                      )),
-                  DropdownSearch<int>(
-                    items: [1, 2, 3, 4, 5, 6, 7],
-                  ),
-                  InputDecorator(
-                    decoration: const InputDecoration(
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(4.0)),
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'ይህ ቦታ መሞላት አለበት';
+                          }
+                          return null;
+                        },
+                        value: kifileValue,
+                        isDense: true,
+                        hint: const Text('ክፍል'),
+                        isExpanded: true,
+                        items: kifiles.map(
+                          (e) {
+                            return DropdownMenuItem<String>(
+                                value: e['id'], child: Text(e['name']));
+                          },
+                        ).toList(),
+                        onChanged: (newValue) {
+                          _kifileControl.text = newValue ?? _kifileControl.text;
+                          setState(() {
+                            kifileValue = newValue;
+                          });
+                        },
                       ),
                     ),
-                    child: DropdownButtonHideUnderline(
-                      child: DropdownButton<String>(
+                    SizedBox(
+                      height: height * 0.02,
+                    ),
+                    TextFormField(
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'ይህ ቦታ መሞላት አለበት';
+                        }
+                        return null;
+                      },
+                      controller: _yekerestenaNameControl,
+                      decoration: const InputDecoration(
+                          border: OutlineInputBorder(),
+                          label: Text('የክርስትና ስም')),
+                    ),
+                    SizedBox(
+                      height: height * 0.02,
+                    ),
+                    TextFormField(
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'ይህ ቦታ መሞላት አለበት';
+                        }
+                        return null;
+                      },
+                      controller: _fullNameControl,
+                      decoration: const InputDecoration(
+                          border: OutlineInputBorder(), label: Text('ሙሉ ስም')),
+                    ),
+                    SizedBox(
+                      height: height * 0.02,
+                    ),
+                    TextFormField(
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'ይህ ቦታ መሞላት አለበት';
+                        }
+                        return null;
+                      },
+                      controller: _ageControl,
+                      keyboardType: TextInputType.number,
+                      decoration: const InputDecoration(
+                          border: OutlineInputBorder(), label: Text('ዕድሜ')),
+                    ),
+                    SizedBox(
+                      height: height * 0.02,
+                    ),
+                    DropdownButtonHideUnderline(
+                      child: DropdownButtonFormField(
+                        decoration: const InputDecoration(
+                          border: OutlineInputBorder(),
+                        ),
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'ይህ ቦታ መሞላት አለበት';
+                          }
+                          return null;
+                        },
                         value: sexValue,
                         isDense: true,
                         hint: const Text('ጾታ'),
@@ -388,51 +518,67 @@ class _RegistrationScreenState extends State<RegistrationScreen>
                         },
                       ),
                     ),
-                  ),
-                  SizedBox(
-                    height: height * 0.02,
-                  ),
-                  IntlPhoneField(
-                    controller: _phoneNumberControl,
-                    autovalidateMode: AutovalidateMode.onUserInteraction,
-                    decoration: const InputDecoration(
-                      labelText: 'ስልክ ቁጥር',
-                      border: OutlineInputBorder(
-                        borderSide: BorderSide(),
-                      ),
+                    SizedBox(
+                      height: height * 0.02,
                     ),
-                    initialCountryCode: 'ET',
-                    onChanged: (phone) {
-                      phoneNumber = phone.completeNumber;
-                    },
-                  ),
-                  SizedBox(
-                    height: height * 0.02,
-                  ),
-                  TextFormField(
-                    controller: _birthPlaceControl,
-                    decoration: const InputDecoration(
-                        border: OutlineInputBorder(), label: Text('የትውልድ ስፍራ')),
-                  ),
-                  SizedBox(
-                    height: height * 0.02,
-                  ),
-                  TextFormField(
-                    controller: _birthDateControl,
-                    decoration: const InputDecoration(
-                        border: OutlineInputBorder(), label: Text('የትውልድ ዘመን')),
-                  ),
-                  SizedBox(
-                    height: height * 0.02,
-                  ),
-                  InputDecorator(
-                    decoration: const InputDecoration(
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(4.0)),
+                    IntlPhoneField(
+                      controller: _phoneNumberControl,
+                      autovalidateMode: AutovalidateMode.onUserInteraction,
+                      decoration: const InputDecoration(
+                        labelText: 'ስልክ ቁጥር',
+                        border: OutlineInputBorder(
+                          borderSide: BorderSide(),
+                        ),
                       ),
+                      initialCountryCode: 'ET',
+                      onChanged: (phone) {
+                        phoneNumber = phone.completeNumber;
+                      },
                     ),
-                    child: DropdownButtonHideUnderline(
-                      child: DropdownButton<String>(
+                    SizedBox(
+                      height: height * 0.02,
+                    ),
+                    TextFormField(
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'ይህ ቦታ መሞላት አለበት';
+                        }
+                        return null;
+                      },
+                      controller: _birthPlaceControl,
+                      decoration: const InputDecoration(
+                          border: OutlineInputBorder(),
+                          label: Text('የትውልድ ስፍራ')),
+                    ),
+                    SizedBox(
+                      height: height * 0.02,
+                    ),
+                    TextFormField(
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'ይህ ቦታ መሞላት አለበት';
+                        }
+                        return null;
+                      },
+                      controller: _birthDateControl,
+                      decoration: const InputDecoration(
+                          border: OutlineInputBorder(),
+                          label: Text('የትውልድ ዘመን')),
+                    ),
+                    SizedBox(
+                      height: height * 0.02,
+                    ),
+                    DropdownButtonHideUnderline(
+                      child: DropdownButtonFormField(
+                        decoration: const InputDecoration(
+                          border: OutlineInputBorder(),
+                        ),
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'ይህ ቦታ መሞላት አለበት';
+                          }
+                          return null;
+                        },
                         value: kefleKetemaValue,
                         isDense: true,
                         hint: const Text('ክፈለ ከተማ'),
@@ -447,66 +593,90 @@ class _RegistrationScreenState extends State<RegistrationScreen>
                           _subCityControl.text =
                               newValue ?? _subCityControl.text;
                           setState(() {
-                            sexValue = newValue;
+                            kefleKetemaValue = newValue;
                           });
                         },
                       ),
                     ),
-                  ),
-                  SizedBox(
-                    height: height * 0.02,
-                  ),
-                  TextFormField(
-                    controller: _woredaControl,
-                    keyboardType: TextInputType.number,
-                    decoration: const InputDecoration(
-                        border: OutlineInputBorder(), label: Text('ወረዳ')),
-                  ),
-                  SizedBox(
-                    height: height * 0.02,
-                  ),
-                  TextFormField(
-                    controller: _kebeleControl,
-                    keyboardType: TextInputType.number,
-                    decoration: const InputDecoration(
-                        border: OutlineInputBorder(), label: Text('ቀበሌ')),
-                  ),
-                  SizedBox(
-                    height: height * 0.02,
-                  ),
-                  TextFormField(
-                    controller: _houseNumberControl,
-                    keyboardType: TextInputType.number,
-                    decoration: const InputDecoration(
-                        border: OutlineInputBorder(), label: Text('የቤት ቁጥር')),
-                  ),
-                  SizedBox(
-                    height: height * 0.02,
-                  ),
-                  TextFormField(
-                    controller: _emergencyContactFullNameControl,
-                    decoration: const InputDecoration(
-                        border: OutlineInputBorder(),
-                        label: Text('የአደጋ ጊዜ ተጠሪ')),
-                  ),
-                  SizedBox(
-                    height: height * 0.02,
-                  ),
-                  IntlPhoneField(
-                    controller: _emergencyContactPhoneNumberControl,
-                    autovalidateMode: AutovalidateMode.onUserInteraction,
-                    decoration: const InputDecoration(
-                      labelText: 'የአደጋ ጊዜ ተጠሪ ስልክ ቁጥር',
-                      border: OutlineInputBorder(
-                        borderSide: BorderSide(),
-                      ),
+                    SizedBox(
+                      height: height * 0.02,
                     ),
-                    initialCountryCode: 'ET',
-                    onChanged: (phone) {
-                      phoneNumber = phone.completeNumber;
-                    },
-                  ),
-                ],
+                    TextFormField(
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'ይህ ቦታ መሞላት አለበት';
+                        }
+                        return null;
+                      },
+                      controller: _woredaControl,
+                      keyboardType: TextInputType.number,
+                      decoration: const InputDecoration(
+                          border: OutlineInputBorder(), label: Text('ወረዳ')),
+                    ),
+                    SizedBox(
+                      height: height * 0.02,
+                    ),
+                    TextFormField(
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'ይህ ቦታ መሞላት አለበት';
+                        }
+                        return null;
+                      },
+                      controller: _kebeleControl,
+                      keyboardType: TextInputType.number,
+                      decoration: const InputDecoration(
+                          border: OutlineInputBorder(), label: Text('ቀበሌ')),
+                    ),
+                    SizedBox(
+                      height: height * 0.02,
+                    ),
+                    TextFormField(
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'ይህ ቦታ መሞላት አለበት';
+                        }
+                        return null;
+                      },
+                      controller: _houseNumberControl,
+                      keyboardType: TextInputType.number,
+                      decoration: const InputDecoration(
+                          border: OutlineInputBorder(), label: Text('የቤት ቁጥር')),
+                    ),
+                    SizedBox(
+                      height: height * 0.02,
+                    ),
+                    TextFormField(
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'ይህ ቦታ መሞላት አለበት';
+                        }
+                        return null;
+                      },
+                      controller: _emergencyContactFullNameControl,
+                      decoration: const InputDecoration(
+                          border: OutlineInputBorder(),
+                          label: Text('የአደጋ ጊዜ ተጠሪ')),
+                    ),
+                    SizedBox(
+                      height: height * 0.02,
+                    ),
+                    IntlPhoneField(
+                      controller: _emergencyContactPhoneNumberControl,
+                      autovalidateMode: AutovalidateMode.onUserInteraction,
+                      decoration: const InputDecoration(
+                        labelText: 'የአደጋ ጊዜ ተጠሪ ስልክ ቁጥር',
+                        border: OutlineInputBorder(
+                          borderSide: BorderSide(),
+                        ),
+                      ),
+                      initialCountryCode: 'ET',
+                      onChanged: (phone) {
+                        phoneNumber = phone.completeNumber;
+                      },
+                    ),
+                  ],
+                ),
               ),
             )),
         Step(
@@ -520,171 +690,202 @@ class _RegistrationScreenState extends State<RegistrationScreen>
                         ?.copyWith(color: ColorResources.secondaryColor)
                     : Theme.of(context).textTheme.titleSmall?.copyWith(
                         color: ColorResources.textColor.withOpacity(0.6))),
-            content: SingleChildScrollView(
-              child: Column(
-                children: <Widget>[
-                  Stack(
-                    children: [
-                      SizedBox(
-                        height: 130,
-                        width: 130,
-                        child: CircleAvatar(
-                            backgroundImage: hasImage
-                                ? FileImage(
-                                    image!,
-                                  )
-                                : Image.network('').image,
-                            backgroundColor: Color(0xffE6E6E6),
-                            child: hasImage
-                                ? SizedBox()
-                                : const Icon(
-                                    Icons.person,
-                                    size: 60,
-                                    color: Color(0xffCCCCCC),
-                                  )),
-                      ),
-                      Positioned(
-                        bottom: 0,
-                        right: 0,
-                        child: GestureDetector(
-                          onTap: () => showModalBottomSheet(
-                              backgroundColor: Colors.transparent,
-                              context: context,
-                              builder: (context) {
-                                return Container(
-                                  height: 160,
-                                  decoration: const BoxDecoration(
-                                      color: ColorResources.primaryColor,
-                                      borderRadius: BorderRadius.only(
-                                          topRight: Radius.circular(20),
-                                          topLeft: Radius.circular(20))),
-                                  child: Padding(
-                                    padding: EdgeInsets.all(20),
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.start,
-                                      children: [
-                                        Center(
-                                          child: Text('ፎቶዎን ከየት ይወስዳሉ?',
-                                              style: Theme.of(context)
-                                                  .textTheme
-                                                  .displaySmall
-                                                  ?.copyWith(
-                                                      color: ColorResources
-                                                          .textColor)),
-                                        ),
-                                        SizedBox(
-                                          height: 15,
-                                        ),
-                                        InkWell(
-                                          onTap: () async {
-                                            await pickImage(ImageSource.camera);
-                                          },
-                                          child: Row(
-                                            children: [
-                                              Icon(
-                                                Icons.camera_alt_outlined,
-                                                size: 25,
-                                                color: ColorResources.textColor,
-                                              ),
-                                              SizedBox(
-                                                width: 15,
-                                              ),
-                                              Text('ካሜራ ያንሱ',
-                                                  style: Theme.of(context)
-                                                      .textTheme
-                                                      .bodyLarge
-                                                      ?.copyWith(
-                                                          fontSize: 18,
-                                                          fontWeight:
-                                                              FontWeight.w600,
-                                                          color: ColorResources
-                                                              .textColor))
-                                            ],
+            content: Form(
+              key: _welageFormKey,
+              child: SingleChildScrollView(
+                child: Column(
+                  children: <Widget>[
+                    Stack(
+                      children: [
+                        SizedBox(
+                          height: 130,
+                          width: 130,
+                          child: CircleAvatar(
+                              backgroundImage: hasWelageImage
+                                  ? FileImage(
+                                      welageImage!,
+                                    )
+                                  : Image.network('').image,
+                              backgroundColor: Color(0xffE6E6E6),
+                              child: hasWelageImage
+                                  ? SizedBox()
+                                  : const Icon(
+                                      Icons.person,
+                                      size: 60,
+                                      color: Color(0xffCCCCCC),
+                                    )),
+                        ),
+                        Positioned(
+                          bottom: 0,
+                          right: 0,
+                          child: GestureDetector(
+                            onTap: () => showModalBottomSheet(
+                                backgroundColor: Colors.transparent,
+                                context: context,
+                                builder: (context) {
+                                  return Container(
+                                    height: 160,
+                                    decoration: const BoxDecoration(
+                                        color: ColorResources.primaryColor,
+                                        borderRadius: BorderRadius.only(
+                                            topRight: Radius.circular(20),
+                                            topLeft: Radius.circular(20))),
+                                    child: Padding(
+                                      padding: EdgeInsets.all(20),
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.start,
+                                        children: [
+                                          Center(
+                                            child: Text('ፎቶዎን ከየት ይወስዳሉ?',
+                                                style: Theme.of(context)
+                                                    .textTheme
+                                                    .displaySmall
+                                                    ?.copyWith(
+                                                        color: ColorResources
+                                                            .textColor)),
                                           ),
-                                        ),
-                                        SizedBox(
-                                          height: 15,
-                                        ),
-                                        InkWell(
-                                          onTap: () async {
-                                            await pickImage(
-                                                ImageSource.gallery);
-                                          },
-                                          child: Row(
-                                            children: [
-                                              Icon(
-                                                Icons
-                                                    .photo_size_select_actual_outlined,
-                                                size: 25,
-                                                color: ColorResources.textColor,
-                                              ),
-                                              SizedBox(
-                                                width: 15,
-                                              ),
-                                              Text('ከጋለሪ ይውሰዱ',
-                                                  style: Theme.of(context)
-                                                      .textTheme
-                                                      .bodyLarge
-                                                      ?.copyWith(
-                                                          fontSize: 18,
-                                                          fontWeight:
-                                                              FontWeight.w600,
-                                                          color: ColorResources
-                                                              .textColor))
-                                            ],
+                                          SizedBox(
+                                            height: 15,
                                           ),
-                                        )
-                                      ],
+                                          InkWell(
+                                            onTap: () async {
+                                              await pickImage(
+                                                  ImageSource.camera, false);
+                                            },
+                                            child: Row(
+                                              children: [
+                                                Icon(
+                                                  Icons.camera_alt_outlined,
+                                                  size: 25,
+                                                  color:
+                                                      ColorResources.textColor,
+                                                ),
+                                                SizedBox(
+                                                  width: 15,
+                                                ),
+                                                Text('ካሜራ ያንሱ',
+                                                    style: Theme.of(context)
+                                                        .textTheme
+                                                        .bodyLarge
+                                                        ?.copyWith(
+                                                            fontSize: 18,
+                                                            fontWeight:
+                                                                FontWeight.w600,
+                                                            color:
+                                                                ColorResources
+                                                                    .textColor))
+                                              ],
+                                            ),
+                                          ),
+                                          SizedBox(
+                                            height: 15,
+                                          ),
+                                          InkWell(
+                                            onTap: () async {
+                                              await pickImage(
+                                                  ImageSource.gallery, false);
+                                            },
+                                            child: Row(
+                                              children: [
+                                                Icon(
+                                                  Icons
+                                                      .photo_size_select_actual_outlined,
+                                                  size: 25,
+                                                  color:
+                                                      ColorResources.textColor,
+                                                ),
+                                                SizedBox(
+                                                  width: 15,
+                                                ),
+                                                Text('ከጋለሪ ይውሰዱ',
+                                                    style: Theme.of(context)
+                                                        .textTheme
+                                                        .bodyLarge
+                                                        ?.copyWith(
+                                                            fontSize: 18,
+                                                            fontWeight:
+                                                                FontWeight.w600,
+                                                            color:
+                                                                ColorResources
+                                                                    .textColor))
+                                              ],
+                                            ),
+                                          )
+                                        ],
+                                      ),
                                     ),
-                                  ),
-                                );
-                              }),
-                          child: const SizedBox(
-                            height: 50,
-                            width: 50,
-                            child: CircleAvatar(
-                              backgroundColor: ColorResources.secondaryColor,
-                              child: Icon(
-                                Icons.camera_alt_outlined,
-                                color: ColorResources.primaryColor,
+                                  );
+                                }),
+                            child: const SizedBox(
+                              height: 50,
+                              width: 50,
+                              child: CircleAvatar(
+                                backgroundColor: ColorResources.secondaryColor,
+                                child: Icon(
+                                  Icons.camera_alt_outlined,
+                                  color: ColorResources.primaryColor,
+                                ),
                               ),
                             ),
                           ),
-                        ),
-                      )
-                    ],
-                  ),
-                  SizedBox(
-                    height: height * 0.05,
-                  ),
-                  TextFormField(
-                    controller: _familyYekerestenaNameControl,
-                    decoration: const InputDecoration(
-                        border: OutlineInputBorder(), label: Text('የክርስትና ስም')),
-                  ),
-                  SizedBox(
-                    height: height * 0.02,
-                  ),
-                  TextFormField(
-                    controller: _familyFullNameControl,
-                    decoration: const InputDecoration(
-                        border: OutlineInputBorder(), label: Text('ሙሉ ስም')),
-                  ),
-                  SizedBox(
-                    height: height * 0.02,
-                  ),
-                  InputDecorator(
-                    decoration: const InputDecoration(
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(4.0)),
-                      ),
+                        )
+                      ],
                     ),
-                    child: DropdownButtonHideUnderline(
-                      child: DropdownButton<String>(
-                        value: sexValue,
+                    SizedBox(
+                      height: height * 0.015,
+                    ),
+                    !hasWelageImage && isWelageFormSubmitted
+                        ? const Text(
+                            '**ፎቶ ያስፈልጋል**',
+                            style: TextStyle(color: Colors.redAccent),
+                          )
+                        : const SizedBox(),
+                    SizedBox(
+                      height: height * 0.05,
+                    ),
+                    TextFormField(
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'ይህ ቦታ መሞላት አለበት';
+                        }
+                        return null;
+                      },
+                      controller: _familyYekerestenaNameControl,
+                      decoration: const InputDecoration(
+                          border: OutlineInputBorder(),
+                          label: Text('የክርስትና ስም')),
+                    ),
+                    SizedBox(
+                      height: height * 0.02,
+                    ),
+                    TextFormField(
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'ይህ ቦታ መሞላት አለበት';
+                        }
+                        return null;
+                      },
+                      controller: _familyFullNameControl,
+                      decoration: const InputDecoration(
+                          border: OutlineInputBorder(), label: Text('ሙሉ ስም')),
+                    ),
+                    SizedBox(
+                      height: height * 0.02,
+                    ),
+                    DropdownButtonHideUnderline(
+                      child: DropdownButtonFormField(
+                        decoration: const InputDecoration(
+                          border: OutlineInputBorder(),
+                        ),
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'ይህ ቦታ መሞላት አለበት';
+                          }
+                          return null;
+                        },
                         isDense: true,
                         hint: const Text('ከአባሉ ጋር ያለው ግንኙነት'),
                         isExpanded: true,
@@ -700,34 +901,42 @@ class _RegistrationScreenState extends State<RegistrationScreen>
                         onChanged: (newValue) {
                           _relationShipControl.text =
                               newValue ?? _relationShipControl.text;
-                        ;
+
                           setState(() {
-                            sexValue = newValue;
+                            relationshipValue = newValue;
                           });
                         },
                       ),
                     ),
-                  ),
-                  SizedBox(
-                    height: height * 0.02,
-                  ),
-                  TextFormField(
-                    controller: _familyAgeControl,
-                    keyboardType: TextInputType.number,
-                    decoration: const InputDecoration(
-                        border: OutlineInputBorder(), label: Text('ዕድሜ')),
-                  ),
-                  SizedBox(
-                    height: height * 0.02,
-                  ),
-                  InputDecorator(
-                    decoration: const InputDecoration(
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(4.0)),
-                      ),
+                    SizedBox(
+                      height: height * 0.02,
                     ),
-                    child: DropdownButtonHideUnderline(
-                      child: DropdownButton<String>(
+                    TextFormField(
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'ይህ ቦታ መሞላት አለበት';
+                        }
+                        return null;
+                      },
+                      controller: _familyAgeControl,
+                      keyboardType: TextInputType.number,
+                      decoration: const InputDecoration(
+                          border: OutlineInputBorder(), label: Text('ዕድሜ')),
+                    ),
+                    SizedBox(
+                      height: height * 0.02,
+                    ),
+                    DropdownButtonHideUnderline(
+                      child: DropdownButtonFormField(
+                        decoration: const InputDecoration(
+                          border: OutlineInputBorder(),
+                        ),
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'ይህ ቦታ መሞላት አለበት';
+                          }
+                          return null;
+                        },
                         value: sexValue,
                         isDense: true,
                         hint: const Text('ጾታ'),
@@ -745,51 +954,67 @@ class _RegistrationScreenState extends State<RegistrationScreen>
                         },
                       ),
                     ),
-                  ),
-                  SizedBox(
-                    height: height * 0.02,
-                  ),
-                  IntlPhoneField(
-                    controller: _familyPhoneNumberControl,
-                    autovalidateMode: AutovalidateMode.onUserInteraction,
-                    decoration: const InputDecoration(
-                      labelText: 'ስልክ ቁጥር',
-                      border: OutlineInputBorder(
-                        borderSide: BorderSide(),
-                      ),
+                    SizedBox(
+                      height: height * 0.02,
                     ),
-                    initialCountryCode: 'ET',
-                    onChanged: (phone) {
-                      phoneNumber = phone.completeNumber;
-                    },
-                  ),
-                  SizedBox(
-                    height: height * 0.02,
-                  ),
-                  TextFormField(
-                    controller: _familyBirthPlaceControl,
-                    decoration: const InputDecoration(
-                        border: OutlineInputBorder(), label: Text('የትውልድ ስፍራ')),
-                  ),
-                  SizedBox(
-                    height: height * 0.02,
-                  ),
-                  TextFormField(
-                    controller: _familyBirthDateControl,
-                    decoration: const InputDecoration(
-                        border: OutlineInputBorder(), label: Text('የትውልድ ዘመን')),
-                  ),
-                  SizedBox(
-                    height: height * 0.02,
-                  ),
-                  InputDecorator(
-                    decoration: const InputDecoration(
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(4.0)),
+                    IntlPhoneField(
+                      controller: _familyPhoneNumberControl,
+                      autovalidateMode: AutovalidateMode.onUserInteraction,
+                      decoration: const InputDecoration(
+                        labelText: 'ስልክ ቁጥር',
+                        border: OutlineInputBorder(
+                          borderSide: BorderSide(),
+                        ),
                       ),
+                      initialCountryCode: 'ET',
+                      onChanged: (phone) {
+                        phoneNumber = phone.completeNumber;
+                      },
                     ),
-                    child: DropdownButtonHideUnderline(
-                      child: DropdownButton<String>(
+                    SizedBox(
+                      height: height * 0.02,
+                    ),
+                    TextFormField(
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'ይህ ቦታ መሞላት አለበት';
+                        }
+                        return null;
+                      },
+                      controller: _familyBirthPlaceControl,
+                      decoration: const InputDecoration(
+                          border: OutlineInputBorder(),
+                          label: Text('የትውልድ ስፍራ')),
+                    ),
+                    SizedBox(
+                      height: height * 0.02,
+                    ),
+                    TextFormField(
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'ይህ ቦታ መሞላት አለበት';
+                        }
+                        return null;
+                      },
+                      controller: _familyBirthDateControl,
+                      decoration: const InputDecoration(
+                          border: OutlineInputBorder(),
+                          label: Text('የትውልድ ዘመን')),
+                    ),
+                    SizedBox(
+                      height: height * 0.02,
+                    ),
+                    DropdownButtonHideUnderline(
+                      child: DropdownButtonFormField(
+                        decoration: const InputDecoration(
+                          border: OutlineInputBorder(),
+                        ),
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'ይህ ቦታ መሞላት አለበት';
+                          }
+                          return null;
+                        },
                         value: kefleKetemaValue,
                         isDense: true,
                         hint: const Text('ክፈለ ከተማ'),
@@ -804,40 +1029,58 @@ class _RegistrationScreenState extends State<RegistrationScreen>
                           _familySubCityControl.text =
                               newValue ?? _familySubCityControl.text;
                           setState(() {
-                            sexValue = newValue;
+                            kefleKetemaValue = newValue;
                           });
                         },
                       ),
                     ),
-                  ),
-                  SizedBox(
-                    height: height * 0.02,
-                  ),
-                  TextFormField(
-                    controller: _familyWoredaControl,
-                    keyboardType: TextInputType.number,
-                    decoration: const InputDecoration(
-                        border: OutlineInputBorder(), label: Text('ወረዳ')),
-                  ),
-                  SizedBox(
-                    height: height * 0.02,
-                  ),
-                  TextFormField(
-                    controller: _familyKebeleControl,
-                    keyboardType: TextInputType.number,
-                    decoration: const InputDecoration(
-                        border: OutlineInputBorder(), label: Text('ቀበሌ')),
-                  ),
-                  SizedBox(
-                    height: height * 0.02,
-                  ),
-                  TextFormField(
-                    controller: _familyHouseNumberControl,
-                    keyboardType: TextInputType.number,
-                    decoration: const InputDecoration(
-                        border: OutlineInputBorder(), label: Text('የቤት ቁጥር')),
-                  ),
-                ],
+                    SizedBox(
+                      height: height * 0.02,
+                    ),
+                    TextFormField(
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'ይህ ቦታ መሞላት አለበት';
+                        }
+                        return null;
+                      },
+                      controller: _familyWoredaControl,
+                      keyboardType: TextInputType.number,
+                      decoration: const InputDecoration(
+                          border: OutlineInputBorder(), label: Text('ወረዳ')),
+                    ),
+                    SizedBox(
+                      height: height * 0.02,
+                    ),
+                    TextFormField(
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'ይህ ቦታ መሞላት አለበት';
+                        }
+                        return null;
+                      },
+                      controller: _familyKebeleControl,
+                      keyboardType: TextInputType.number,
+                      decoration: const InputDecoration(
+                          border: OutlineInputBorder(), label: Text('ቀበሌ')),
+                    ),
+                    SizedBox(
+                      height: height * 0.02,
+                    ),
+                    TextFormField(
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'ይህ ቦታ መሞላት አለበት';
+                        }
+                        return null;
+                      },
+                      controller: _familyHouseNumberControl,
+                      keyboardType: TextInputType.number,
+                      decoration: const InputDecoration(
+                          border: OutlineInputBorder(), label: Text('የቤት ቁጥር')),
+                    ),
+                  ],
+                ),
               ),
             )),
         Step(
@@ -855,6 +1098,12 @@ class _RegistrationScreenState extends State<RegistrationScreen>
               child: Column(
                 children: <Widget>[
                   TextFormField(
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'ይህ ቦታ መሞላት አለበት';
+                      }
+                      return null;
+                    },
                     controller: _commentControl,
                     decoration: const InputDecoration(label: Text('አስተያየት')),
                   )
@@ -862,18 +1111,37 @@ class _RegistrationScreenState extends State<RegistrationScreen>
               ),
             ))
       ];
-  Future pickImage(ImageSource source) async {
+  Future pickImage(ImageSource source, bool isForAbal) async {
     try {
       final image = await ImagePicker().pickImage(source: source);
+
       if (image == null) return;
+
       final imageTemp = File(image.path);
 
-      print('********************8file');
-      print(image);
-    await  _fileUploaderCubit.uploadFile(imageTemp);
-      setState(() => {this.image = imageTemp, hasImage = true});
+      setState(() => {
+            if (isForAbal)
+              {
+                abalImage = imageTemp,
+                hasAbalImage = true,
+              }
+            else
+              {welageImage = imageTemp, hasWelageImage = true}
+          });
+
+      if (!mounted) return;
+
+      Navigator.pop(context);
     } on PlatformException catch (e) {
       print('Failed to pick image: $e');
     }
   }
+
+  Future submit() async {
+    print('===============called');
+    await fileUploader.uploadFile('ህጻናት/አባል', abalImage);
+    await fileUploader.uploadFile('ህጻናት/ወላጅ', abalImage);
+  }
+
+
 }

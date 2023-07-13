@@ -3,11 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hisnate_kifele/Business%20Logic/Bloc/cubit/authentication/authentication_cubit.dart';
 import 'package:hisnate_kifele/Data/Data%20Providers/light_theme.dart';
+import 'package:hisnate_kifele/Presentation/Routes/routes.dart';
+import 'package:hisnate_kifele/Presentation/Screens/Workspace/UI/workspace.dart';
 import 'package:hisnate_kifele/Data/Repositories/user.dart';
 import 'package:hisnate_kifele/Data/Services/auth_service.dart';
 
 import 'Presentation/Screens/Home/UI/Dashboard.dart';
-import 'Presentation/Screens/Home/UI/WorkSpace.dart';
 import 'Presentation/Screens/Login/UI/login.dart';
 import 'Presentation/Screens/Registration/UI/registeration.dart';
 
@@ -23,6 +24,12 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+    return MaterialApp.router(
+      title: 'Flutter Demo',
+      theme: lightTheme,
+      routerConfig: goRouter,
+      debugShowCheckedModeBanner: false,
+    );
     return RepositoryProvider(
         create: (context) => UserRepository(authService: FirbaseAuthService()),
         child: MultiBlocProvider(

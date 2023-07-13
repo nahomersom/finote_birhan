@@ -11,20 +11,30 @@ extension AbalRegistrationStatusx on AbalRegistrationStatus {
 
 
  class AbalRegistrationState extends Equatable {
+
   final AbalRegistrationStatus abalRegistrationStatus;
   final String errorMessage;
-  const AbalRegistrationState({
+  final List<dynamic> kifiles;
+  final List<dynamic> nestedKifiles;
+
+  const AbalRegistrationState( {
     this.abalRegistrationStatus = AbalRegistrationStatus.initial,
     required this.errorMessage,
-  });
+    List<dynamic>? kifiles,
+    List<dynamic>? nestedKifiles
+  }):kifiles = kifiles ?? const [],nestedKifiles = nestedKifiles ?? const[];
   AbalRegistrationState copyWith(
       {
+        List<dynamic>? kifiles,
+        List<dynamic>? nestedKifiles,
         AbalRegistrationStatus? updatedAbalRegistrationStatus,
         required String errorMessage}) {
     return AbalRegistrationState(
-        abalRegistrationStatus: updatedAbalRegistrationStatus ?? abalRegistrationStatus, errorMessage: errorMessage);
+         kifiles: kifiles ?? this.kifiles,
+         nestedKifiles:nestedKifiles ?? this.nestedKifiles,
+         abalRegistrationStatus: updatedAbalRegistrationStatus ?? abalRegistrationStatus, errorMessage: errorMessage);
   }
   @override
   // TODO: implement props
-  List<Object?> get props => throw UnimplementedError();
+  List<Object?> get props => [errorMessage,abalRegistrationStatus,kifiles];
 }

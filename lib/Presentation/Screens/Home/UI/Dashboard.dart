@@ -2,7 +2,12 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
+import 'package:hisnate_kifele/Business%20Logic/Bloc/cubit/abal_registration/abal_registration_cubit.dart';
 import 'package:hisnate_kifele/Data/Data%20Providers/colors.dart';
+import 'package:hisnate_kifele/Presentation/Routes/routes.dart';
+import 'package:hisnate_kifele/Presentation/Screens/Registration/UI/kifile_selector.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
 
@@ -58,13 +63,19 @@ class DashboardScreen extends StatelessWidget {
                  child: Row(
                    children: [
                      Expanded(
-                         child: DashboardCard(sizeH: sizeH, text: 'አባል ምዝገባ', icon: Icons.account_balance,)),
+                         child: InkWell(
+                            onTap: () {
+                              BlocProvider.of<AbalCubit>(context).getKifiles();
+                              context.go('/dashboard/kifile');
+                              },
+                             // onTap:()=>{ Navigator.pushNamed(context, RouteHelper.kifileSelector)},
+                             child: DashboardCard(sizeH: sizeH, text: 'አባል ምዝገባ', icon: Icons.account_balance,))),
                      SizedBox(width: sizeW * 0.02,),
                      Expanded(
-                         child: DashboardCard(sizeH: sizeH, text: 'አባል ምዝገባ', icon: Icons.account_balance,)),
+                         child: DashboardCard(sizeH: sizeH, text: 'ክፍል ዝውውር', icon: Icons.account_balance,)),
                      SizedBox(width: sizeW * 0.02,),
                      Expanded(
-                         child: DashboardCard(sizeH: sizeH, text: 'አባል ምዝገባ', icon: Icons.account_balance,)),
+                         child: DashboardCard(sizeH: sizeH, text: 'ተጠሪ መመዝገብ', icon: Icons.account_balance,)),
                    ],
                  ),
                ),
@@ -72,13 +83,13 @@ class DashboardScreen extends StatelessWidget {
                Expanded(child:   Row(
                  children: [
                    Expanded(
-                       child: DashboardCard(sizeH: sizeH, text: 'አባል ምዝገባ', icon: Icons.account_balance,)),
+                       child: DashboardCard(sizeH: sizeH, text: 'የአባላት ዝርዝር', icon: Icons.account_balance,)),
                    SizedBox(width: sizeW * 0.02,),
                    Expanded(
-                       child: DashboardCard(sizeH: sizeH, text: 'አባል ምዝገባ', icon: Icons.account_balance,)),
+                       child: DashboardCard(sizeH: sizeH, text: 'ንብረት ምዝገባ', icon: Icons.account_balance,)),
                    SizedBox(width: sizeW * 0.02,),
                    Expanded(
-                       child: DashboardCard(sizeH: sizeH, text: 'አባል ምዝገባ', icon: Icons.account_balance,)),
+                       child: DashboardCard(sizeH: sizeH, text: 'ዩኒፎርም መስጠት', icon: Icons.account_balance,)),
                  ],
                ),
                ),
