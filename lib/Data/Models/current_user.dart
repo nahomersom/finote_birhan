@@ -1,10 +1,10 @@
 class CurrentUser {
-  String email;
+  String phone;
   String name;
   String role;
   String token;
   CurrentUser(
-      {required this.email,
+      {required this.phone,
       required this.name,
       required this.role,
       required this.token});

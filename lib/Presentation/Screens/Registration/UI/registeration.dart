@@ -230,9 +230,9 @@ class _RegistrationScreenState extends State<RegistrationScreen>
                 },
               );
             }
-            return const Column(
+            return  Column(
                 mainAxisAlignment: MainAxisAlignment.center,
-                children: [
+                children: const [
                   SpinKitFadingCircle(
                     color: ColorResources.secondaryColor,
                   ),

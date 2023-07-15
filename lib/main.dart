@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hisnate_kifele/Business%20Logic/Bloc/cubit/authentication/authentication_cubit.dart';
 import 'package:hisnate_kifele/Data/Data%20Providers/light_theme.dart';
+import 'package:hisnate_kifele/Data/Services/firebase_service.dart';
 import 'package:hisnate_kifele/Presentation/Routes/routes.dart';
 import 'package:hisnate_kifele/Presentation/Screens/Workspace/UI/workspace.dart';
 import 'package:hisnate_kifele/Data/Repositories/user.dart';
@@ -24,28 +25,32 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp.router(
-      title: 'Flutter Demo',
-      theme: lightTheme,
-      routerConfig: goRouter,
-      debugShowCheckedModeBanner: false,
-    );
     return RepositoryProvider(
-        create: (context) => UserRepository(authService: FirbaseAuthService()),
+        create: (context) => UserRepository(
+              authService: FirbaseAuthService(),
+              firestoreService: FirestoreService(),
+            ),
         child: MultiBlocProvider(
             providers: [
               BlocProvider<AuthenticationCubit>(
                   create: (BuildContext context) => AuthenticationCubit(
-                      userRepository:
-                          UserRepository(authService: FirbaseAuthService()))),
+                      userRepository: UserRepository(
+                          authService: FirbaseAuthService(),
+                          firestoreService: FirestoreService()))),
             ],
             child: BlocBuilder<AuthenticationCubit, AuthenticationState>(
                 builder: (contex, state) {
-              return MaterialApp(
+              return MaterialApp.router(
                 title: 'Flutter Demo',
                 theme: lightTheme,
-                home: const Login(),
+                routerConfig: goRouter,
+                debugShowCheckedModeBanner: false,
               );
+              // return MaterialApp(
+              //   title: 'Flutter Demo',
+              //   theme: lightTheme,
+              //   home: const Login(),
+              // );
             })));
   }
 }
