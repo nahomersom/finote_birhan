@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -15,109 +14,115 @@ class KifileSelector extends StatefulWidget {
 }
 
 class _KifileSelectorState extends State<KifileSelector> {
-  
   @override
   Widget build(BuildContext context) {
-
     var sizeH = MediaQuery.of(context).size.height;
     var sizeW = MediaQuery.of(context).size.width;
 
-    return  SafeArea(
-      child: BlocBuilder<AbalCubit,AbalRegistrationState>(
-
-        builder: (BuildContext context, state) {
-
-          if(state.abalRegistrationStatus.isSuccess){
-
-
-            return  Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 30,vertical: 40),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Column(
-                    children: [
-                      Text('ለመመዝገብ የፈለጉት አባል',style: Theme.of(context)
-                          .textTheme
-                          .displayLarge
-                          ?.copyWith(color: ColorResources.textColor,fontWeight: FontWeight.bold),),
-                      SizedBox(height: 10,),
-                      Text('ከታች ከተዘረዘሩት ውስጥ ሊመዘገብ የመጣውን የመጣውን የአባል ክፍል በመምረጥ ወደቀጣዪ ይለፉ',style: Theme.of(context)
-                          .textTheme
-                          .titleSmall
-                          ?.copyWith(color: ColorResources.textColor,fontWeight: FontWeight.w200),),
-                      SizedBox(height: sizeH * 0.03,),
-                      Column(
-                          children: List.generate(state.kifiles.length, (index) =>
-                              ListTile(
-                                title:  Text(state.kifiles.elementAt(index)['name'],style: Theme.of(context).textTheme.displayLarge?.copyWith(
-                                    fontWeight: FontWeight.w500
-                                ),
-
-                                ),
-                                leading: Radio(
-                                  activeColor: ColorResources.secondaryColor,
-                                  value: state.kifiles.elementAt(index),
-                                  groupValue: state.kifiles.elementAt(0),
-                                  onChanged: (value) {
-
-
-                                    setState(() {
-                                    
-                                    });
-                                  },
-                                ),
-                              ),
-
-
-                          )
+    return SafeArea(
+      child: Scaffold(
+        body: BlocBuilder<AbalCubit, AbalRegistrationState>(
+          builder: (BuildContext context, state) {
+            if (state.abalRegistrationStatus.isSuccess) {
+              return Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 30, vertical: 40),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Column(
+                      children: [
+                        Text(
+                          'ለመመዝገብ የፈለጉት አባል',
+                          style: Theme.of(context)
+                              .textTheme
+                              .displayLarge
+                              ?.copyWith(
+                                  color: ColorResources.textColor,
+                                  fontWeight: FontWeight.bold),
+                        ),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        Text(
+                          'ከታች ከተዘረዘሩት ውስጥ ሊመዘገብ የመጣውን የመጣውን የአባል ክፍል በመምረጥ ወደቀጣዪ ይለፉ',
+                          style: Theme.of(context)
+                              .textTheme
+                              .titleSmall
+                              ?.copyWith(
+                                  color: ColorResources.lightSecondaryColor,
+                                  fontWeight: FontWeight.bold),
+                        ),
+                        SizedBox(
+                          height: sizeH * 0.03,
+                        ),
+                        Column(
+                            children: List.generate(
+                          state.kifiles.length,
+                          (index) => ListTile(
+                            title: Text(
+                              state.kifiles.elementAt(index)['name'],
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .displayLarge
+                                  ?.copyWith(fontWeight: FontWeight.w500),
+                            ),
+                            leading: Radio(
+                              activeColor: ColorResources.secondaryColor,
+                              value: state.kifiles.elementAt(index),
+                              groupValue: state.kifiles.elementAt(0),
+                              onChanged: (value) {
+                                setState(() {});
+                              },
+                            ),
+                          ),
+                        )),
+                      ],
+                    ),
+                    SizedBox(
+                      width: double.infinity,
+                      child: TextButton(
+                        style: TextButton.styleFrom(
+                          padding: const EdgeInsets.all(0),
+                          shape: const RoundedRectangleBorder(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(10))),
+                          backgroundColor: ColorResources.secondaryColor,
+                        ),
+                        onPressed: () {
+                          BlocProvider.of<AbalCubit>(context).getNestedKifiles(
+                              state.kifiles.elementAt(0)['id'],
+                              state.kifiles
+                                  .elementAt(0)['childCollectionName']);
+                          context.go('/dashboard/kifile/registration');
+                        },
+                        child: Text(
+                          'ወደ ቀጣይ',
+                          style: Theme.of(context)
+                              .textTheme
+                              .titleSmall
+                              ?.copyWith(color: ColorResources.primaryColor),
+                        ),
                       ),
-                    ],
-                  ) ,
-
-                SizedBox(
-                  width: double.infinity,
-                  child: TextButton(
-                    style: TextButton.styleFrom(
-                      padding: const EdgeInsets.all(0),
-                      shape: const RoundedRectangleBorder(
-                          borderRadius:
-                          BorderRadius.all(Radius.circular(10))),
-                      backgroundColor:ColorResources.secondaryColor.withOpacity(0.8),
-                    ),
-
-                    onPressed: () {
-
-                      BlocProvider.of<AbalCubit>(context).getNestedKifiles(state.kifiles.elementAt(0)['id'],
-                          state.kifiles.elementAt(0)['childCollectionName']
-                      );
-                      context.go('/dashboard/kifile/registration');
-                    },
-                    child: Text(
-                       'ወደ ቀጣይ',
-                      style: Theme.of(context)
-                          .textTheme
-                          .titleSmall
-                          ?.copyWith(color: ColorResources.primaryColor),
-                    ),
+                    )
+                  ],
+                ),
+              );
+            }
+            return Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  SpinKitFadingCircle(
+                    color: ColorResources.secondaryColor,
                   ),
-                )
-                ],
-              ),
-            );
-          }
-          return Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              SpinKitFadingCircle(
-                color: ColorResources.secondaryColor,
-              ),
-              SizedBox(height: 10,),
-              Text('ዝግጅት ላይ')
-            ]
-          );
-        },
+                  SizedBox(
+                    height: 10,
+                  ),
+                  Text('ዝግጅት ላይ')
+                ]);
+          },
+        ),
       ),
     );
   }

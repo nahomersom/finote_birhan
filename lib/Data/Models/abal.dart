@@ -1,15 +1,24 @@
 class AbalRegistrationModel {
   FamilyInfo familyInfo;
-  RegistrarInfo registrarInfo;
-  AbalModel abalModel;
+  String registrarId;
+  AbalModel abal;
   String? comment;
 
   AbalRegistrationModel({
     required this.familyInfo,
-    required this.registrarInfo,
-    required this.abalModel,
+    required this.registrarId,
+    required this.abal,
     this.comment,
   });
+
+  Map<String, dynamic> toJson() {
+    return {
+      'familyInfo': familyInfo.toJson(),
+      'registrarId': registrarId,
+      'abal': abal.toJson(),
+      'comment': comment
+    };
+  }
 }
 
 class AbalModel {
@@ -27,12 +36,14 @@ class AbalModel {
   String emergencyContactFullName;
   String emergencyContactPhoneNumber;
   String kifile;
+  String imagePath;
 
 //abal family information
 
 //general
 
   AbalModel({
+    required this.imagePath,
     required this.yekerestenaName,
     required this.fullName,
     required this.age,
@@ -48,15 +59,25 @@ class AbalModel {
     required this.emergencyContactPhoneNumber,
     required this.kifile,
   });
-}
-
-class RegistrarInfo {
-  String fullName;
-  String phoneNumber;
-  RegistrarInfo({
-    required this.fullName,
-    required this.phoneNumber,
-  });
+  Map<String, dynamic> toJson() {
+    return {
+      'yekerestenaName': yekerestenaName,
+      'fullName': fullName,
+      'age': age,
+      'gender': gender,
+      'phoneNumber': phoneNumber,
+      'birthPlace': birthPlace,
+      'birthDate': birthDate,
+      'subCity': subCity,
+      'woreda': woreda,
+      'kebele': kebele,
+      'houseNumber': houseNumber,
+      'emergencyContactFullName': emergencyContactFullName,
+      'emergencyContactPhoneNumber': emergencyContactPhoneNumber,
+      'kifile': kifile,
+      'imagePath': imagePath,
+    };
+  }
 }
 
 class FamilyInfo {
@@ -87,4 +108,21 @@ class FamilyInfo {
       required this.familyKebele,
       required this.familyHouseNumber,
       required this.imagePath});
+  Map<String, dynamic> toJson() {
+    return {
+      'familyYekerestenaName': familyYekerestenaName,
+      'familyFullName': familyFullName,
+      "relationShip": relationShip,
+      'familyAge': familyAge,
+      'familyGender': familyGender,
+      'familyPhoneNumber': familyPhoneNumber,
+      'familyBirthPlace': familyBirthPlace,
+      'familyBirthDate': familyBirthDate,
+      'familySubCity': familySubCity,
+      'familyWoreda': familyWoreda,
+      'familyKebele': familyKebele,
+      'familyHouseNumber': familyHouseNumber,
+      'imagePath': imagePath
+    };
+  }
 }

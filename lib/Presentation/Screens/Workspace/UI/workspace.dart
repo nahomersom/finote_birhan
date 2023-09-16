@@ -5,11 +5,13 @@ import 'package:go_router/go_router.dart';
 import 'package:flutter_web_plugins/url_strategy.dart';
 import 'package:hisnate_kifele/Data/Repositories/abal.dart';
 import 'package:hisnate_kifele/Data/Services/firebase_service.dart';
+import 'package:hisnate_kifele/Presentation/Screens/Abals/UI/Abal-List.dart';
 import 'package:hisnate_kifele/Presentation/Screens/Home/UI/Dashboard.dart';
 import 'package:hisnate_kifele/Presentation/Screens/Registration/UI/kifile_selector.dart';
 import 'package:hisnate_kifele/Presentation/Screens/Registration/UI/registeration.dart';
 
 import '../../../../Business Logic/Bloc/cubit/abal_registration/abal_registration_cubit.dart';
+import '../../../../Business Logic/Bloc/cubit/abals/abals_cubit.dart';
 import '../../../../Data/Data Providers/colors.dart';
 
 // private navigators
@@ -43,8 +45,8 @@ final goRouter = GoRouter(
               ),
               routes: [
                 GoRoute(
-                  path: 'details',
-                  builder: (context, state) => const DetailsScreen(label: 'A'),
+                  path: 'abals',
+                  builder: (context, state) => AbalListScreen(),
                 ),
                 GoRoute(
                   path: 'kifile',
@@ -83,10 +85,6 @@ final goRouter = GoRouter(
   ],
 );
 
-
-
-
-
 // Stateful navigation based on:
 // https://github.com/flutter/packages/blob/main/packages/go_router/example/lib/stateful_shell_route.dart
 class ScaffoldWithNestedNavigation extends StatelessWidget {
@@ -94,7 +92,7 @@ class ScaffoldWithNestedNavigation extends StatelessWidget {
     Key? key,
     required this.navigationShell,
   }) : super(
-      key: key ?? const ValueKey<String>('ScaffoldWithNestedNavigation'));
+            key: key ?? const ValueKey<String>('ScaffoldWithNestedNavigation'));
   final StatefulNavigationShell navigationShell;
 
   void _goBranch(int index) {
@@ -111,13 +109,16 @@ class ScaffoldWithNestedNavigation extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return RepositoryProvider(
-
-      create: (BuildContext context)=>AbalRepository(abalService: FirestoreService()),
+      create: (BuildContext context) =>
+          AbalRepository(abalService: FirestoreService()),
       child: MultiBlocProvider(
         providers: [
           BlocProvider<AbalCubit>(
               create: (BuildContext context) =>
                   AbalCubit(abalRepository: context.read<AbalRepository>())),
+          BlocProvider<AbalsListCubit>(
+              create: (BuildContext context) => AbalsListCubit(
+                  abalRepository: context.read<AbalRepository>())),
         ],
         child: LayoutBuilder(builder: (context, constraints) {
           if (constraints.maxWidth < 450) {
@@ -161,9 +162,6 @@ class ScaffoldWithNavigationBar extends StatelessWidget {
         // unselectedItemColor: ColorResources.textColor.withOpacity(0.6),
         backgroundColor: ColorResources.primaryColor,
         destinations: const [
-
-      
-
           NavigationDestination(
               icon: Icon(
                 Icons.home_outlined,
@@ -179,7 +177,6 @@ class ScaffoldWithNavigationBar extends StatelessWidget {
                 Icons.messenger_outline_outlined,
                 size: 30,
               ),
-
               label: 'መወያያ'),
           NavigationDestination(
               icon: Icon(
@@ -187,7 +184,6 @@ class ScaffoldWithNavigationBar extends StatelessWidget {
                 size: 30,
               ),
               label: 'ማስተካከያ'),
-
         ],
         onDestinationSelected: onDestinationSelected,
       ),

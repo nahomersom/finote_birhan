@@ -15,10 +15,7 @@ class FirestoreService {
   Future<QuerySnapshot> getDocumentsByCollection({required collectionName}){
 
    return FirebaseFirestore.instance.collection(collectionName).get();
-     // .then((QuerySnapshot querySnapshot) {
-     // querySnapshot.docs.forEach((doc) {
-     // print(doc["first_name"]);
-     // });
+
    }
   Future<QuerySnapshot> getNestedDocumentsByCollection({required parentCollection,required documentName,required childCollectionName}){
 

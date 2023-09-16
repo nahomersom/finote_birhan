@@ -3,13 +3,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:go_router/go_router.dart';
 import 'package:hisnate_kifele/Business%20Logic/Bloc/cubit/file_uploader_cubit.dart';
 import 'package:hisnate_kifele/Data/Data%20Providers/colors.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
+import 'package:lottie/lottie.dart';
 
 import '../../../../Business Logic/Algorithm/file-uploader.dart';
 import '../../../../Business Logic/Bloc/cubit/abal_registration/abal_registration_cubit.dart';
+import '../../../../Data/Models/abal.dart';
 
 class RegistrationScreen extends StatefulWidget {
   const RegistrationScreen({super.key});
@@ -30,7 +33,6 @@ class RegistrationScreen extends StatefulWidget {
 class _RegistrationScreenState extends State<RegistrationScreen>
     with TickerProviderStateMixin {
   int currentStep = 0;
-  final FileUploader fileUploader = FileUploader();
   //abal information
   final _yekerestenaNameControl = TextEditingController();
   final _fullNameControl = TextEditingController();
@@ -90,13 +92,9 @@ class _RegistrationScreenState extends State<RegistrationScreen>
   Widget build(BuildContext context) {
     var sizeH = MediaQuery.of(context).size.height;
     var sizeW = MediaQuery.of(context).size.width;
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
-    // The Flutter framework has been optimized to make rerunning build methods
-    // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets.
+
     return Scaffold(
+      backgroundColor: ColorResources.primaryColor,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
@@ -110,17 +108,26 @@ class _RegistrationScreenState extends State<RegistrationScreen>
       body: SafeArea(
         child: Theme(
           data: ThemeData(
-            iconTheme: Theme.of(context).iconTheme.copyWith(size: 18.0),
-            colorScheme: Theme.of(context).colorScheme.copyWith(
-                  tertiary: Colors.red,
-                  primary: ColorResources.secondaryColor,
-                  onSurface: ColorResources.secondaryColor.withOpacity(0.02),
-                  background: Colors.red,
-                  secondary: ColorResources.secondaryColor,
+              iconTheme: Theme.of(context).iconTheme.copyWith(size: 18.0),
+              colorScheme: Theme.of(context).colorScheme.copyWith(
+                    tertiary: Colors.red,
+                    primary: ColorResources.secondaryColor,
+                    onSurface: ColorResources.secondaryColor.withOpacity(0.02),
+                    background: Colors.red,
+                    secondary: ColorResources.secondaryColor,
+                  ),
+              canvasColor: ColorResources.primaryColor),
+          child: BlocConsumer<AbalCubit, AbalRegistrationState>(
+              listener: (context, state) {
+            if (state.abalRegistrationStatus.hasError) {
+              Dialog(
+                backgroundColor: ColorResources.secondaryColor,
+                child: Text(
+                  state.errorMessage,
                 ),
-          ),
-          child: BlocBuilder<AbalCubit, AbalRegistrationState>(
-              builder: (BuildContext context, state) {
+              );
+            }
+          }, builder: (BuildContext context, state) {
             if (state.abalRegistrationStatus.isSuccess) {
               return Stepper(
                 elevation: 0,
@@ -191,7 +198,9 @@ class _RegistrationScreenState extends State<RegistrationScreen>
                                                 .validate() &&
                                             hasWelageImage)
                                     ? details.onStepContinue!()
-                                    : submit(),
+                                    : isLastStep
+                                        ? submit()
+                                        : null,
                             setState(() {
                               currentStep == 0
                                   ? isAbalFormSubmitted = true
@@ -230,17 +239,63 @@ class _RegistrationScreenState extends State<RegistrationScreen>
                 },
               );
             }
-            return const Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  SpinKitFadingCircle(
-                    color: ColorResources.secondaryColor,
-                  ),
-                  SizedBox(
-                    height: 10,
-                  ),
-                  Text('ዝግጅት ላይ')
-                ]);
+
+            if (state.abalRegistrationStatus.isRegistering) {
+              return Spinner(text: 'አባሉን በመመዝገብ ላይ');
+            }
+            if (state.abalRegistrationStatus.isRegistered) {
+              return Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    // FaIcon(
+                    //   FontAwesomeIcons.solidCircleCheck,
+                    //   size: 100,
+                    //   color: ColorResources.accentColor,
+                    // )
+                    Lottie.asset('assets/animations/success.json', height: 350),
+                    Text(
+                      'ተሳክትዋል',
+                      style: TextStyle(
+                          fontWeight: FontWeight.w600,
+                          color: ColorResources.secondaryColor,
+                          fontSize: 30),
+                    ),
+                    Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 15),
+                        child: Text('አባሉን ወደ ቅዋቱ መመዝገብ ተሳክትዋል.')),
+                    SizedBox(
+                      height: 50,
+                    ),
+                    SizedBox(
+                      width: double.infinity,
+                      child: Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 15),
+                          child: TextButton(
+                            style: TextButton.styleFrom(
+                                padding: const EdgeInsets.all(0),
+                                shape: const RoundedRectangleBorder(
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(10))),
+                                backgroundColor: ColorResources.secondaryColor),
+                            onPressed: () => context.go('/dashboard'),
+                            child: Text(
+                              'መመለስ',
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .titleSmall
+                                  ?.copyWith(
+                                      color: ColorResources.primaryColor),
+                            ),
+                          )),
+                    ),
+                  ],
+                ),
+              );
+            }
+
+            return Spinner(text: 'ዝግጅት ላይ');
           }),
         ),
       ),
@@ -275,13 +330,13 @@ class _RegistrationScreenState extends State<RegistrationScreen>
                                       abalImage!,
                                     )
                                   : Image.network('').image,
-                              backgroundColor: Color(0xffE6E6E6),
+                              backgroundColor: ColorResources.darkPrimaryColor,
                               child: hasAbalImage
                                   ? SizedBox()
                                   : const Icon(
                                       Icons.person,
                                       size: 60,
-                                      color: Color(0xffCCCCCC),
+                                      color: ColorResources.secondaryColor,
                                     )),
                         ),
                         Positioned(
@@ -706,13 +761,13 @@ class _RegistrationScreenState extends State<RegistrationScreen>
                                       welageImage!,
                                     )
                                   : Image.network('').image,
-                              backgroundColor: Color(0xffE6E6E6),
+                              backgroundColor: ColorResources.darkPrimaryColor,
                               child: hasWelageImage
                                   ? SizedBox()
                                   : const Icon(
                                       Icons.person,
                                       size: 60,
-                                      color: Color(0xffCCCCCC),
+                                      color: ColorResources.secondaryColor,
                                     )),
                         ),
                         Positioned(
@@ -1138,10 +1193,62 @@ class _RegistrationScreenState extends State<RegistrationScreen>
   }
 
   Future submit() async {
+    FamilyInfo familyInfo = FamilyInfo(
+        familyYekerestenaName: _familyYekerestenaNameControl.text,
+        familyFullName: _familyFullNameControl.text,
+        relationShip: _relationShipControl.text,
+        familyAge: _familyAgeControl.text,
+        familyGender: _familyGenderControl.text,
+        familyPhoneNumber: _familyPhoneNumberControl.text,
+        familyBirthPlace: _familyBirthPlaceControl.text,
+        familyBirthDate: _familyBirthDateControl.text,
+        familySubCity: _familySubCityControl.text,
+        familyWoreda: _familyWoredaControl.text,
+        familyKebele: _familyKebeleControl.text,
+        familyHouseNumber: _familyHouseNumberControl.text,
+        imagePath: '');
+    AbalModel abal = AbalModel(
+        yekerestenaName: _yekerestenaNameControl.text,
+        fullName: _fullNameControl.text,
+        age: _ageControl.text,
+        gender: _genderControl.text,
+        phoneNumber: phoneNumber,
+        birthPlace: _birthPlaceControl.text,
+        birthDate: _birthDateControl.text,
+        subCity: _subCityControl.text,
+        woreda: _woredaControl.text,
+        kebele: _kebeleControl.text,
+        houseNumber: _houseNumberControl.text,
+        emergencyContactFullName: _emergencyContactFullNameControl.text,
+        emergencyContactPhoneNumber: _emergencyContactPhoneNumberControl.text,
+        kifile: _kifileControl.text,
+        imagePath: '');
+
+    AbalRegistrationModel newAbal = AbalRegistrationModel(
+        familyInfo: familyInfo, abal: abal, registrarId: '23232332');
+
+    BlocProvider.of<AbalCubit>(context)
+        .registerAbal(newAbal, welageImage, abalImage);
+
     print('===============called');
-    await fileUploader.uploadFile('ህጻናት/አባል', abalImage);
-    await fileUploader.uploadFile('ህጻናት/ወላጅ', abalImage);
+    print(newAbal);
   }
+}
 
+class Spinner extends StatelessWidget {
+  final String text;
+  Spinner({super.key, required this.text});
 
+  @override
+  Widget build(BuildContext context) {
+    return Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+      const SpinKitFadingCircle(
+        color: ColorResources.secondaryColor,
+      ),
+      const SizedBox(
+        height: 10,
+      ),
+      Text(text)
+    ]);
+  }
 }
