@@ -13,6 +13,8 @@ import 'package:hisnate_kifele/Presentation/Screens/Registration/UI/registeratio
 import '../../../../Business Logic/Bloc/cubit/abal_registration/abal_registration_cubit.dart';
 import '../../../../Business Logic/Bloc/cubit/abals/abals_cubit.dart';
 import '../../../../Data/Data Providers/colors.dart';
+import '../../Login/UI/login.dart';
+import '../../Login/UI/verify_otp.dart';
 
 // private navigators
 final _rootNavigatorKey = GlobalKey<NavigatorState>();
@@ -20,7 +22,7 @@ final _shellNavigatorAKey = GlobalKey<NavigatorState>(debugLabel: 'shellA');
 final _shellNavigatorBKey = GlobalKey<NavigatorState>(debugLabel: 'shellB');
 
 final goRouter = GoRouter(
-  initialLocation: '/dashboard',
+  initialLocation: '/Login',
   // * Passing a navigatorKey causes an issue on hot reload:
   // * https://github.com/flutter/flutter/issues/113757#issuecomment-1518421380
   // * However it's still necessary otherwise the navigator pops back to
@@ -28,6 +30,14 @@ final goRouter = GoRouter(
   navigatorKey: _rootNavigatorKey,
   debugLogDiagnostics: true,
   routes: [
+    GoRoute(
+      path: '/login',
+      builder: (context, state) => const Login(),
+    ),
+    GoRoute(
+      path: '/verifyOtp',
+      builder: (context, state) => const VerifyOtpScreen(),
+    ),
     // Stateful navigation based on:
     // https://github.com/flutter/packages/blob/main/packages/go_router/example/lib/stateful_shell_route.dart
     StatefulShellRoute.indexedStack(
