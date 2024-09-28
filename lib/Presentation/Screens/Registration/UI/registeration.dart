@@ -6,6 +6,7 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hisnate_kifele/Business%20Logic/Bloc/cubit/file_uploader_cubit.dart';
 import 'package:hisnate_kifele/Data/Data%20Providers/colors.dart';
+import 'package:hisnate_kifele/Data/Data%20Providers/light_theme.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
 import 'package:lottie/lottie.dart';
@@ -92,31 +93,22 @@ class _RegistrationScreenState extends State<RegistrationScreen>
   Widget build(BuildContext context) {
     var sizeH = MediaQuery.of(context).size.height;
     var sizeW = MediaQuery.of(context).size.width;
+    TextTheme textTheme = Theme.of(context).textTheme;
 
     return Scaffold(
-      backgroundColor: ColorResources.primaryColor,
       appBar: AppBar(
-        backgroundColor: Colors.transparent,
         elevation: 0,
+        backgroundColor: Colors.white,
         centerTitle: true,
         title: Text(
           'የአባል መመዝገቢያ',
           textAlign: TextAlign.center,
-          style: Theme.of(context).textTheme.displayMedium?.copyWith(),
+          style: textTheme.bodyMedium?.copyWith(),
         ),
       ),
       body: SafeArea(
         child: Theme(
-          data: ThemeData(
-              iconTheme: Theme.of(context).iconTheme.copyWith(size: 18.0),
-              colorScheme: Theme.of(context).colorScheme.copyWith(
-                    tertiary: Colors.red,
-                    primary: ColorResources.secondaryColor,
-                    onSurface: ColorResources.secondaryColor.withOpacity(0.02),
-                    background: Colors.red,
-                    secondary: ColorResources.secondaryColor,
-                  ),
-              canvasColor: ColorResources.primaryColor),
+          data: ThemeData(canvasColor: Colors.white),
           child: BlocConsumer<AbalCubit, AbalRegistrationState>(
               listener: (context, state) {
             if (state.abalRegistrationStatus.hasError) {
@@ -133,21 +125,7 @@ class _RegistrationScreenState extends State<RegistrationScreen>
                 elevation: 0,
                 type: StepperType.horizontal,
                 steps: registrationSteps(sizeH, sizeW, state.nestedKifiles),
-                onStepTapped: (step) => {
-                  // if (_abalFormKey.currentState == null)
-                  //   {print("_formKey.currentState is null!")}
-                  // else if (currentStep == 0 &&
-                  //     _abalFormKey.currentState!.validate())
-                  //   {
-                  //     setState(() => currentStep = step),
-                  //   }
-                  // else if (currentStep == 1 &&
-                  //     _welageFormKey.currentState!.validate())
-                  //   {
-                  //     setState(() => currentStep = step),
-                  //   }
-                  setState(() => currentStep = step),
-                },
+                onStepTapped: (step) => {},
                 currentStep: currentStep,
                 onStepContinue: () {
                   final lastStep = currentStep ==
@@ -176,45 +154,40 @@ class _RegistrationScreenState extends State<RegistrationScreen>
                     child: Row(
                       children: [
                         Expanded(
-                            child: TextButton(
-                          style: TextButton.styleFrom(
-                            padding: const EdgeInsets.all(0),
-                            shape: const RoundedRectangleBorder(
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(10))),
-                            backgroundColor:
-                                Theme.of(context).colorScheme.secondary,
-                          ),
-                          onPressed: () => {
-                            //check if the the form is valid
-                            _abalFormKey.currentState == null
-                                ? null
-                                : (currentStep == 0 &&
-                                            _abalFormKey.currentState!
-                                                .validate() &&
-                                            hasAbalImage) ||
-                                        (currentStep == 1 &&
-                                            _welageFormKey.currentState!
-                                                .validate() &&
-                                            hasWelageImage)
-                                    ? details.onStepContinue!()
-                                    : isLastStep
-                                        ? submit()
-                                        : null,
-                            setState(() {
-                              currentStep == 0
-                                  ? isAbalFormSubmitted = true
-                                  : currentStep == 1
-                                      ? isWelageFormSubmitted = true
-                                      : null;
-                            })
-                          },
-                          child: Text(
-                            isLastStep ? 'አጠናቅ' : 'ቀጣይ',
-                            style: Theme.of(context)
-                                .textTheme
-                                .titleSmall
-                                ?.copyWith(color: ColorResources.primaryColor),
+                            child: Theme(
+                          data: lightTheme,
+                          child: TextButton(
+                            onPressed: () => {
+                              //check if the the form is valid
+                              _abalFormKey.currentState == null
+                                  ? null
+                                  : (currentStep == 0 &&
+                                              _abalFormKey.currentState!
+                                                  .validate() &&
+                                              hasAbalImage) ||
+                                          (currentStep == 1 &&
+                                              _welageFormKey.currentState!
+                                                  .validate() &&
+                                              hasWelageImage)
+                                      ? details.onStepContinue!()
+                                      : isLastStep
+                                          ? submit()
+                                          : null,
+                              setState(() {
+                                currentStep == 0
+                                    ? isAbalFormSubmitted = true
+                                    : currentStep == 1
+                                        ? isWelageFormSubmitted = true
+                                        : null;
+                              })
+                            },
+                            child: Text(
+                              isLastStep ? 'አጠናቅ' : 'ቀጣይ',
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .titleSmall
+                                  ?.copyWith(color: Colors.white),
+                            ),
                           ),
                         )),
                         const SizedBox(
@@ -282,11 +255,8 @@ class _RegistrationScreenState extends State<RegistrationScreen>
                             onPressed: () => context.go('/dashboard'),
                             child: Text(
                               'መመለስ',
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .titleSmall
-                                  ?.copyWith(
-                                      color: ColorResources.primaryColor),
+                              style: textTheme.titleSmall?.copyWith(
+                                  color: ColorResources.primaryColor),
                             ),
                           )),
                     ),
@@ -330,11 +300,11 @@ class _RegistrationScreenState extends State<RegistrationScreen>
                                       abalImage!,
                                     )
                                   : Image.network('').image,
-                              backgroundColor: ColorResources.darkPrimaryColor,
+                              backgroundColor: Colors.white,
                               child: hasAbalImage
                                   ? SizedBox()
                                   : const Icon(
-                                      Icons.person,
+                                      Icons.person_outline_outlined,
                                       size: 60,
                                       color: ColorResources.secondaryColor,
                                     )),
@@ -350,7 +320,7 @@ class _RegistrationScreenState extends State<RegistrationScreen>
                                   return Container(
                                     height: 160,
                                     decoration: const BoxDecoration(
-                                        color: ColorResources.primaryColor,
+                                        color: Colors.white,
                                         borderRadius: BorderRadius.only(
                                             topRight: Radius.circular(20),
                                             topLeft: Radius.circular(20))),
@@ -383,7 +353,7 @@ class _RegistrationScreenState extends State<RegistrationScreen>
                                               children: [
                                                 Icon(
                                                   Icons.camera_alt_outlined,
-                                                  size: 25,
+                                                  size: 20,
                                                   color:
                                                       ColorResources.textColor,
                                                 ),
@@ -393,11 +363,10 @@ class _RegistrationScreenState extends State<RegistrationScreen>
                                                 Text('ካሜራ ያንሱ',
                                                     style: Theme.of(context)
                                                         .textTheme
-                                                        .bodyLarge
+                                                        .titleMedium
                                                         ?.copyWith(
-                                                            fontSize: 18,
                                                             fontWeight:
-                                                                FontWeight.w600,
+                                                                FontWeight.w500,
                                                             color:
                                                                 ColorResources
                                                                     .textColor))
@@ -417,7 +386,7 @@ class _RegistrationScreenState extends State<RegistrationScreen>
                                                 Icon(
                                                   Icons
                                                       .photo_size_select_actual_outlined,
-                                                  size: 25,
+                                                  size: 20,
                                                   color:
                                                       ColorResources.textColor,
                                                 ),
@@ -427,11 +396,10 @@ class _RegistrationScreenState extends State<RegistrationScreen>
                                                 Text('ከጋለሪ ይውሰዱ',
                                                     style: Theme.of(context)
                                                         .textTheme
-                                                        .bodyLarge
+                                                        .titleMedium
                                                         ?.copyWith(
-                                                            fontSize: 18,
                                                             fontWeight:
-                                                                FontWeight.w600,
+                                                                FontWeight.w500,
                                                             color:
                                                                 ColorResources
                                                                     .textColor))
@@ -447,10 +415,10 @@ class _RegistrationScreenState extends State<RegistrationScreen>
                               height: 50,
                               width: 50,
                               child: CircleAvatar(
-                                backgroundColor: ColorResources.secondaryColor,
+                                backgroundColor: ColorResources.primaryColor,
                                 child: Icon(
                                   Icons.camera_alt_outlined,
-                                  color: ColorResources.primaryColor,
+                                  color: Colors.white,
                                 ),
                               ),
                             ),
@@ -462,10 +430,11 @@ class _RegistrationScreenState extends State<RegistrationScreen>
                       height: height * 0.015,
                     ),
                     !hasAbalImage && isAbalFormSubmitted
-                        ? const Text(
-                            '**ፎቶ ያስፈልጋል**',
-                            style: TextStyle(color: Colors.redAccent),
-                          )
+                        ? Text('**ፎቶ ያስፈልጋል**',
+                            style: Theme.of(context)
+                                .textTheme
+                                .titleSmall
+                                ?.copyWith(color: ColorResources.errorColor))
                         : const SizedBox(),
                     SizedBox(
                       height: height * 0.05,
@@ -761,11 +730,11 @@ class _RegistrationScreenState extends State<RegistrationScreen>
                                       welageImage!,
                                     )
                                   : Image.network('').image,
-                              backgroundColor: ColorResources.darkPrimaryColor,
+                              backgroundColor: Colors.white,
                               child: hasWelageImage
                                   ? SizedBox()
                                   : const Icon(
-                                      Icons.person,
+                                      Icons.person_2_outlined,
                                       size: 60,
                                       color: ColorResources.secondaryColor,
                                     )),
@@ -878,10 +847,10 @@ class _RegistrationScreenState extends State<RegistrationScreen>
                               height: 50,
                               width: 50,
                               child: CircleAvatar(
-                                backgroundColor: ColorResources.secondaryColor,
+                                backgroundColor: ColorResources.primaryColor,
                                 child: Icon(
                                   Icons.camera_alt_outlined,
-                                  color: ColorResources.primaryColor,
+                                  color: Colors.white,
                                 ),
                               ),
                             ),

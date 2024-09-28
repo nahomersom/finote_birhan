@@ -52,6 +52,7 @@ dependencies:
   flutter_spinkit: ^5.2.0
   shared_preferences: ^2.2.0
   pinput: ^2.2.31
+  flutter_custom_clippers: ^2.1.0
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -80,6 +81,8 @@ flutter:
     - assets/images/abal-transfer.png
     - assets/images/clothes-rack.png
     - assets/images/inventory.png
+    - assets/images/kids.jpg
+
     - assets/images/teteri-register.png
     - assets/animations/success.json
 

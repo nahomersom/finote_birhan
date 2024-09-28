@@ -1,9 +1,12 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:hisnate_kifele/Business%20Logic/Bloc/cubit/abal_registration/abal_registration_cubit.dart';
 import 'package:hisnate_kifele/Business%20Logic/Bloc/cubit/authentication/authentication_cubit.dart';
 import 'package:hisnate_kifele/Data/Data%20Providers/light_theme.dart';
+import 'package:hisnate_kifele/Data/Repositories/abal.dart';
 import 'package:hisnate_kifele/Data/Services/firebase_service.dart';
+import 'package:hisnate_kifele/Presentation/Routes/route_config.dart';
 import 'package:hisnate_kifele/Presentation/Routes/routes.dart';
 import 'package:hisnate_kifele/Presentation/Screens/Workspace/UI/workspace.dart';
 import 'package:hisnate_kifele/Data/Repositories/user.dart';
@@ -26,13 +29,27 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp.router(
-      title: 'Flutter Demo',
-      theme: lightTheme,
-      // home: AbalList(),
-      routerConfig: goRouter,
-      debugShowCheckedModeBanner: false,
-    );
+    return RepositoryProvider(
+        create: (BuildContext context) => UserRepository(
+            authService: FirbaseAuthService(),
+            firestoreService: FirestoreService()),
+        child: MultiBlocProvider(
+          providers: [
+            BlocProvider<AuthenticationCubit>(
+                create: (BuildContext context) => AuthenticationCubit(
+                    userRepository: context.read<UserRepository>())),
+            BlocProvider<AbalCubit>(
+                create: (BuildContext context) => AbalCubit(
+                    abalRepository:
+                        AbalRepository(abalService: FirestoreService()))),
+          ],
+          child: MaterialApp.router(
+            title: 'Flutter Demo',
+            theme: lightTheme,
+            routerConfig: RouteConfig.returnRouter(isAuth: true),
+            debugShowCheckedModeBanner: false,
+          ),
+        ));
     // return MaterialApp(
     //     title: 'Flutter Demo',
     //     theme: lightTheme,

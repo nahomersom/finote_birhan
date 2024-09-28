@@ -3,44 +3,49 @@ import 'package:flutter/material.dart';
 import 'colors.dart';
 
 ThemeData lightTheme = ThemeData(
-  fontFamily: 'Poppins',
-  scaffoldBackgroundColor: ColorResources.primaryColor,
+  fontFamily: 'CenturyGothic',
+  scaffoldBackgroundColor: ColorResources.scaffoldColor,
 
   // primarySwatch: ColorResources.primaryColor,
+  colorScheme: ThemeData().colorScheme.copyWith(
+        primary: ColorResources.scaffoldColor,
+      ),
+  radioTheme: RadioThemeData(
+    fillColor:
+        MaterialStateColor.resolveWith((states) => ColorResources.textColor),
+  ),
+  // Define TextButton theme
+  textButtonTheme: TextButtonThemeData(
+    style: TextButton.styleFrom(
+      padding: const EdgeInsets.all(0),
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.all(Radius.circular(10)),
+      ),
+      backgroundColor:
+          ColorResources.secondaryColor, // Secondary color for buttons
+    ),
+  ),
 
-  textTheme: TextTheme(
-    headlineSmall:
-        const TextStyle(fontSize: 20.0, color: ColorResources.textColor),
-    headlineMedium: TextStyle(
-        fontSize: 18.0,
-        fontWeight: FontWeight.w600,
-        color: ColorResources.textColor),
-    displaySmall: TextStyle(
-        fontSize: 20.0,
-        fontWeight: FontWeight.w600,
-        color: ColorResources.textColor),
-    displayMedium: TextStyle(
-        fontSize: 22.0,
-        fontWeight: FontWeight.w700,
-        color: ColorResources.textColor),
-    displayLarge: TextStyle(
-        fontSize: 25.0,
-        fontWeight: FontWeight.w300,
-        color: ColorResources.textColor),
+  textTheme: const TextTheme(
+    headlineSmall: TextStyle(fontSize: 18.0, color: ColorResources.textColor),
+    headlineMedium: TextStyle(fontSize: 28.0, color: ColorResources.textColor),
+    displaySmall: TextStyle(fontSize: 18.0, color: ColorResources.textColor),
+    displayMedium: TextStyle(fontSize: 28.0, color: ColorResources.textColor),
+    displayLarge: TextStyle(fontSize: 36.0, color: ColorResources.textColor),
     titleMedium: TextStyle(
-        fontSize: 15.0,
+        fontSize: 17.0,
         fontWeight: FontWeight.w500,
         color: ColorResources.textColor),
     titleLarge: TextStyle(
-        fontSize: 16.0,
-        fontWeight: FontWeight.w600,
+        fontSize: 32.0,
+        fontWeight: FontWeight.normal,
         color: ColorResources.textColor),
     titleSmall: TextStyle(
-        fontSize: 14.0,
+        fontSize: 11.0,
         fontWeight: FontWeight.w500,
         color: ColorResources.textColor),
-    bodyMedium: TextStyle(fontSize: 12.0, color: ColorResources.textColor),
+    bodyMedium: TextStyle(fontSize: 19.0, color: ColorResources.textColor),
     bodyLarge: TextStyle(fontSize: 14.0, color: ColorResources.textColor),
-    bodySmall: TextStyle(fontSize: 12.0, color: ColorResources.textColor),
+    bodySmall: TextStyle(fontSize: 14.0, color: ColorResources.textColor),
   ),
 );

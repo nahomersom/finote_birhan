@@ -13,90 +13,7 @@ import 'package:hisnate_kifele/Presentation/Screens/Registration/UI/registeratio
 import '../../../../Business Logic/Bloc/cubit/abal_registration/abal_registration_cubit.dart';
 import '../../../../Business Logic/Bloc/cubit/abals/abals_cubit.dart';
 import '../../../../Data/Data Providers/colors.dart';
-import '../../Login/UI/login.dart';
-import '../../Login/UI/verify_otp.dart';
 
-// private navigators
-final _rootNavigatorKey = GlobalKey<NavigatorState>();
-final _shellNavigatorAKey = GlobalKey<NavigatorState>(debugLabel: 'shellA');
-final _shellNavigatorBKey = GlobalKey<NavigatorState>(debugLabel: 'shellB');
-
-final goRouter = GoRouter(
-  initialLocation: '/Login',
-  // * Passing a navigatorKey causes an issue on hot reload:
-  // * https://github.com/flutter/flutter/issues/113757#issuecomment-1518421380
-  // * However it's still necessary otherwise the navigator pops back to
-  // * root on hot reload
-  navigatorKey: _rootNavigatorKey,
-  debugLogDiagnostics: true,
-  routes: [
-    GoRoute(
-      path: '/login',
-      builder: (context, state) => const Login(),
-    ),
-    GoRoute(
-      path: '/verifyOtp',
-      builder: (context, state) => const VerifyOtpScreen(),
-    ),
-    // Stateful navigation based on:
-    // https://github.com/flutter/packages/blob/main/packages/go_router/example/lib/stateful_shell_route.dart
-    StatefulShellRoute.indexedStack(
-      builder: (context, state, navigationShell) {
-        return ScaffoldWithNestedNavigation(navigationShell: navigationShell);
-      },
-      branches: [
-        StatefulShellBranch(
-          navigatorKey: _shellNavigatorAKey,
-          routes: [
-            GoRoute(
-              path: '/dashboard',
-              pageBuilder: (context, state) => const NoTransitionPage(
-                child: DashboardScreen(),
-              ),
-              routes: [
-                GoRoute(
-                  path: 'abals',
-                  builder: (context, state) => AbalListScreen(),
-                ),
-                GoRoute(
-                  path: 'kifile',
-                  routes: [
-                    GoRoute(
-                      path: 'registration',
-                      builder: (context, state) => const RegistrationScreen(),
-                    ),
-                  ],
-                  builder: (context, state) => const KifileSelector(),
-                ),
-              ],
-            ),
-          ],
-        ),
-        StatefulShellBranch(
-          navigatorKey: _shellNavigatorBKey,
-          routes: [
-            // Shopping Cart
-            GoRoute(
-              path: '/b',
-              pageBuilder: (context, state) => const NoTransitionPage(
-                child: RootScreen(label: 'B', detailsPath: '/b/details'),
-              ),
-              routes: [
-                GoRoute(
-                  path: 'details',
-                  builder: (context, state) => const DetailsScreen(label: 'B'),
-                ),
-              ],
-            ),
-          ],
-        ),
-      ],
-    ),
-  ],
-);
-
-// Stateful navigation based on:
-// https://github.com/flutter/packages/blob/main/packages/go_router/example/lib/stateful_shell_route.dart
 class ScaffoldWithNestedNavigation extends StatelessWidget {
   const ScaffoldWithNestedNavigation({
     Key? key,
@@ -108,45 +25,27 @@ class ScaffoldWithNestedNavigation extends StatelessWidget {
   void _goBranch(int index) {
     navigationShell.goBranch(
       index,
-      // A common pattern when using bottom navigation bars is to support
-      // navigating to the initial location when tapping the item that is
-      // already active. This example demonstrates how to support this behavior,
-      // using the initialLocation parameter of goBranch.
-      initialLocation: index == navigationShell.currentIndex,
+      // initialLocation: index == navigationShell.currentIndex,
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    return RepositoryProvider(
-      create: (BuildContext context) =>
-          AbalRepository(abalService: FirestoreService()),
-      child: MultiBlocProvider(
-        providers: [
-          BlocProvider<AbalCubit>(
-              create: (BuildContext context) =>
-                  AbalCubit(abalRepository: context.read<AbalRepository>())),
-          BlocProvider<AbalsListCubit>(
-              create: (BuildContext context) => AbalsListCubit(
-                  abalRepository: context.read<AbalRepository>())),
-        ],
-        child: LayoutBuilder(builder: (context, constraints) {
-          if (constraints.maxWidth < 450) {
-            return ScaffoldWithNavigationBar(
-              body: navigationShell,
-              selectedIndex: navigationShell.currentIndex,
-              onDestinationSelected: _goBranch,
-            );
-          } else {
-            return ScaffoldWithNavigationRail(
-              body: navigationShell,
-              selectedIndex: navigationShell.currentIndex,
-              onDestinationSelected: _goBranch,
-            );
-          }
-        }),
-      ),
-    );
+    return LayoutBuilder(builder: (context, constraints) {
+      if (constraints.maxWidth < 450) {
+        return ScaffoldWithNavigationBar(
+          body: navigationShell,
+          selectedIndex: navigationShell.currentIndex,
+          onDestinationSelected: _goBranch,
+        );
+      } else {
+        return ScaffoldWithNavigationRail(
+          body: navigationShell,
+          selectedIndex: navigationShell.currentIndex,
+          onDestinationSelected: _goBranch,
+        );
+      }
+    });
   }
 }
 
@@ -163,39 +62,118 @@ class ScaffoldWithNavigationBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Adjust 360 according to your design
     return Scaffold(
       body: body,
-      bottomNavigationBar: NavigationBar(
-        selectedIndex: selectedIndex,
-        // selectedItemColor: ColorResources.secondaryColor.withOpacity(0.9),
-        // selectedLabelStyle: TextStyle(fontWeight: FontWeight.bold),
-        // unselectedItemColor: ColorResources.textColor.withOpacity(0.6),
-        backgroundColor: ColorResources.primaryColor,
-        destinations: const [
-          NavigationDestination(
-              icon: Icon(
-                Icons.home_outlined,
-                size: 30,
-              ),
-              selectedIcon: Icon(
-                Icons.home_outlined,
-                size: 30,
-              ),
-              label: 'መግቢያ'),
-          NavigationDestination(
-              icon: Icon(
-                Icons.messenger_outline_outlined,
-                size: 30,
-              ),
-              label: 'መወያያ'),
-          NavigationDestination(
-              icon: Icon(
-                Icons.person_outline_rounded,
-                size: 30,
-              ),
-              label: 'ማስተካከያ'),
-        ],
-        onDestinationSelected: onDestinationSelected,
+      backgroundColor: Colors.white,
+      bottomNavigationBar: NavigationBarTheme(
+        data: NavigationBarThemeData(
+          labelTextStyle: MaterialStateProperty.resolveWith<TextStyle>(
+            (Set<MaterialState> states) {
+              double screenWidth = MediaQuery.of(context).size.width;
+
+              double baseFontSize = 16.0;
+              double fontSize = screenWidth /
+                  470 *
+                  baseFontSize; // Adjust 360 according to your design
+
+              return states.contains(MaterialState.selected)
+                  ? TextStyle(
+                      color: ColorResources.primaryColor,
+                      fontWeight: FontWeight.bold,
+                      fontSize: fontSize,
+                    )
+                  : TextStyle(
+                      color: Colors.black,
+                      fontSize: fontSize,
+                    );
+            },
+          ),
+        ),
+        child: NavigationBar(
+          indicatorColor: Colors.transparent,
+          indicatorShape: const CircleBorder(),
+          height: 80,
+          selectedIndex: selectedIndex,
+          backgroundColor: Colors.white,
+          destinations: const [
+            NavigationDestination(
+                icon: Icon(
+                  Icons.travel_explore_outlined,
+                  size: 25,
+                  color: Colors.black,
+                ),
+                selectedIcon: Icon(
+                  Icons.travel_explore_outlined,
+                  color: ColorResources.primaryColor,
+                  size: 25,
+                ),
+                label: 'ዳሽቦርድ'),
+            NavigationDestination(
+                icon: Icon(
+                  Icons.message_outlined,
+                  size: 25,
+                  color: Colors.black,
+                ),
+                selectedIcon: Icon(
+                  Icons.message_outlined,
+                  color: ColorResources.primaryColor,
+                  size: 25,
+                ),
+                label: 'መልዕክቶች'),
+            NavigationDestination(
+                icon: Icon(
+                  Icons.person_outline,
+                  size: 25,
+                  color: Colors.black,
+                ),
+                selectedIcon: Icon(
+                  Icons.person_outline,
+                  color: ColorResources.primaryColor,
+                  size: 25,
+                ),
+                label: 'አባሎች'),
+            NavigationDestination(
+                icon: Icon(
+                  Icons.settings_outlined,
+                  color: Colors.black,
+                  size: 25,
+                ),
+                selectedIcon: Icon(
+                  Icons.settings_outlined,
+                  color: ColorResources.primaryColor,
+                  size: 25,
+                ),
+                label: 'ገጽታዎች'),
+          ],
+          onDestinationSelected: (int index) {
+            switch (index) {
+              case 0:
+                // CurrentUser().userAccount?.accountType == 'superAdmin' ||
+                //         CurrentUser().userAccount?.isAdmin == true
+                //     ? GoRouter.of(context).go('/dashboard')
+                // :
+                GoRouter.of(context).go('/dashboard');
+                break;
+              case 1:
+                GoRouter.of(context).go('/donate');
+                break;
+              case 2:
+                GoRouter.of(context).go('/account');
+                break;
+              case 3:
+
+                //   GoRouter.of(context).go('/resources/my-orders');
+                // } else {
+                // }
+                GoRouter.of(context).go('/resources');
+
+                break;
+              default:
+                onDestinationSelected(index);
+            }
+          },
+        ),
       ),
     );
   }
@@ -215,6 +193,7 @@ class ScaffoldWithNavigationRail extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       body: Row(
         children: [
           NavigationRail(
@@ -238,89 +217,6 @@ class ScaffoldWithNavigationRail extends StatelessWidget {
             child: body,
           ),
         ],
-      ),
-    );
-  }
-}
-
-/// Widget for the root/initial pages in the bottom navigation bar.
-class RootScreen extends StatelessWidget {
-  /// Creates a RootScreen
-  const RootScreen({required this.label, required this.detailsPath, Key? key})
-      : super(key: key);
-
-  /// The label
-  final String label;
-
-  /// The path to the detail page
-  final String detailsPath;
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Tab root - $label'),
-      ),
-      body: Center(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: <Widget>[
-            Text('Screen $label',
-                style: Theme.of(context).textTheme.titleLarge),
-            const Padding(padding: EdgeInsets.all(4)),
-            TextButton(
-              onPressed: () => context.go(detailsPath),
-              child: const Text('View details'),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-/// The details screen for either the A or B screen.
-class DetailsScreen extends StatefulWidget {
-  /// Constructs a [DetailsScreen].
-  const DetailsScreen({
-    required this.label,
-    Key? key,
-  }) : super(key: key);
-
-  /// The label to display in the center of the screen.
-  final String label;
-
-  @override
-  State<StatefulWidget> createState() => DetailsScreenState();
-}
-
-/// The state for DetailsScreen
-class DetailsScreenState extends State<DetailsScreen> {
-  int _counter = 0;
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Details Screen - ${widget.label}'),
-      ),
-      body: Center(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: <Widget>[
-            Text('Details for ${widget.label} - Counter: $_counter',
-                style: Theme.of(context).textTheme.titleLarge),
-            const Padding(padding: EdgeInsets.all(4)),
-            TextButton(
-              onPressed: () {
-                setState(() {
-                  _counter++;
-                });
-              },
-              child: const Text('Increment counter'),
-            ),
-          ],
-        ),
       ),
     );
   }
