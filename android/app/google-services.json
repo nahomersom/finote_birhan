@@ -1,0 +1,105 @@
+{
+  "project_info": {
+    "project_number": "777419584442",
+    "project_id": "finote-birhan-93a39",
+    "storage_bucket": "finote-birhan-93a39.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:777419584442:android:f32c96ed99ab78eb90e383",
+        "android_client_info": {
+          "package_name": "com.example.finote_birhan_general"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "777419584442-9209k6741m3hbu2dvv7cq5m9lni2ffer.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBvwTZKeM60sCeW_dO8XTUwvGInOTeUz3U"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "777419584442-9209k6741m3hbu2dvv7cq5m9lni2ffer.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:777419584442:android:d4b805de819f716290e383",
+        "android_client_info": {
+          "package_name": "com.example.finote_birhan_mobile"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "777419584442-m46qpdn4gk5gu5ueaqofv28fc78lpttb.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.finote_birhan_mobile",
+            "certificate_hash": "616c52eee6d6ca180872309809fd47621abda6f7"
+          }
+        },
+        {
+          "client_id": "777419584442-9209k6741m3hbu2dvv7cq5m9lni2ffer.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBvwTZKeM60sCeW_dO8XTUwvGInOTeUz3U"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "777419584442-9209k6741m3hbu2dvv7cq5m9lni2ffer.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:777419584442:android:2f51e694809f9c4c90e383",
+        "android_client_info": {
+          "package_name": "com.example.hisnate_kifele"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "777419584442-9209k6741m3hbu2dvv7cq5m9lni2ffer.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBvwTZKeM60sCeW_dO8XTUwvGInOTeUz3U"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "777419584442-9209k6741m3hbu2dvv7cq5m9lni2ffer.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
