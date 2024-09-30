@@ -3,7 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:go_router/go_router.dart';
-import 'package:finote_birhan_mobile/Business%20Logic/Bloc/cubit/abal_registration/abal_registration_cubit.dart';
+import 'package:finote_birhan_mobile/Business%20Logic/Bloc/cubit/abals/abal_cubit.dart';
 import 'package:finote_birhan_mobile/Data/Data%20Providers/light_theme.dart';
 
 import '../../../../Data/Data Providers/colors.dart';
@@ -28,9 +28,9 @@ class _KifileSelectorState extends State<KifileSelector> {
       ),
       child: SafeArea(
         child: Scaffold(
-          body: BlocBuilder<AbalCubit, AbalRegistrationState>(
+          body: BlocBuilder<AbalCubit, AbalState>(
             builder: (BuildContext context, state) {
-              if (state.abalRegistrationStatus.isSuccess) {
+              if (state.abalStatus.isSuccess) {
                 return Padding(
                   padding:
                       const EdgeInsets.symmetric(horizontal: 30, vertical: 40),

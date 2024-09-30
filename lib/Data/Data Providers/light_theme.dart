@@ -5,7 +5,8 @@ import 'colors.dart';
 ThemeData lightTheme = ThemeData(
   fontFamily: 'CenturyGothic',
   scaffoldBackgroundColor: ColorResources.scaffoldColor,
-
+  appBarTheme: const AppBarTheme(
+      backgroundColor: Color(0xffffffff), surfaceTintColor: Colors.transparent),
   // primarySwatch: ColorResources.primaryColor,
   colorScheme: ThemeData().colorScheme.copyWith(
         primary: ColorResources.scaffoldColor,

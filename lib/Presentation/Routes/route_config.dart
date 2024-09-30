@@ -1,3 +1,4 @@
+import 'package:finote_birhan_mobile/Presentation/Screens/Abals/UI/Abal-List.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:finote_birhan_mobile/Presentation/Screens/Home/UI/Dashboard.dart';
@@ -11,7 +12,7 @@ class RouteConfig {
   // static UserAccount? currentUser = CurrentUser().userAccount;
 
   // static String initialLocation = '/admin-care-list';
-  static String initialLocation = '/dashboard/kifile';
+  static String initialLocation = '/dashboard';
 
   static final _rootNavigatorKey = GlobalKey<NavigatorState>();
 
@@ -58,6 +59,19 @@ class RouteConfig {
                           path: 'kifile',
                           builder: (context, state) {
                             return const KifileSelector();
+                          },
+                          routes: [
+                            GoRoute(
+                              path: 'registration',
+                              builder: (context, state) {
+                                return const RegistrationScreen();
+                              },
+                            )
+                          ]),
+                      GoRoute(
+                          path: 'abals',
+                          builder: (context, state) {
+                            return const AbalListScreen();
                           },
                           routes: [
                             GoRoute(

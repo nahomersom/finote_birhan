@@ -5,8 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:finote_birhan_mobile/Business%20Logic/Bloc/cubit/abal_registration/abal_registration_cubit.dart';
-import 'package:finote_birhan_mobile/Business%20Logic/Bloc/cubit/abals/abals_cubit.dart';
+import 'package:finote_birhan_mobile/Business%20Logic/Bloc/cubit/abals/abal_cubit.dart';
 import 'package:finote_birhan_mobile/Data/Data%20Providers/colors.dart';
 import 'package:finote_birhan_mobile/Presentation/Components/search_bar.dart';
 import 'package:finote_birhan_mobile/Presentation/Screens/Home/Widgets/dashboard_card.dart';
@@ -29,13 +28,13 @@ class DashboardScreen extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               Container(
-                height: sizeH * 0.19,
+                height: sizeH * 0.17,
                 color: Colors.white,
-                child: Padding(
-                  padding: const EdgeInsets.all(15),
+                child: const Padding(
+                  padding: EdgeInsets.all(15),
                   child: Column(
                     children: [
-                      const Row(
+                      Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
@@ -43,12 +42,12 @@ class DashboardScreen extends StatelessWidget {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               CircleAvatar(
-                                radius: 35,
+                                radius: 20,
                                 backgroundImage: NetworkImage(
                                     'https://images.pexels.com/photos/1681010/pexels-photo-1681010.jpeg?auto=compress&cs=tinysrgb&w=800'),
                               ),
                               SizedBox(width: 10),
-                              Column(
+                              Row(
                                 mainAxisAlignment: MainAxisAlignment.end,
                                 children: [
                                   Text(
@@ -65,7 +64,11 @@ class DashboardScreen extends StatelessWidget {
                           ),
                         ],
                       ),
-                      const SizedBox(height: 10),
+                      SizedBox(height: 5),
+                      Divider(
+                        color: ColorResources.scaffoldColor,
+                      ),
+                      SizedBox(height: 5),
                       Expanded(
                         child: SearchPage(),
                       ),
@@ -199,8 +202,8 @@ final dashboardItems = [
     icon: Icons.child_care_outlined,
     onTap: (context) {
       // Replace with your actual functionality
-      BlocProvider.of<AbalCubit>(context).getKifiles();
-      context.go('/dashboard/kifile');
+      BlocProvider.of<AbalCubit>(context).getAbals();
+      context.go('/dashboard/abals');
     },
   ),
   DashboardItem(

@@ -10,8 +10,7 @@ import 'package:finote_birhan_mobile/Presentation/Screens/Home/UI/Dashboard.dart
 import 'package:finote_birhan_mobile/Presentation/Screens/Registration/UI/kifile_selector.dart';
 import 'package:finote_birhan_mobile/Presentation/Screens/Registration/UI/registeration.dart';
 
-import '../../../../Business Logic/Bloc/cubit/abal_registration/abal_registration_cubit.dart';
-import '../../../../Business Logic/Bloc/cubit/abals/abals_cubit.dart';
+import '../../../../Business Logic/Bloc/cubit/abals/abal_cubit.dart';
 import '../../../../Data/Data Providers/colors.dart';
 
 class ScaffoldWithNestedNavigation extends StatelessWidget {
@@ -65,7 +64,6 @@ class ScaffoldWithNavigationBar extends StatelessWidget {
     // Adjust 360 according to your design
     return Scaffold(
       body: body,
-      backgroundColor: Colors.white,
       bottomNavigationBar: NavigationBarTheme(
         data: NavigationBarThemeData(
           labelTextStyle: WidgetStateProperty.resolveWith<TextStyle>(

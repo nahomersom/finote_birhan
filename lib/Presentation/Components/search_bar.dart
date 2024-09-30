@@ -1,3 +1,4 @@
+import 'package:finote_birhan_mobile/Data/Data%20Providers/colors.dart';
 import 'package:flutter/material.dart';
 
 class SearchPage extends StatefulWidget {
@@ -39,18 +40,23 @@ class _SearchPageState extends State<SearchPage> {
   Widget build(BuildContext context) {
     return Column(
       children: <Widget>[
-        SizedBox(
-          height: 40,
+        Container(
+          height: 43.4,
+          decoration: BoxDecoration(
+              borderRadius: BorderRadius.all(Radius.circular(10)),
+              border: Border.all(style: BorderStyle.none),
+              color: ColorResources.scaffoldColor),
           child: TextField(
             controller: _searchController,
             decoration: const InputDecoration(
-              labelText: 'Search',
-              hintText: 'Search',
-              prefixIcon: Icon(Icons.search),
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.all(Radius.circular(25.0)),
-              ),
-            ),
+                hintText: 'አባል ይፈልጉ',
+                border: InputBorder.none,
+                hintStyle: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w400,
+                    color: Color(0xffA9ADB0)),
+                prefixIcon: Icon(Icons.search),
+                prefixIconColor: Color(0xffA9ADB0)),
           ),
         ),
         Expanded(

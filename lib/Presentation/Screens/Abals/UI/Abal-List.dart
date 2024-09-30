@@ -1,8 +1,8 @@
+import 'package:finote_birhan_mobile/Presentation/Components/search_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:finote_birhan_mobile/Business%20Logic/Bloc/cubit/abal_registration/abal_registration_cubit.dart';
-import 'package:finote_birhan_mobile/Business%20Logic/Bloc/cubit/abals/abals_cubit.dart';
+import 'package:finote_birhan_mobile/Business%20Logic/Bloc/cubit/abals/abal_cubit.dart';
 
 import '../../../../Data/Data Providers/colors.dart';
 
@@ -43,32 +43,44 @@ class _AbalListScreenState extends State<AbalListScreen> {
   Widget build(BuildContext context) {
     var sizeH = MediaQuery.of(context).size.height;
     var sizeW = MediaQuery.of(context).size.width;
-
-    return SafeArea(child: Scaffold(
-      body: BlocBuilder<AbalsListCubit, AbalListState>(
+    TextTheme textTheme = Theme.of(context).textTheme;
+    return SafeArea(
+        child: Scaffold(
+      appBar: AppBar(
+        title: Text(
+          'የአባል ዝርዝር',
+          style: textTheme.titleMedium,
+        ),
+        centerTitle: true,
+        bottom: PreferredSize(
+            preferredSize: Size.fromHeight(200.0), child: SearchPage()),
+        // bottom: PreferredSize(
+        //   preferredSize: Size.fromHeight(200.0), // Adjust height for search bar
+        //   child: Column(
+        //     children: [
+        //       Padding(
+        //         padding: const EdgeInsets.symmetric(horizontal: 8.0),
+        //         child: SearchPage(), // Small search bar inside AppBar
+        //       ),
+        //       const SizedBox(height: 5),
+        //       Divider(
+        //         color: ColorResources.scaffoldColor,
+        //         height: 1,
+        //       ),
+        //     ],
+        //   ),
+        // ),
+      ),
+      body: BlocBuilder<AbalCubit, AbalState>(
         builder: (BuildContext context, state) {
-          if (state.abalsListStatus.isSuccess) {
-            return Column(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: TextField(
-                    onChanged: filterUsers,
-                    decoration: const InputDecoration(
-                      labelText: 'Search',
-                      prefixIcon: Icon(Icons.search),
-                    ),
-                  ),
-                ),
-                Expanded(
-                  child: ListView.builder(
-                    itemCount: filteredUsers.length,
-                    itemBuilder: (BuildContext context, int index) {
-                      return UserListItem(user: filteredUsers[index]);
-                    },
-                  ),
-                ),
-              ],
+          if (state.abalStatus.isSuccess) {
+            return Expanded(
+              child: ListView.builder(
+                itemCount: filteredUsers.length,
+                itemBuilder: (BuildContext context, int index) {
+                  return UserListItem(user: filteredUsers[index]);
+                },
+              ),
             );
           }
 

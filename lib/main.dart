@@ -1,7 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:finote_birhan_mobile/Business%20Logic/Bloc/cubit/abal_registration/abal_registration_cubit.dart';
+import 'package:finote_birhan_mobile/Business%20Logic/Bloc/cubit/abals/abal_cubit.dart';
 import 'package:finote_birhan_mobile/Business%20Logic/Bloc/cubit/authentication/authentication_cubit.dart';
 import 'package:finote_birhan_mobile/Data/Data%20Providers/light_theme.dart';
 import 'package:finote_birhan_mobile/Data/Repositories/abal.dart';
