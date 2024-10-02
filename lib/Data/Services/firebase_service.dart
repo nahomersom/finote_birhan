@@ -1,9 +1,6 @@
-import 'dart:convert';
 import 'package:finote_birhan_mobile/Data/Services/user_service.dart';
-import 'package:finote_birhan_mobile/global.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:http/http.dart' as http;
 
 /*
 This class represent all possible CRUD operation for FirebaseFirestore.
@@ -135,7 +132,7 @@ class FirestoreService {
     try {
       await FirebaseFirestore.instance.doc(path).update(data);
     } catch (e) {
-      throw e;
+      rethrow;
     }
   }
 
@@ -201,30 +198,30 @@ class FirestoreService {
         if (isCurrentUserAdmin) {
           print("is current admin");
           queryF = query
-              .where("accountType", isEqualTo: "$accountType")
+              .where("accountType", isEqualTo: accountType)
               .orderBy('firstNameSmall')
               .orderBy("status");
 
           queryL = query
-              .where("accountType", isEqualTo: "$accountType")
+              .where("accountType", isEqualTo: accountType)
               .orderBy("lastNameSmall")
               .orderBy("status");
           queryOrg = query
-              .where("accountType", isEqualTo: "$accountType")
+              .where("accountType", isEqualTo: accountType)
               .orderBy("organizationNameSmall")
               .orderBy("status");
         } else {
           print("not current admin");
 
           queryF = query
-              .where("accountType", isEqualTo: "$accountType")
+              .where("accountType", isEqualTo: accountType)
               .where("status", isEqualTo: true);
 
           queryL = query
-              .where("accountType", isEqualTo: "$accountType")
+              .where("accountType", isEqualTo: accountType)
               .where("status", isEqualTo: true);
           queryOrg = query
-              .where("accountType", isEqualTo: "$accountType")
+              .where("accountType", isEqualTo: accountType)
               .where("status", isEqualTo: true);
         }
 
@@ -376,12 +373,12 @@ class FirestoreService {
     List<String> currentFollowers = await getFollowers();
     print('currentFollowers $currentFollowers  ${currentUser!.uid}');
     if (follow) {
-      if (currentFollowers.length == 0 ||
+      if (currentFollowers.isEmpty ||
           !currentFollowers.contains(currentUser?.uid)) {
         currentFollowers.add(currentUser!.uid);
       }
     } else {
-      currentFollowers.length > 0
+      currentFollowers.isNotEmpty
           ? currentFollowers.remove(currentUser?.uid)
           : null;
     }
@@ -454,12 +451,11 @@ class FirestoreService {
     List<String> currentFollowings = await getFollowing();
 
     if (follow) {
-      if (currentFollowings.length == 0 ||
-          !currentFollowings.contains(userId)) {
+      if (currentFollowings.isEmpty || !currentFollowings.contains(userId)) {
         currentFollowings.add(userId);
       }
     } else {
-      currentFollowings.length > 0 ? currentFollowings.remove(userId) : null;
+      currentFollowings.isNotEmpty ? currentFollowings.remove(userId) : null;
     }
 
     // Update the recent searches
@@ -521,9 +517,9 @@ class FirestoreService {
 
   Stream<List<T>> collectionStream<T>({
     required String path,
-    required T builder(Map<String, dynamic> data, String documentID),
-    Query queryBuilder(Query query)?,
-    int sort(T lhs, T rhs)?,
+    required T Function(Map<String, dynamic> data, String documentID) builder,
+    Query Function(Query query)? queryBuilder,
+    int Function(T lhs, T rhs)? sort,
   }) {
     Query query = FirebaseFirestore.instance.collection(path);
     if (queryBuilder != null) {
@@ -545,7 +541,7 @@ class FirestoreService {
 
   Stream<T> documentStream<T>({
     required String path,
-    required T builder(Map<String, dynamic> data, String documentID),
+    required T Function(Map<String, dynamic> data, String documentID) builder,
   }) {
     final DocumentReference reference = FirebaseFirestore.instance.doc(path);
     final Stream<DocumentSnapshot> snapshots = reference.snapshots();

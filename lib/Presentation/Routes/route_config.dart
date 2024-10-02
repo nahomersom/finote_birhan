@@ -6,7 +6,6 @@ import 'package:finote_birhan_mobile/Presentation/Screens/Login/UI/login.dart';
 import 'package:finote_birhan_mobile/Presentation/Screens/Registration/UI/kifile_selector.dart';
 import 'package:finote_birhan_mobile/Presentation/Screens/Registration/UI/registeration.dart';
 import 'package:finote_birhan_mobile/Presentation/Screens/Workspace/UI/workspace.dart';
-import 'package:finote_birhan_mobile/global.dart';
 
 class RouteConfig {
   // static UserAccount? currentUser = CurrentUser().userAccount;

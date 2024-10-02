@@ -1,13 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/framework.dart';
-import 'package:flutter/src/widgets/placeholder.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:go_router/go_router.dart';
 import 'package:finote_birhan_mobile/Business%20Logic/Bloc/cubit/authentication/authentication_cubit.dart';
 import 'package:finote_birhan_mobile/Data/Data%20Providers/colors.dart';
-import 'package:finote_birhan_mobile/Data/Data%20Providers/light_theme.dart';
-import 'package:finote_birhan_mobile/Presentation/Screens/Home/UI/Dashboard.dart';
 import 'package:pinput/pinput.dart';
 import '../../../../Utils/utils.dart';
 

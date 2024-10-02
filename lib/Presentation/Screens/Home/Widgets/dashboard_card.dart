@@ -3,13 +3,13 @@ import 'package:finote_birhan_mobile/Data/Data%20Providers/colors.dart';
 
 class DashboardCard extends StatelessWidget {
   const DashboardCard({
-    Key? key,
+    super.key,
     required this.sizeH,
     required this.text,
     required this.icon,
     required this.onTap,
     required this.height,
-  }) : super(key: key);
+  });
 
   final double sizeH;
   final String text;

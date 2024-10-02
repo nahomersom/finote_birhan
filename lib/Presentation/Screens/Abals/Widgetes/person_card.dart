@@ -6,8 +6,7 @@ import '../../../../Data/Models/abal.dart';
 class AbalCard extends StatelessWidget {
   final AbalRegistrationModel abal;
   final Function()? onPress;
-  const AbalCard({Key? key, required this.abal, required this.onPress})
-      : super(key: key);
+  const AbalCard({super.key, required this.abal, required this.onPress});
 
   @override
   Widget build(BuildContext context) {

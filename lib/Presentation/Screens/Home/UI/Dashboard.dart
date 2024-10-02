@@ -1,13 +1,9 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:finote_birhan_mobile/Business%20Logic/Bloc/cubit/abals/abal_cubit.dart';
 import 'package:finote_birhan_mobile/Data/Data%20Providers/colors.dart';
-import 'package:finote_birhan_mobile/Presentation/Components/search_bar.dart';
 import 'package:finote_birhan_mobile/Presentation/Screens/Home/Widgets/dashboard_card.dart';
 
 class DashboardScreen extends StatelessWidget {
@@ -19,7 +15,7 @@ class DashboardScreen extends StatelessWidget {
     var sizeW = MediaQuery.of(context).size.width;
     return AnnotatedRegion(
       value: const SystemUiOverlayStyle(
-        statusBarColor: Colors.white,
+        statusBarColor: ColorResources.scaffoldColor,
         statusBarIconBrightness: Brightness.dark,
       ),
       child: Scaffold(
@@ -29,7 +25,7 @@ class DashboardScreen extends StatelessWidget {
             children: [
               Container(
                 height: sizeH * 0.17,
-                color: Colors.white,
+                color: ColorResources.scaffoldColor,
                 child: const Padding(
                   padding: EdgeInsets.all(15),
                   child: Column(
@@ -68,10 +64,10 @@ class DashboardScreen extends StatelessWidget {
                       Divider(
                         color: ColorResources.scaffoldColor,
                       ),
-                      SizedBox(height: 5),
-                      Expanded(
-                        child: SearchPage(),
-                      ),
+                      // SizedBox(height: 5),
+                      // Expanded(
+                      //   child: SearchPage(),
+                      // ),
                     ],
                   ),
                 ),

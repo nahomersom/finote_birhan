@@ -1,4 +1,6 @@
+import 'package:finote_birhan_mobile/Data/Data%20Providers/app_constants.dart';
 import 'package:finote_birhan_mobile/Presentation/Components/search_bar.dart';
+import 'package:finote_birhan_mobile/Presentation/Screens/Abals/Widgetes/user-list-item.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -41,64 +43,73 @@ class _AbalListScreenState extends State<AbalListScreen> {
 
   @override
   Widget build(BuildContext context) {
-    var sizeH = MediaQuery.of(context).size.height;
-    var sizeW = MediaQuery.of(context).size.width;
     TextTheme textTheme = Theme.of(context).textTheme;
     return SafeArea(
-        child: Scaffold(
-      appBar: AppBar(
-        title: Text(
-          'የአባል ዝርዝር',
-          style: textTheme.titleMedium,
+      child: Scaffold(
+        appBar: AppBar(
+          title: Padding(
+            padding: const EdgeInsets.only(
+                bottom: 5.0), // Reduce bottom padding of the title
+            child: Text(
+              'የአባል ዝርዝር',
+              style:
+                  textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w500),
+            ),
+          ),
+          centerTitle: true,
+          bottom: PreferredSize(
+            preferredSize:
+                const Size.fromHeight(80.0), // Adjust height for search bar
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Padding(
+                  padding:
+                      const EdgeInsets.only(left: 8.0, right: 8.0, bottom: 10),
+                  child: SearchPage(
+                      onSearch: filterUsers), // Pass callback to filter users
+                ),
+                const SizedBox(height: 5),
+              ],
+            ),
+          ),
         ),
-        centerTitle: true,
-        bottom: PreferredSize(
-            preferredSize: Size.fromHeight(200.0), child: SearchPage()),
-        // bottom: PreferredSize(
-        //   preferredSize: Size.fromHeight(200.0), // Adjust height for search bar
-        //   child: Column(
-        //     children: [
-        //       Padding(
-        //         padding: const EdgeInsets.symmetric(horizontal: 8.0),
-        //         child: SearchPage(), // Small search bar inside AppBar
-        //       ),
-        //       const SizedBox(height: 5),
-        //       Divider(
-        //         color: ColorResources.scaffoldColor,
-        //         height: 1,
-        //       ),
-        //     ],
-        //   ),
-        // ),
-      ),
-      body: BlocBuilder<AbalCubit, AbalState>(
-        builder: (BuildContext context, state) {
-          if (state.abalStatus.isSuccess) {
-            return Expanded(
-              child: ListView.builder(
-                itemCount: filteredUsers.length,
-                itemBuilder: (BuildContext context, int index) {
-                  return UserListItem(user: filteredUsers[index]);
-                },
+        body: BlocBuilder<AbalCubit, AbalState>(
+          builder: (BuildContext context, state) {
+            if (state.abalStatus.isSuccess) {
+              return Padding(
+                padding: const EdgeInsets.all(AppConstants.bodyPadding),
+                child: ListView.separated(
+                  itemCount: state.abals.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    return AbalListItem(abal: state.abals[index]);
+                  },
+                  separatorBuilder: (BuildContext context, int index) {
+                    return const Divider(
+                      color: Colors.black,
+                      thickness: 0.2,
+                    );
+                  },
+                ),
+              );
+            }
+
+            return const Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  SpinKitFadingCircle(
+                    color: ColorResources.secondaryColor,
+                  ),
+                  SizedBox(height: 10),
+                  Text('ዝግጅት ላይ'),
+                ],
               ),
             );
-          }
-
-          return const Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              SpinKitFadingCircle(
-                color: ColorResources.secondaryColor,
-              ),
-              SizedBox(
-                height: 10,
-              ),
-              Text('ዝግጅት ላይ'),
-            ],
-          );
-        },
+          },
+        ),
       ),
-    ));
+    );
   }
 }
 
@@ -108,27 +119,4 @@ class User {
   final String email;
 
   User(this.fullName, this.age, this.email);
-}
-
-class UserListItem extends StatelessWidget {
-  final User user;
-
-  const UserListItem({super.key, required this.user});
-
-  @override
-  Widget build(BuildContext context) {
-    return ListTile(
-      leading: CircleAvatar(
-        child: Text(user.fullName[0]),
-      ),
-      title: Text(user.fullName),
-      subtitle: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text('Age: ${user.age}'),
-          Text('Email: ${user.email}'),
-        ],
-      ),
-    );
-  }
 }

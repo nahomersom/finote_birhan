@@ -16,14 +16,16 @@ class AbalState extends Equatable {
   final String errorMessage;
   final List<dynamic> kifiles;
   final List<dynamic> nestedKifiles;
-  final List<dynamic> abals;
+  final List<AbalRegistrationModel> abals;
+  final AbalRegistrationModel? selectedAbal; // Add selectedAbal
 
   const AbalState({
     this.abalStatus = AbalStatus.initial,
     this.errorMessage = '',
     List<dynamic>? kifiles,
     List<dynamic>? nestedKifiles,
-    List<dynamic>? abals,
+    List<AbalRegistrationModel>? abals,
+    this.selectedAbal, // Add selectedAbal to constructor
   })  : kifiles = kifiles ?? const [],
         nestedKifiles = nestedKifiles ?? const [],
         abals = abals ?? const [];
@@ -31,7 +33,8 @@ class AbalState extends Equatable {
   AbalState copyWith({
     List<dynamic>? kifiles,
     List<dynamic>? nestedKifiles,
-    List<dynamic>? abals,
+    List<AbalRegistrationModel>? abals,
+    AbalRegistrationModel? selectedAbal, // Add selectedAbal to copyWith
     AbalStatus? abalStatus,
     String? errorMessage,
   }) {
@@ -39,12 +42,19 @@ class AbalState extends Equatable {
       kifiles: kifiles ?? this.kifiles,
       nestedKifiles: nestedKifiles ?? this.nestedKifiles,
       abals: abals ?? this.abals,
+      selectedAbal: selectedAbal ?? this.selectedAbal, // Update selectedAbal
       abalStatus: abalStatus ?? this.abalStatus,
       errorMessage: errorMessage ?? this.errorMessage,
     );
   }
 
   @override
-  List<Object?> get props =>
-      [abalStatus, errorMessage, kifiles, nestedKifiles, abals];
+  List<Object?> get props => [
+        abalStatus,
+        errorMessage,
+        kifiles,
+        nestedKifiles,
+        abals,
+        selectedAbal, // Include selectedAbal in props
+      ];
 }

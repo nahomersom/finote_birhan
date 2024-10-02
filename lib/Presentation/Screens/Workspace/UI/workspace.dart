@@ -1,16 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 // ignore: depend_on_referenced_packages
-import 'package:flutter_web_plugins/url_strategy.dart';
-import 'package:finote_birhan_mobile/Data/Repositories/abal.dart';
-import 'package:finote_birhan_mobile/Data/Services/firebase_service.dart';
-import 'package:finote_birhan_mobile/Presentation/Screens/Abals/UI/Abal-List.dart';
-import 'package:finote_birhan_mobile/Presentation/Screens/Home/UI/Dashboard.dart';
-import 'package:finote_birhan_mobile/Presentation/Screens/Registration/UI/kifile_selector.dart';
-import 'package:finote_birhan_mobile/Presentation/Screens/Registration/UI/registeration.dart';
 
-import '../../../../Business Logic/Bloc/cubit/abals/abal_cubit.dart';
 import '../../../../Data/Data Providers/colors.dart';
 
 class ScaffoldWithNestedNavigation extends StatelessWidget {
@@ -88,69 +79,19 @@ class ScaffoldWithNavigationBar extends StatelessWidget {
             },
           ),
         ),
-        child: NavigationBar(
-          indicatorColor: Colors.transparent,
-          indicatorShape: const CircleBorder(),
-          height: 80,
-          selectedIndex: selectedIndex,
+        child: BottomNavigationBar(
+          currentIndex: selectedIndex,
           backgroundColor: Colors.white,
-          destinations: const [
-            NavigationDestination(
-                icon: Icon(
-                  Icons.travel_explore_outlined,
-                  size: 25,
-                  color: Colors.black,
-                ),
-                selectedIcon: Icon(
-                  Icons.travel_explore_outlined,
-                  color: ColorResources.primaryColor,
-                  size: 25,
-                ),
-                label: 'ዳሽቦርድ'),
-            NavigationDestination(
-                icon: Icon(
-                  Icons.message_outlined,
-                  size: 25,
-                  color: Colors.black,
-                ),
-                selectedIcon: Icon(
-                  Icons.message_outlined,
-                  color: ColorResources.primaryColor,
-                  size: 25,
-                ),
-                label: 'መልዕክቶች'),
-            NavigationDestination(
-                icon: Icon(
-                  Icons.person_outline,
-                  size: 25,
-                  color: Colors.black,
-                ),
-                selectedIcon: Icon(
-                  Icons.person_outline,
-                  color: ColorResources.primaryColor,
-                  size: 25,
-                ),
-                label: 'አባሎች'),
-            NavigationDestination(
-                icon: Icon(
-                  Icons.settings_outlined,
-                  color: Colors.black,
-                  size: 25,
-                ),
-                selectedIcon: Icon(
-                  Icons.settings_outlined,
-                  color: ColorResources.primaryColor,
-                  size: 25,
-                ),
-                label: 'ገጽታዎች'),
-          ],
-          onDestinationSelected: (int index) {
+          type: BottomNavigationBarType.fixed,
+          selectedLabelStyle: const TextStyle(
+            fontWeight:
+                FontWeight.w600, // Increased font weight for selected item
+          ),
+          selectedItemColor: ColorResources.primaryColor,
+          unselectedItemColor: Colors.black,
+          onTap: (int index) {
             switch (index) {
               case 0:
-                // CurrentUser().userAccount?.accountType == 'superAdmin' ||
-                //         CurrentUser().userAccount?.isAdmin == true
-                //     ? GoRouter.of(context).go('/dashboard')
-                // :
                 GoRouter.of(context).go('/dashboard');
                 break;
               case 1:
@@ -160,17 +101,54 @@ class ScaffoldWithNavigationBar extends StatelessWidget {
                 GoRouter.of(context).go('/account');
                 break;
               case 3:
-
-                //   GoRouter.of(context).go('/resources/my-orders');
-                // } else {
-                // }
                 GoRouter.of(context).go('/resources');
-
                 break;
               default:
                 onDestinationSelected(index);
             }
           },
+          items: const [
+            BottomNavigationBarItem(
+              icon: Padding(
+                padding: EdgeInsets.only(top: 8.0), // Padding above the icon
+                child: Icon(
+                  Icons.travel_explore_outlined,
+                  size: 20,
+                ),
+              ),
+              label: 'ዳሽቦርድ',
+            ),
+            BottomNavigationBarItem(
+              icon: Padding(
+                padding: EdgeInsets.only(top: 8.0), // Padding above the icon
+                child: Icon(
+                  Icons.message_outlined,
+                  size: 20,
+                ),
+              ),
+              label: 'መልዕክቶች',
+            ),
+            BottomNavigationBarItem(
+              icon: Padding(
+                padding: EdgeInsets.only(top: 8.0), // Padding above the icon
+                child: Icon(
+                  Icons.person_outline,
+                  size: 20,
+                ),
+              ),
+              label: 'አባሎች',
+            ),
+            BottomNavigationBarItem(
+              icon: Padding(
+                padding: EdgeInsets.only(top: 8.0), // Padding above the icon
+                child: Icon(
+                  Icons.settings_outlined,
+                  size: 20,
+                ),
+              ),
+              label: 'ገጽታዎች',
+            ),
+          ],
         ),
       ),
     );

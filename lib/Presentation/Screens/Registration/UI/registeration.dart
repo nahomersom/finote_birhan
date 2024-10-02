@@ -1,32 +1,18 @@
 import 'dart:io';
+import 'package:finote_birhan_mobile/Presentation/Screens/Registration/widgets/abal_form.dart';
+import 'package:finote_birhan_mobile/Presentation/Screens/Registration/widgets/family_form.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:go_router/go_router.dart';
-import 'package:finote_birhan_mobile/Business%20Logic/Bloc/cubit/file_uploader_cubit.dart';
 import 'package:finote_birhan_mobile/Data/Data%20Providers/colors.dart';
 import 'package:finote_birhan_mobile/Data/Data%20Providers/light_theme.dart';
-
-import 'package:image_picker/image_picker.dart';
-import 'package:intl_phone_field/intl_phone_field.dart';
 import 'package:lottie/lottie.dart';
-
-import '../../../../Business Logic/Algorithm/file-uploader.dart';
 import '../../../../Business Logic/Bloc/cubit/abals/abal_cubit.dart';
 import '../../../../Data/Models/abal.dart';
 
 class RegistrationScreen extends StatefulWidget {
   const RegistrationScreen({super.key});
-
-  // This widget is the home page of your application. It is stateful, meaning
-  // that it has a State object (defined below) that contains fields that affect
-  // how it looks.
-
-  // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
-  // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
 
   @override
   State<RegistrationScreen> createState() => _RegistrationScreenState();
@@ -35,35 +21,35 @@ class RegistrationScreen extends StatefulWidget {
 class _RegistrationScreenState extends State<RegistrationScreen>
     with TickerProviderStateMixin {
   int currentStep = 0;
-  //abal information
-  final _yekerestenaNameControl = TextEditingController();
-  final _fullNameControl = TextEditingController();
-  final _ageControl = TextEditingController();
-  final _genderControl = TextEditingController();
-  final _phoneNumberControl = TextEditingController();
-  final _birthPlaceControl = TextEditingController();
-  final _birthDateControl = TextEditingController();
-  final _subCityControl = TextEditingController();
-  final _woredaControl = TextEditingController();
-  final _kebeleControl = TextEditingController();
-  final _houseNumberControl = TextEditingController();
-  final _emergencyContactFullNameControl = TextEditingController();
-  final _emergencyContactPhoneNumberControl = TextEditingController();
-  final _kifileControl = TextEditingController();
+  // Controllers for the Abal form
+  late TextEditingController _yekerestenaNameControl;
+  late TextEditingController _fullNameControl;
+  late TextEditingController _ageControl;
+  late TextEditingController _genderControl;
+  late TextEditingController _phoneNumberControl;
+  late TextEditingController _birthPlaceControl;
+  late TextEditingController _birthDateControl;
+  late TextEditingController _subCityControl;
+  late TextEditingController _woredaControl;
+  late TextEditingController _kebeleControl;
+  late TextEditingController _houseNumberControl;
+  late TextEditingController _emergencyContactFullNameControl;
+  late TextEditingController _emergencyContactPhoneNumberControl;
+  late TextEditingController _kifileControl;
 
-  //abal family information
-  final _familyYekerestenaNameControl = TextEditingController();
-  final _familyFullNameControl = TextEditingController();
-  final _relationShipControl = TextEditingController();
-  final _familyAgeControl = TextEditingController();
-  final _familyGenderControl = TextEditingController();
-  final _familyPhoneNumberControl = TextEditingController();
-  final _familyBirthPlaceControl = TextEditingController();
-  final _familyBirthDateControl = TextEditingController();
-  final _familySubCityControl = TextEditingController();
-  final _familyWoredaControl = TextEditingController();
-  final _familyKebeleControl = TextEditingController();
-  final _familyHouseNumberControl = TextEditingController();
+  // Controllers for the Family form
+  late TextEditingController _familyYekerestenaNameControl;
+  late TextEditingController _familyFullNameControl;
+  late TextEditingController _relationShipControl;
+  late TextEditingController _familyAgeControl;
+  late TextEditingController _familyGenderControl;
+  late TextEditingController _familyPhoneNumberControl;
+  late TextEditingController _familyBirthPlaceControl;
+  late TextEditingController _familyBirthDateControl;
+  late TextEditingController _familySubCityControl;
+  late TextEditingController _familyWoredaControl;
+  late TextEditingController _familyKebeleControl;
+  late TextEditingController _familyHouseNumberControl;
 
   final _abalFormKey = GlobalKey<FormState>();
   final _welageFormKey = GlobalKey<FormState>();
@@ -72,6 +58,7 @@ class _RegistrationScreenState extends State<RegistrationScreen>
   final _commentControl = TextEditingController();
 
   String phoneNumber = "";
+
   String? sexValue = "Male";
   String? kifileValue;
   String? kefleKetemaValue = "ledeta";
@@ -91,11 +78,83 @@ class _RegistrationScreenState extends State<RegistrationScreen>
   }
 
   @override
-  Widget build(BuildContext context) {
-    var sizeH = MediaQuery.of(context).size.height;
-    var sizeW = MediaQuery.of(context).size.width;
-    TextTheme textTheme = Theme.of(context).textTheme;
+  void initState() {
+    super.initState();
 
+    // Initialize controllers here
+    initializeControllers();
+  }
+
+  void initializeControllers() {
+    final AbalCubit abalCubit = context.read<AbalCubit>();
+    final AbalRegistrationModel? selectedAbal = abalCubit.state.selectedAbal;
+
+    // Initialize Abal information controllers with selectedAbal data if it exists
+    _yekerestenaNameControl =
+        TextEditingController(text: selectedAbal?.abal.yekerestenaName ?? '');
+    _fullNameControl =
+        TextEditingController(text: selectedAbal?.abal.fullName ?? '');
+    _ageControl = TextEditingController(text: selectedAbal?.abal.age ?? '');
+    _genderControl =
+        TextEditingController(text: selectedAbal?.abal.gender ?? '');
+    _phoneNumberControl =
+        TextEditingController(text: selectedAbal?.abal.phoneNumber ?? '');
+    _birthPlaceControl =
+        TextEditingController(text: selectedAbal?.abal.birthPlace ?? '');
+    _birthDateControl =
+        TextEditingController(text: selectedAbal?.abal.birthDate ?? '');
+    _subCityControl =
+        TextEditingController(text: selectedAbal?.abal.subCity ?? '');
+    _woredaControl =
+        TextEditingController(text: selectedAbal?.abal.woreda ?? '');
+    _kebeleControl =
+        TextEditingController(text: selectedAbal?.abal.kebele ?? '');
+    _houseNumberControl =
+        TextEditingController(text: selectedAbal?.abal.houseNumber ?? '');
+    _emergencyContactFullNameControl = TextEditingController(
+        text: selectedAbal?.abal.emergencyContactFullName ?? '');
+    _emergencyContactPhoneNumberControl = TextEditingController(
+        text: selectedAbal?.abal.emergencyContactPhoneNumber ?? '');
+    _kifileControl =
+        TextEditingController(text: selectedAbal?.abal.kifile ?? '');
+
+    // Initialize Family information controllers with selectedAbal data if it exists
+    _familyYekerestenaNameControl = TextEditingController(
+        text: selectedAbal?.familyInfo.familyYekerestenaName ?? '');
+    _familyFullNameControl = TextEditingController(
+        text: selectedAbal?.familyInfo.familyFullName ?? '');
+    _relationShipControl = TextEditingController(
+        text: selectedAbal?.familyInfo.relationShip ?? '');
+    _familyAgeControl =
+        TextEditingController(text: selectedAbal?.familyInfo.familyAge ?? '');
+    _familyGenderControl = TextEditingController(
+        text: selectedAbal?.familyInfo.familyGender ?? '');
+    _familyPhoneNumberControl = TextEditingController(
+        text: selectedAbal?.familyInfo.familyPhoneNumber ?? '');
+    _familyBirthPlaceControl = TextEditingController(
+        text: selectedAbal?.familyInfo.familyBirthPlace ?? '');
+    _familyBirthDateControl = TextEditingController(
+        text: selectedAbal?.familyInfo.familyBirthDate ?? '');
+    _familySubCityControl = TextEditingController(
+        text: selectedAbal?.familyInfo.familySubCity ?? '');
+    _familyWoredaControl = TextEditingController(
+        text: selectedAbal?.familyInfo.familyWoreda ?? '');
+    _familyKebeleControl = TextEditingController(
+        text: selectedAbal?.familyInfo.familyKebele ?? '');
+    _familyHouseNumberControl = TextEditingController(
+        text: selectedAbal?.familyInfo.familyHouseNumber ?? '');
+
+    // If there is a selectedAbal, initialize the dropdown value
+    kifileValue = selectedAbal?.abal.kifile;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    TextTheme textTheme = Theme.of(context).textTheme;
+    final AbalCubit abalCubit = context.read<AbalCubit>();
+
+    // Access the selected Abal from the state
+    final AbalRegistrationModel? selectedAbal = abalCubit.state.selectedAbal;
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
@@ -124,14 +183,12 @@ class _RegistrationScreenState extends State<RegistrationScreen>
               return Stepper(
                 elevation: 0,
                 type: StepperType.horizontal,
-                steps: registrationSteps(sizeH, sizeW, state.nestedKifiles),
+                steps: registrationSteps(state.nestedKifiles),
                 onStepTapped: (step) => {},
                 currentStep: currentStep,
                 onStepContinue: () {
                   final lastStep = currentStep ==
-                      registrationSteps(sizeH, sizeW, state.nestedKifiles)
-                              .length -
-                          1;
+                      registrationSteps(state.nestedKifiles).length - 1;
                   if (lastStep) {
                     //TODO:send data to the server
                     setState(() {
@@ -146,9 +203,7 @@ class _RegistrationScreenState extends State<RegistrationScreen>
                 },
                 controlsBuilder: (context, ControlsDetails details) {
                   final bool isLastStep = details.currentStep ==
-                      registrationSteps(sizeH, sizeW, state.nestedKifiles)
-                              .length -
-                          1;
+                      registrationSteps(state.nestedKifiles).length - 1;
                   return Container(
                     margin: const EdgeInsets.only(top: 50),
                     child: Row(
@@ -222,11 +277,6 @@ class _RegistrationScreenState extends State<RegistrationScreen>
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    // FaIcon(
-                    //   FontAwesomeIcons.solidCircleCheck,
-                    //   size: 100,
-                    //   color: ColorResources.accentColor,
-                    // )
                     Lottie.asset('assets/animations/success.json', height: 350),
                     Text(
                       'ተሳክትዋል',
@@ -272,841 +322,81 @@ class _RegistrationScreenState extends State<RegistrationScreen>
     );
   }
 
-  List<Step> registrationSteps(height, width, List kifiles) => [
+  List<Step> registrationSteps(List kifiles) => [
         Step(
-            state: currentStep > 0 ? StepState.complete : StepState.indexed,
-            isActive: currentStep >= 0,
-            title: Text('የአባል መረጃ',
-                style: currentStep >= 0
-                    ? Theme.of(context)
-                        .textTheme
-                        .titleSmall
-                        ?.copyWith(color: ColorResources.secondaryColor)
-                    : Theme.of(context).textTheme.titleSmall?.copyWith(
-                        color: ColorResources.textColor.withOpacity(0.6))),
-            content: Form(
-              key: _abalFormKey,
-              child: SingleChildScrollView(
-                child: Column(
-                  children: <Widget>[
-                    Stack(
-                      children: [
-                        SizedBox(
-                          height: 130,
-                          width: 130,
-                          child: CircleAvatar(
-                              backgroundImage: hasAbalImage
-                                  ? FileImage(
-                                      abalImage!,
-                                    )
-                                  : Image.network('').image,
-                              backgroundColor: Colors.white,
-                              child: hasAbalImage
-                                  ? SizedBox()
-                                  : const Icon(
-                                      Icons.person_outline_outlined,
-                                      size: 60,
-                                      color: ColorResources.secondaryColor,
-                                    )),
-                        ),
-                        Positioned(
-                          bottom: 0,
-                          right: 0,
-                          child: GestureDetector(
-                            onTap: () => showModalBottomSheet(
-                                backgroundColor: Colors.transparent,
-                                context: context,
-                                builder: (context) {
-                                  return Container(
-                                    height: 160,
-                                    decoration: const BoxDecoration(
-                                        color: Colors.white,
-                                        borderRadius: BorderRadius.only(
-                                            topRight: Radius.circular(20),
-                                            topLeft: Radius.circular(20))),
-                                    child: Padding(
-                                      padding: EdgeInsets.all(20),
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.start,
-                                        children: [
-                                          Center(
-                                            child: Text('ፎቶዎን ከየት ይወስዳሉ?',
-                                                style: Theme.of(context)
-                                                    .textTheme
-                                                    .displaySmall
-                                                    ?.copyWith(
-                                                        color: ColorResources
-                                                            .textColor)),
-                                          ),
-                                          SizedBox(
-                                            height: 15,
-                                          ),
-                                          InkWell(
-                                            onTap: () async {
-                                              await pickImage(
-                                                  ImageSource.camera, true);
-                                            },
-                                            child: Row(
-                                              children: [
-                                                Icon(
-                                                  Icons.camera_alt_outlined,
-                                                  size: 20,
-                                                  color:
-                                                      ColorResources.textColor,
-                                                ),
-                                                SizedBox(
-                                                  width: 15,
-                                                ),
-                                                Text('ካሜራ ያንሱ',
-                                                    style: Theme.of(context)
-                                                        .textTheme
-                                                        .titleMedium
-                                                        ?.copyWith(
-                                                            fontWeight:
-                                                                FontWeight.w500,
-                                                            color:
-                                                                ColorResources
-                                                                    .textColor))
-                                              ],
-                                            ),
-                                          ),
-                                          SizedBox(
-                                            height: 15,
-                                          ),
-                                          InkWell(
-                                            onTap: () async {
-                                              await pickImage(
-                                                  ImageSource.gallery, true);
-                                            },
-                                            child: Row(
-                                              children: [
-                                                Icon(
-                                                  Icons
-                                                      .photo_size_select_actual_outlined,
-                                                  size: 20,
-                                                  color:
-                                                      ColorResources.textColor,
-                                                ),
-                                                SizedBox(
-                                                  width: 15,
-                                                ),
-                                                Text('ከጋለሪ ይውሰዱ',
-                                                    style: Theme.of(context)
-                                                        .textTheme
-                                                        .titleMedium
-                                                        ?.copyWith(
-                                                            fontWeight:
-                                                                FontWeight.w500,
-                                                            color:
-                                                                ColorResources
-                                                                    .textColor))
-                                              ],
-                                            ),
-                                          )
-                                        ],
-                                      ),
-                                    ),
-                                  );
-                                }),
-                            child: const SizedBox(
-                              height: 50,
-                              width: 50,
-                              child: CircleAvatar(
-                                backgroundColor: ColorResources.primaryColor,
-                                child: Icon(
-                                  Icons.camera_alt_outlined,
-                                  color: Colors.white,
-                                ),
-                              ),
-                            ),
-                          ),
-                        )
-                      ],
-                    ),
-                    SizedBox(
-                      height: height * 0.015,
-                    ),
-                    !hasAbalImage && isAbalFormSubmitted
-                        ? Text('**ፎቶ ያስፈልጋል**',
-                            style: Theme.of(context)
-                                .textTheme
-                                .titleSmall
-                                ?.copyWith(color: ColorResources.errorColor))
-                        : const SizedBox(),
-                    SizedBox(
-                      height: height * 0.05,
-                    ),
-                    DropdownButtonHideUnderline(
-                      child: DropdownButtonFormField(
-                        decoration: const InputDecoration(
-                          border: OutlineInputBorder(),
-                        ),
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'ይህ ቦታ መሞላት አለበት';
-                          }
-                          return null;
-                        },
-                        value: kifileValue,
-                        isDense: true,
-                        hint: const Text('ክፍል'),
-                        isExpanded: true,
-                        items: kifiles.map(
-                          (e) {
-                            return DropdownMenuItem<String>(
-                                value: e['id'], child: Text(e['name']));
-                          },
-                        ).toList(),
-                        onChanged: (newValue) {
-                          _kifileControl.text = newValue ?? _kifileControl.text;
-                          setState(() {
-                            kifileValue = newValue;
-                          });
-                        },
-                      ),
-                    ),
-                    SizedBox(
-                      height: height * 0.02,
-                    ),
-                    TextFormField(
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'ይህ ቦታ መሞላት አለበት';
-                        }
-                        return null;
-                      },
-                      controller: _yekerestenaNameControl,
-                      decoration: const InputDecoration(
-                          border: OutlineInputBorder(),
-                          label: Text('የክርስትና ስም')),
-                    ),
-                    SizedBox(
-                      height: height * 0.02,
-                    ),
-                    TextFormField(
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'ይህ ቦታ መሞላት አለበት';
-                        }
-                        return null;
-                      },
-                      controller: _fullNameControl,
-                      decoration: const InputDecoration(
-                          border: OutlineInputBorder(), label: Text('ሙሉ ስም')),
-                    ),
-                    SizedBox(
-                      height: height * 0.02,
-                    ),
-                    TextFormField(
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'ይህ ቦታ መሞላት አለበት';
-                        }
-                        return null;
-                      },
-                      controller: _ageControl,
-                      keyboardType: TextInputType.number,
-                      decoration: const InputDecoration(
-                          border: OutlineInputBorder(), label: Text('ዕድሜ')),
-                    ),
-                    SizedBox(
-                      height: height * 0.02,
-                    ),
-                    DropdownButtonHideUnderline(
-                      child: DropdownButtonFormField(
-                        decoration: const InputDecoration(
-                          border: OutlineInputBorder(),
-                        ),
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'ይህ ቦታ መሞላት አለበት';
-                          }
-                          return null;
-                        },
-                        value: sexValue,
-                        isDense: true,
-                        hint: const Text('ጾታ'),
-                        isExpanded: true,
-                        items: const [
-                          DropdownMenuItem(value: "Male", child: Text("ወንድ")),
-                          DropdownMenuItem(value: "Female", child: Text("ሴት")),
-                        ],
-                        onChanged: (newValue) {
-                          _genderControl.text = newValue ?? _genderControl.text;
-                          setState(() {
-                            sexValue = newValue;
-                          });
-                        },
-                      ),
-                    ),
-                    SizedBox(
-                      height: height * 0.02,
-                    ),
-                    IntlPhoneField(
-                      controller: _phoneNumberControl,
-                      autovalidateMode: AutovalidateMode.onUserInteraction,
-                      decoration: const InputDecoration(
-                        labelText: 'ስልክ ቁጥር',
-                        border: OutlineInputBorder(
-                          borderSide: BorderSide(),
-                        ),
-                      ),
-                      initialCountryCode: 'ET',
-                      onChanged: (phone) {
-                        phoneNumber = phone.completeNumber;
-                      },
-                    ),
-                    SizedBox(
-                      height: height * 0.02,
-                    ),
-                    TextFormField(
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'ይህ ቦታ መሞላት አለበት';
-                        }
-                        return null;
-                      },
-                      controller: _birthPlaceControl,
-                      decoration: const InputDecoration(
-                          border: OutlineInputBorder(),
-                          label: Text('የትውልድ ስፍራ')),
-                    ),
-                    SizedBox(
-                      height: height * 0.02,
-                    ),
-                    TextFormField(
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'ይህ ቦታ መሞላት አለበት';
-                        }
-                        return null;
-                      },
-                      controller: _birthDateControl,
-                      decoration: const InputDecoration(
-                          border: OutlineInputBorder(),
-                          label: Text('የትውልድ ዘመን')),
-                    ),
-                    SizedBox(
-                      height: height * 0.02,
-                    ),
-                    DropdownButtonHideUnderline(
-                      child: DropdownButtonFormField(
-                        decoration: const InputDecoration(
-                          border: OutlineInputBorder(),
-                        ),
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'ይህ ቦታ መሞላት አለበት';
-                          }
-                          return null;
-                        },
-                        value: kefleKetemaValue,
-                        isDense: true,
-                        hint: const Text('ክፈለ ከተማ'),
-                        isExpanded: true,
-                        items: const [
-                          DropdownMenuItem(value: "ledeta", child: Text("ልደታ")),
-                          DropdownMenuItem(
-                              value: "addis ketema", child: Text("አዲስ ከተማ")),
-                          DropdownMenuItem(value: "arada", child: Text("አራዳ")),
-                        ],
-                        onChanged: (newValue) {
-                          _subCityControl.text =
-                              newValue ?? _subCityControl.text;
-                          setState(() {
-                            kefleKetemaValue = newValue;
-                          });
-                        },
-                      ),
-                    ),
-                    SizedBox(
-                      height: height * 0.02,
-                    ),
-                    TextFormField(
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'ይህ ቦታ መሞላት አለበት';
-                        }
-                        return null;
-                      },
-                      controller: _woredaControl,
-                      keyboardType: TextInputType.number,
-                      decoration: const InputDecoration(
-                          border: OutlineInputBorder(), label: Text('ወረዳ')),
-                    ),
-                    SizedBox(
-                      height: height * 0.02,
-                    ),
-                    TextFormField(
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'ይህ ቦታ መሞላት አለበት';
-                        }
-                        return null;
-                      },
-                      controller: _kebeleControl,
-                      keyboardType: TextInputType.number,
-                      decoration: const InputDecoration(
-                          border: OutlineInputBorder(), label: Text('ቀበሌ')),
-                    ),
-                    SizedBox(
-                      height: height * 0.02,
-                    ),
-                    TextFormField(
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'ይህ ቦታ መሞላት አለበት';
-                        }
-                        return null;
-                      },
-                      controller: _houseNumberControl,
-                      keyboardType: TextInputType.number,
-                      decoration: const InputDecoration(
-                          border: OutlineInputBorder(), label: Text('የቤት ቁጥር')),
-                    ),
-                    SizedBox(
-                      height: height * 0.02,
-                    ),
-                    TextFormField(
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'ይህ ቦታ መሞላት አለበት';
-                        }
-                        return null;
-                      },
-                      controller: _emergencyContactFullNameControl,
-                      decoration: const InputDecoration(
-                          border: OutlineInputBorder(),
-                          label: Text('የአደጋ ጊዜ ተጠሪ')),
-                    ),
-                    SizedBox(
-                      height: height * 0.02,
-                    ),
-                    IntlPhoneField(
-                      controller: _emergencyContactPhoneNumberControl,
-                      autovalidateMode: AutovalidateMode.onUserInteraction,
-                      decoration: const InputDecoration(
-                        labelText: 'የአደጋ ጊዜ ተጠሪ ስልክ ቁጥር',
-                        border: OutlineInputBorder(
-                          borderSide: BorderSide(),
-                        ),
-                      ),
-                      initialCountryCode: 'ET',
-                      onChanged: (phone) {
-                        phoneNumber = phone.completeNumber;
-                      },
-                    ),
-                  ],
-                ),
-              ),
-            )),
+          state: currentStep > 0 ? StepState.complete : StepState.indexed,
+          isActive: currentStep >= 0,
+          title: Text('የአባል መረጃ',
+              style: currentStep >= 0
+                  ? Theme.of(context)
+                      .textTheme
+                      .titleSmall
+                      ?.copyWith(color: ColorResources.secondaryColor)
+                  : Theme.of(context).textTheme.titleSmall?.copyWith(
+                      color: ColorResources.textColor.withOpacity(0.6))),
+          content: AbalForm(
+            formKey: _abalFormKey,
+            kifiles: kifiles,
+            yekerestenaNameControl: _yekerestenaNameControl,
+            fullNameControl: _fullNameControl,
+            ageControl: _ageControl,
+            genderControl: _genderControl,
+            phoneNumberControl: _phoneNumberControl,
+            birthPlaceControl: _birthPlaceControl,
+            birthDateControl: _birthDateControl,
+            subCityControl: _subCityControl,
+            woredaControl: _woredaControl,
+            kebeleControl: _kebeleControl,
+            houseNumberControl: _houseNumberControl,
+            emergencyContactFullNameControl: _emergencyContactFullNameControl,
+            emergencyContactPhoneNumberControl:
+                _emergencyContactPhoneNumberControl,
+            kifileControl: _kifileControl,
+            kifileValue: kifileValue,
+            kefleKetemaValue: kefleKetemaValue,
+            sexValue: sexValue,
+            isAbalFormSubmitted: isAbalFormSubmitted,
+            onKifileChanged: (value) => {kifileValue = value},
+            onSexChanged: (value) => {sexValue = value},
+            onKefeleKetemaChanged: (value) => {kefleKetemaValue = value},
+            onPhoneNumberChanged: (value) => {phoneNumber = value},
+            onEmergencyPhoneNumberChanged: (value) =>
+                {_emergencyContactPhoneNumberControl.text = value},
+          ),
+        ),
         Step(
-            state: currentStep > 1 ? StepState.complete : StepState.indexed,
-            isActive: currentStep >= 1,
-            title: Text('የወላጅ መረጃ',
-                style: currentStep >= 1
-                    ? Theme.of(context)
-                        .textTheme
-                        .titleSmall
-                        ?.copyWith(color: ColorResources.secondaryColor)
-                    : Theme.of(context).textTheme.titleSmall?.copyWith(
-                        color: ColorResources.textColor.withOpacity(0.6))),
-            content: Form(
-              key: _welageFormKey,
-              child: SingleChildScrollView(
-                child: Column(
-                  children: <Widget>[
-                    Stack(
-                      children: [
-                        SizedBox(
-                          height: 130,
-                          width: 130,
-                          child: CircleAvatar(
-                              backgroundImage: hasWelageImage
-                                  ? FileImage(
-                                      welageImage!,
-                                    )
-                                  : Image.network('').image,
-                              backgroundColor: Colors.white,
-                              child: hasWelageImage
-                                  ? SizedBox()
-                                  : const Icon(
-                                      Icons.person_2_outlined,
-                                      size: 60,
-                                      color: ColorResources.secondaryColor,
-                                    )),
-                        ),
-                        Positioned(
-                          bottom: 0,
-                          right: 0,
-                          child: GestureDetector(
-                            onTap: () => showModalBottomSheet(
-                                backgroundColor: Colors.transparent,
-                                context: context,
-                                builder: (context) {
-                                  return Container(
-                                    height: 160,
-                                    decoration: const BoxDecoration(
-                                        color: ColorResources.primaryColor,
-                                        borderRadius: BorderRadius.only(
-                                            topRight: Radius.circular(20),
-                                            topLeft: Radius.circular(20))),
-                                    child: Padding(
-                                      padding: EdgeInsets.all(20),
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.start,
-                                        children: [
-                                          Center(
-                                            child: Text('ፎቶዎን ከየት ይወስዳሉ?',
-                                                style: Theme.of(context)
-                                                    .textTheme
-                                                    .displaySmall
-                                                    ?.copyWith(
-                                                        color: ColorResources
-                                                            .textColor)),
-                                          ),
-                                          SizedBox(
-                                            height: 15,
-                                          ),
-                                          InkWell(
-                                            onTap: () async {
-                                              await pickImage(
-                                                  ImageSource.camera, false);
-                                            },
-                                            child: Row(
-                                              children: [
-                                                Icon(
-                                                  Icons.camera_alt_outlined,
-                                                  size: 25,
-                                                  color:
-                                                      ColorResources.textColor,
-                                                ),
-                                                SizedBox(
-                                                  width: 15,
-                                                ),
-                                                Text('ካሜራ ያንሱ',
-                                                    style: Theme.of(context)
-                                                        .textTheme
-                                                        .bodyLarge
-                                                        ?.copyWith(
-                                                            fontSize: 18,
-                                                            fontWeight:
-                                                                FontWeight.w600,
-                                                            color:
-                                                                ColorResources
-                                                                    .textColor))
-                                              ],
-                                            ),
-                                          ),
-                                          SizedBox(
-                                            height: 15,
-                                          ),
-                                          InkWell(
-                                            onTap: () async {
-                                              await pickImage(
-                                                  ImageSource.gallery, false);
-                                            },
-                                            child: Row(
-                                              children: [
-                                                Icon(
-                                                  Icons
-                                                      .photo_size_select_actual_outlined,
-                                                  size: 25,
-                                                  color:
-                                                      ColorResources.textColor,
-                                                ),
-                                                SizedBox(
-                                                  width: 15,
-                                                ),
-                                                Text('ከጋለሪ ይውሰዱ',
-                                                    style: Theme.of(context)
-                                                        .textTheme
-                                                        .bodyLarge
-                                                        ?.copyWith(
-                                                            fontSize: 18,
-                                                            fontWeight:
-                                                                FontWeight.w600,
-                                                            color:
-                                                                ColorResources
-                                                                    .textColor))
-                                              ],
-                                            ),
-                                          )
-                                        ],
-                                      ),
-                                    ),
-                                  );
-                                }),
-                            child: const SizedBox(
-                              height: 50,
-                              width: 50,
-                              child: CircleAvatar(
-                                backgroundColor: ColorResources.primaryColor,
-                                child: Icon(
-                                  Icons.camera_alt_outlined,
-                                  color: Colors.white,
-                                ),
-                              ),
-                            ),
-                          ),
-                        )
-                      ],
-                    ),
-                    SizedBox(
-                      height: height * 0.015,
-                    ),
-                    !hasWelageImage && isWelageFormSubmitted
-                        ? const Text(
-                            '**ፎቶ ያስፈልጋል**',
-                            style: TextStyle(color: Colors.redAccent),
-                          )
-                        : const SizedBox(),
-                    SizedBox(
-                      height: height * 0.05,
-                    ),
-                    TextFormField(
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'ይህ ቦታ መሞላት አለበት';
-                        }
-                        return null;
-                      },
-                      controller: _familyYekerestenaNameControl,
-                      decoration: const InputDecoration(
-                          border: OutlineInputBorder(),
-                          label: Text('የክርስትና ስም')),
-                    ),
-                    SizedBox(
-                      height: height * 0.02,
-                    ),
-                    TextFormField(
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'ይህ ቦታ መሞላት አለበት';
-                        }
-                        return null;
-                      },
-                      controller: _familyFullNameControl,
-                      decoration: const InputDecoration(
-                          border: OutlineInputBorder(), label: Text('ሙሉ ስም')),
-                    ),
-                    SizedBox(
-                      height: height * 0.02,
-                    ),
-                    DropdownButtonHideUnderline(
-                      child: DropdownButtonFormField(
-                        decoration: const InputDecoration(
-                          border: OutlineInputBorder(),
-                        ),
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'ይህ ቦታ መሞላት አለበት';
-                          }
-                          return null;
-                        },
-                        isDense: true,
-                        hint: const Text('ከአባሉ ጋር ያለው ግንኙነት'),
-                        isExpanded: true,
-                        items: const [
-                          DropdownMenuItem(value: "mother", child: Text("እናት")),
-                          DropdownMenuItem(value: "father", child: Text("አባት")),
-                          DropdownMenuItem(
-                              value: "brother", child: Text("ወንድም")),
-                          DropdownMenuItem(value: "sister", child: Text("አህት")),
-                          DropdownMenuItem(
-                              value: "Female", child: Text("ዘመድና")),
-                        ],
-                        onChanged: (newValue) {
-                          _relationShipControl.text =
-                              newValue ?? _relationShipControl.text;
-
-                          setState(() {
-                            relationshipValue = newValue;
-                          });
-                        },
-                      ),
-                    ),
-                    SizedBox(
-                      height: height * 0.02,
-                    ),
-                    TextFormField(
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'ይህ ቦታ መሞላት አለበት';
-                        }
-                        return null;
-                      },
-                      controller: _familyAgeControl,
-                      keyboardType: TextInputType.number,
-                      decoration: const InputDecoration(
-                          border: OutlineInputBorder(), label: Text('ዕድሜ')),
-                    ),
-                    SizedBox(
-                      height: height * 0.02,
-                    ),
-                    DropdownButtonHideUnderline(
-                      child: DropdownButtonFormField(
-                        decoration: const InputDecoration(
-                          border: OutlineInputBorder(),
-                        ),
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'ይህ ቦታ መሞላት አለበት';
-                          }
-                          return null;
-                        },
-                        value: sexValue,
-                        isDense: true,
-                        hint: const Text('ጾታ'),
-                        isExpanded: true,
-                        items: const [
-                          DropdownMenuItem(value: "Male", child: Text("ወንድ")),
-                          DropdownMenuItem(value: "Female", child: Text("ሴት")),
-                        ],
-                        onChanged: (newValue) {
-                          _familyGenderControl.text =
-                              newValue ?? _familyGenderControl.text;
-                          setState(() {
-                            sexValue = newValue;
-                          });
-                        },
-                      ),
-                    ),
-                    SizedBox(
-                      height: height * 0.02,
-                    ),
-                    IntlPhoneField(
-                      controller: _familyPhoneNumberControl,
-                      autovalidateMode: AutovalidateMode.onUserInteraction,
-                      decoration: const InputDecoration(
-                        labelText: 'ስልክ ቁጥር',
-                        border: OutlineInputBorder(
-                          borderSide: BorderSide(),
-                        ),
-                      ),
-                      initialCountryCode: 'ET',
-                      onChanged: (phone) {
-                        phoneNumber = phone.completeNumber;
-                      },
-                    ),
-                    SizedBox(
-                      height: height * 0.02,
-                    ),
-                    TextFormField(
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'ይህ ቦታ መሞላት አለበት';
-                        }
-                        return null;
-                      },
-                      controller: _familyBirthPlaceControl,
-                      decoration: const InputDecoration(
-                          border: OutlineInputBorder(),
-                          label: Text('የትውልድ ስፍራ')),
-                    ),
-                    SizedBox(
-                      height: height * 0.02,
-                    ),
-                    TextFormField(
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'ይህ ቦታ መሞላት አለበት';
-                        }
-                        return null;
-                      },
-                      controller: _familyBirthDateControl,
-                      decoration: const InputDecoration(
-                          border: OutlineInputBorder(),
-                          label: Text('የትውልድ ዘመን')),
-                    ),
-                    SizedBox(
-                      height: height * 0.02,
-                    ),
-                    DropdownButtonHideUnderline(
-                      child: DropdownButtonFormField(
-                        decoration: const InputDecoration(
-                          border: OutlineInputBorder(),
-                        ),
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'ይህ ቦታ መሞላት አለበት';
-                          }
-                          return null;
-                        },
-                        value: kefleKetemaValue,
-                        isDense: true,
-                        hint: const Text('ክፈለ ከተማ'),
-                        isExpanded: true,
-                        items: const [
-                          DropdownMenuItem(value: "ledeta", child: Text("ልደታ")),
-                          DropdownMenuItem(
-                              value: "addis ketema", child: Text("አዲስ ከተማ")),
-                          DropdownMenuItem(value: "arada", child: Text("አራዳ")),
-                        ],
-                        onChanged: (newValue) {
-                          _familySubCityControl.text =
-                              newValue ?? _familySubCityControl.text;
-                          setState(() {
-                            kefleKetemaValue = newValue;
-                          });
-                        },
-                      ),
-                    ),
-                    SizedBox(
-                      height: height * 0.02,
-                    ),
-                    TextFormField(
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'ይህ ቦታ መሞላት አለበት';
-                        }
-                        return null;
-                      },
-                      controller: _familyWoredaControl,
-                      keyboardType: TextInputType.number,
-                      decoration: const InputDecoration(
-                          border: OutlineInputBorder(), label: Text('ወረዳ')),
-                    ),
-                    SizedBox(
-                      height: height * 0.02,
-                    ),
-                    TextFormField(
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'ይህ ቦታ መሞላት አለበት';
-                        }
-                        return null;
-                      },
-                      controller: _familyKebeleControl,
-                      keyboardType: TextInputType.number,
-                      decoration: const InputDecoration(
-                          border: OutlineInputBorder(), label: Text('ቀበሌ')),
-                    ),
-                    SizedBox(
-                      height: height * 0.02,
-                    ),
-                    TextFormField(
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'ይህ ቦታ መሞላት አለበት';
-                        }
-                        return null;
-                      },
-                      controller: _familyHouseNumberControl,
-                      keyboardType: TextInputType.number,
-                      decoration: const InputDecoration(
-                          border: OutlineInputBorder(), label: Text('የቤት ቁጥር')),
-                    ),
-                  ],
-                ),
-              ),
-            )),
+          state: currentStep > 1 ? StepState.complete : StepState.indexed,
+          isActive: currentStep >= 1,
+          title: Text('የወላጅ መረጃ',
+              style: currentStep >= 1
+                  ? Theme.of(context)
+                      .textTheme
+                      .titleSmall
+                      ?.copyWith(color: ColorResources.secondaryColor)
+                  : Theme.of(context).textTheme.titleSmall?.copyWith(
+                      color: ColorResources.textColor.withOpacity(0.6))),
+          content: FamilyForm(
+            formKey: _welageFormKey,
+            familyYekerestenaNameControl: _familyYekerestenaNameControl,
+            familyFullNameControl: _familyFullNameControl,
+            relationShipControl: _relationShipControl,
+            familyAgeControl: _familyAgeControl,
+            familyGenderControl: _familyGenderControl,
+            familyPhoneNumberControl: _familyPhoneNumberControl,
+            familyBirthPlaceControl: _familyBirthPlaceControl,
+            familyBirthDateControl: _familyBirthDateControl,
+            familySubCityControl: _familySubCityControl,
+            familyWoredaControl: _familyWoredaControl,
+            familyKebeleControl: _familyKebeleControl,
+            familyHouseNumberControl: _familyHouseNumberControl,
+            isWelageFormSubmitted: isWelageFormSubmitted,
+            onRelationShipChanged: (value) => {relationshipValue = value},
+            onFamilySexChanged: (value) => {sexValue = value},
+            onFamilySubCityChanged: (value) => {kefleKetemaValue = value},
+            onFamilyPhoneNumberChanged: (value) =>
+                {_familyPhoneNumberControl.text = value},
+          ),
+        ),
         Step(
             state: currentStep > 2 ? StepState.complete : StepState.indexed,
             isActive: currentStep >= 2,
@@ -1135,31 +425,6 @@ class _RegistrationScreenState extends State<RegistrationScreen>
               ),
             ))
       ];
-  Future pickImage(ImageSource source, bool isForAbal) async {
-    try {
-      final image = await ImagePicker().pickImage(source: source);
-
-      if (image == null) return;
-
-      final imageTemp = File(image.path);
-
-      setState(() => {
-            if (isForAbal)
-              {
-                abalImage = imageTemp,
-                hasAbalImage = true,
-              }
-            else
-              {welageImage = imageTemp, hasWelageImage = true}
-          });
-
-      if (!mounted) return;
-
-      Navigator.pop(context);
-    } on PlatformException catch (e) {
-      print('Failed to pick image: $e');
-    }
-  }
 
   Future submit() async {
     FamilyInfo familyInfo = FamilyInfo(
@@ -1201,6 +466,41 @@ class _RegistrationScreenState extends State<RegistrationScreen>
 
     print('===============called');
     print(newAbal);
+  }
+
+  @override
+  void dispose() {
+    // Dispose of all controllers
+    _yekerestenaNameControl.dispose();
+    _fullNameControl.dispose();
+    _ageControl.dispose();
+    _genderControl.dispose();
+    _phoneNumberControl.dispose();
+    _birthPlaceControl.dispose();
+    _birthDateControl.dispose();
+    _subCityControl.dispose();
+    _woredaControl.dispose();
+    _kebeleControl.dispose();
+    _houseNumberControl.dispose();
+    _emergencyContactFullNameControl.dispose();
+    _emergencyContactPhoneNumberControl.dispose();
+    _kifileControl.dispose();
+
+    // Family information controllers
+    _familyYekerestenaNameControl.dispose();
+    _familyFullNameControl.dispose();
+    _relationShipControl.dispose();
+    _familyAgeControl.dispose();
+    _familyGenderControl.dispose();
+    _familyPhoneNumberControl.dispose();
+    _familyBirthPlaceControl.dispose();
+    _familyBirthDateControl.dispose();
+    _familySubCityControl.dispose();
+    _familyWoredaControl.dispose();
+    _familyKebeleControl.dispose();
+    _familyHouseNumberControl.dispose();
+
+    super.dispose();
   }
 }
 

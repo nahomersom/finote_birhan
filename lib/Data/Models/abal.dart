@@ -1,7 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
-
 class AbalRegistrationModel {
   final FamilyInfo familyInfo;
   final String registrarId;
@@ -87,7 +85,7 @@ class AbalModel {
   final String emergencyContactFullName;
   final String emergencyContactPhoneNumber;
   final String kifile;
-  final String imagePath;
+  String imagePath;
 
   AbalModel({
     required this.yekerestenaName,
@@ -163,7 +161,7 @@ class FamilyInfo {
   final String familyWoreda;
   final String familyKebele;
   final String familyHouseNumber;
-  final String imagePath;
+  String imagePath;
 
   FamilyInfo({
     required this.familyYekerestenaName,

@@ -19,7 +19,8 @@ class ColorResources {
 
   static const Color backgroundColor = Color(0xffF0F5FC);
 
-  static const Color textColor = Color(0xff2B306B);
+  // static const Color textColor = Color(0xff2B306B);
+  static const Color textColor = Color(0xff000000);
 
   static const Color lightSecondaryColor = Color(0xffA3ADB6);
 

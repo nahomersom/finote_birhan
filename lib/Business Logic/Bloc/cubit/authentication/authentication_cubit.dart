@@ -1,6 +1,4 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/material.dart';
 import 'package:finote_birhan_mobile/Data/Models/current_user.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';

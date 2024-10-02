@@ -82,6 +82,15 @@ class AbalCubit extends Cubit<AbalState> {
     print('--------------------------------first');
     CollectionReference abals = FirebaseFirestore.instance.collection('abals');
     print('===========================================================');
+    print('--------------------------------second');
+
+    String abalImagePath = await fileUploader.uploadFile('ህጻናት/አባል', abalImage);
+
+    String welageImagePath =
+        await fileUploader.uploadFile('ህጻናት/ወላጅ', welageImage);
+
+    abal.abal.imagePath = abalImagePath;
+    abal.familyInfo.imagePath = welageImagePath;
     print(jsonEncode(abal));
     emit(state.copyWith(abalStatus: AbalStatus.registered, errorMessage: ''));
     abals
@@ -99,30 +108,46 @@ class AbalCubit extends Cubit<AbalState> {
             });
   }
 
-  Future<List> getAbals() async {
-    print('a======================abal called');
+  Future<List<AbalRegistrationModel>> getAbals() async {
+    print('Fetching abals from Firestore...');
+
     emit(state.copyWith(abalStatus: AbalStatus.initial, errorMessage: ''));
 
-    List<dynamic> abals = [];
+    List<AbalRegistrationModel> abals = [];
+
     try {
       emit(state.copyWith(abalStatus: AbalStatus.loading, errorMessage: ''));
-      await abalRepository.getAbals().then((QuerySnapshot querySnapshot) {
-        for (var doc in querySnapshot.docs) {
-          print(doc.data());
 
-          Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
-          data['id'] = doc.reference.id;
+      // Fetching data from Firestore
+      QuerySnapshot querySnapshot = await abalRepository.getAbals();
 
-          abals.add(data);
-        }
-      });
+      // Mapping each document to AbalRegistrationModel
+      abals = querySnapshot.docs.map((doc) {
+        return AbalRegistrationModel.fromDoc(
+            doc); // Using fromDoc factory method
+      }).toList();
+
+      // Emitting the success state with the abals list
       emit(state.copyWith(
-          abals: abals, abalStatus: AbalStatus.success, errorMessage: ''));
-      return abals;
+        abals: abals,
+        abalStatus: AbalStatus.success,
+        errorMessage: '',
+      ));
+
+      return abals; // Return the list of abals
     } catch (e) {
+      // Handle errors
+      print('Error fetching abals: $e');
       emit(state.copyWith(
-          abalStatus: AbalStatus.error, errorMessage: e.toString()));
+        abalStatus: AbalStatus.error,
+        errorMessage: e.toString(),
+      ));
       throw Exception(e.toString());
     }
+  }
+
+  // Add a method to set the selected Abal for editing
+  void setSelectedAbal(AbalRegistrationModel abal) {
+    emit(state.copyWith(selectedAbal: abal));
   }
 }
