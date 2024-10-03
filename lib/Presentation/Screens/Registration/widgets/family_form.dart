@@ -28,44 +28,50 @@ class FamilyForm extends StatefulWidget {
   final Function(String?) onFamilySexChanged;
   final Function(String?) onFamilySubCityChanged;
   final Function(String) onFamilyPhoneNumberChanged;
-
-  FamilyForm(
-      {super.key,
-      required this.formKey,
-      required this.familyYekerestenaNameControl,
-      required this.familyFullNameControl,
-      required this.relationShipControl,
-      required this.familyAgeControl,
-      required this.familyGenderControl,
-      required this.familyPhoneNumberControl,
-      required this.familyBirthPlaceControl,
-      required this.familyBirthDateControl,
-      required this.familySubCityControl,
-      required this.familyWoredaControl,
-      required this.familyKebeleControl,
-      required this.familyHouseNumberControl,
-      required this.isWelageFormSubmitted,
-      this.relationshipValue,
-      this.kefleKetemaValue,
-      this.sexValue,
-      required this.onRelationShipChanged,
-      required this.onFamilySexChanged,
-      required this.onFamilySubCityChanged,
-      required this.onFamilyPhoneNumberChanged});
+  final Function(ImageSource imageSource, bool isForAbal) onImagePicked;
+  final bool hasWelageImage;
+  final File? welageImage;
+  FamilyForm({
+    super.key,
+    required this.formKey,
+    required this.familyYekerestenaNameControl,
+    required this.familyFullNameControl,
+    required this.relationShipControl,
+    required this.familyAgeControl,
+    required this.familyGenderControl,
+    required this.familyPhoneNumberControl,
+    required this.familyBirthPlaceControl,
+    required this.familyBirthDateControl,
+    required this.familySubCityControl,
+    required this.familyWoredaControl,
+    required this.familyKebeleControl,
+    required this.familyHouseNumberControl,
+    required this.isWelageFormSubmitted,
+    this.relationshipValue,
+    this.kefleKetemaValue,
+    this.sexValue,
+    required this.onRelationShipChanged,
+    required this.onFamilySexChanged,
+    required this.onFamilySubCityChanged,
+    required this.onFamilyPhoneNumberChanged,
+    required this.onImagePicked,
+    required this.hasWelageImage, // Receiving hasAbalImage
+    required this.welageImage, // Receiving abalImage
+  });
 
   @override
   State<FamilyForm> createState() => _FamilyFormState();
 }
 
 class _FamilyFormState extends State<FamilyForm> {
-  File? welageImage;
-  bool hasWelageImage = false;
+  bool phoneNumberIsValid = true; // Track phone number validity
   @override
   Widget build(BuildContext context) {
     var height = MediaQuery.of(context).size.height;
     var width = MediaQuery.of(context).size.width;
     return Form(
       key: widget.formKey,
+      autovalidateMode: AutovalidateMode.onUserInteraction,
       child: SingleChildScrollView(
         child: Column(
           children: <Widget>[
@@ -75,13 +81,13 @@ class _FamilyFormState extends State<FamilyForm> {
                   height: 130,
                   width: 130,
                   child: CircleAvatar(
-                      backgroundImage: hasWelageImage
+                      backgroundImage: widget.hasWelageImage
                           ? FileImage(
-                              welageImage!,
+                              widget.welageImage!,
                             )
                           : Image.network('').image,
                       backgroundColor: Colors.white,
-                      child: hasWelageImage
+                      child: widget.hasWelageImage
                           ? const SizedBox()
                           : const Icon(
                               Icons.person_2_outlined,
@@ -124,11 +130,12 @@ class _FamilyFormState extends State<FamilyForm> {
                                   ),
                                   InkWell(
                                     onTap: () async {
-                                      await pickImage(ImageSource.camera);
+                                      await widget.onImagePicked(
+                                          ImageSource.camera, false);
                                     },
                                     child: Row(
                                       children: [
-                                        Icon(
+                                        const Icon(
                                           Icons.camera_alt_outlined,
                                           size: 25,
                                           color: ColorResources.textColor,
@@ -153,11 +160,12 @@ class _FamilyFormState extends State<FamilyForm> {
                                   ),
                                   InkWell(
                                     onTap: () async {
-                                      await pickImage(ImageSource.gallery);
+                                      await widget.onImagePicked(
+                                          ImageSource.gallery, true);
                                     },
                                     child: Row(
                                       children: [
-                                        Icon(
+                                        const Icon(
                                           Icons
                                               .photo_size_select_actual_outlined,
                                           size: 25,
@@ -201,11 +209,12 @@ class _FamilyFormState extends State<FamilyForm> {
             SizedBox(
               height: height * 0.015,
             ),
-            !hasWelageImage && widget.isWelageFormSubmitted
-                ? const Text(
-                    '**ፎቶ ያስፈልጋል**',
-                    style: TextStyle(color: Colors.redAccent),
-                  )
+            !widget.hasWelageImage && widget.isWelageFormSubmitted
+                ? Text('**ፎቶ ያስፈልጋል**',
+                    style: Theme.of(context)
+                        .textTheme
+                        .titleSmall
+                        ?.copyWith(color: ColorResources.errorColor))
                 : const SizedBox(),
             SizedBox(
               height: height * 0.05,
@@ -326,6 +335,16 @@ class _FamilyFormState extends State<FamilyForm> {
               },
             ),
             SizedBox(
+              height: 3,
+            ),
+            if (widget.familyPhoneNumberControl.text.isEmpty &&
+                widget.isWelageFormSubmitted)
+              Text('ይህ ቦታ ያስፈልጋል',
+                  style: Theme.of(context)
+                      .textTheme
+                      .titleSmall
+                      ?.copyWith(color: ColorResources.errorColor)),
+            SizedBox(
               height: height * 0.02,
             ),
             TextFormField(
@@ -432,26 +451,5 @@ class _FamilyFormState extends State<FamilyForm> {
         ),
       ),
     );
-  }
-
-  Future pickImage(ImageSource source) async {
-    try {
-      final image = await ImagePicker().pickImage(source: source);
-
-      if (image == null) return;
-
-      final imageTemp = File(image.path);
-
-      setState(() {
-        welageImage = imageTemp;
-        hasWelageImage = true;
-      });
-
-      if (!mounted) return;
-
-      Navigator.pop(context);
-    } on PlatformException catch (e) {
-      print('Failed to pick image: $e');
-    }
   }
 }

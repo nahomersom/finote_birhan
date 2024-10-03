@@ -54,6 +54,7 @@ dependencies:
   shared_preferences: ^2.2.0
   pinput: ^2.2.31
   flutter_custom_clippers: ^2.1.0
+  logger: ^2.4.0
 dev_dependencies:
   flutter_test:
     sdk: flutter

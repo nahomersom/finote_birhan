@@ -32,48 +32,54 @@ class AbalForm extends StatefulWidget {
   final Function(String?) onKefeleKetemaChanged;
   final Function(String) onPhoneNumberChanged;
   final Function(String) onEmergencyPhoneNumberChanged;
+  final Function(ImageSource imageSource, bool isForAbal) onImagePicked;
+  final bool hasAbalImage;
+  final File? abalImage;
 
-  AbalForm(
-      {super.key,
-      required this.formKey,
-      required this.kifiles,
-      required this.yekerestenaNameControl,
-      required this.fullNameControl,
-      required this.ageControl,
-      required this.genderControl,
-      required this.phoneNumberControl,
-      required this.birthPlaceControl,
-      required this.birthDateControl,
-      required this.subCityControl,
-      required this.woredaControl,
-      required this.kebeleControl,
-      required this.houseNumberControl,
-      required this.emergencyContactFullNameControl,
-      required this.emergencyContactPhoneNumberControl,
-      required this.kifileControl,
-      this.kifileValue,
-      this.kefleKetemaValue,
-      this.sexValue,
-      required this.isAbalFormSubmitted,
-      required this.onKifileChanged,
-      required this.onSexChanged,
-      required this.onKefeleKetemaChanged,
-      required this.onPhoneNumberChanged,
-      required this.onEmergencyPhoneNumberChanged});
+  AbalForm({
+    super.key,
+    required this.formKey,
+    required this.kifiles,
+    required this.yekerestenaNameControl,
+    required this.fullNameControl,
+    required this.ageControl,
+    required this.genderControl,
+    required this.phoneNumberControl,
+    required this.birthPlaceControl,
+    required this.birthDateControl,
+    required this.subCityControl,
+    required this.woredaControl,
+    required this.kebeleControl,
+    required this.houseNumberControl,
+    required this.emergencyContactFullNameControl,
+    required this.emergencyContactPhoneNumberControl,
+    required this.kifileControl,
+    this.kifileValue,
+    this.kefleKetemaValue,
+    this.sexValue,
+    required this.isAbalFormSubmitted,
+    required this.onKifileChanged,
+    required this.onSexChanged,
+    required this.onKefeleKetemaChanged,
+    required this.onPhoneNumberChanged,
+    required this.onEmergencyPhoneNumberChanged,
+    required this.onImagePicked,
+    required this.hasAbalImage, // Receiving hasAbalImage
+    required this.abalImage, // Receiving abalImage
+  });
 
   @override
   State<AbalForm> createState() => _AbalFormState();
 }
 
 class _AbalFormState extends State<AbalForm> {
-  File? abalImage;
-  bool hasAbalImage = false;
   @override
   Widget build(BuildContext context) {
     var height = MediaQuery.of(context).size.height;
     var width = MediaQuery.of(context).size.width;
     return Form(
       key: widget.formKey,
+      autovalidateMode: AutovalidateMode.onUserInteraction,
       child: SingleChildScrollView(
         child: Column(
           children: <Widget>[
@@ -83,13 +89,13 @@ class _AbalFormState extends State<AbalForm> {
                   height: 130,
                   width: 130,
                   child: CircleAvatar(
-                      backgroundImage: hasAbalImage
+                      backgroundImage: widget.hasAbalImage
                           ? FileImage(
-                              abalImage!,
+                              widget.abalImage!,
                             )
                           : Image.network('').image,
                       backgroundColor: Colors.white,
-                      child: hasAbalImage
+                      child: widget.hasAbalImage
                           ? const SizedBox()
                           : const Icon(
                               Icons.person_outline_outlined,
@@ -132,7 +138,8 @@ class _AbalFormState extends State<AbalForm> {
                                   ),
                                   InkWell(
                                     onTap: () async {
-                                      await pickImage(ImageSource.camera);
+                                      await widget.onImagePicked(
+                                          ImageSource.camera, true);
                                     },
                                     child: Row(
                                       children: [
@@ -160,7 +167,8 @@ class _AbalFormState extends State<AbalForm> {
                                   ),
                                   InkWell(
                                     onTap: () async {
-                                      await pickImage(ImageSource.gallery);
+                                      await widget.onImagePicked(
+                                          ImageSource.gallery, true);
                                     },
                                     child: Row(
                                       children: [
@@ -207,7 +215,7 @@ class _AbalFormState extends State<AbalForm> {
             SizedBox(
               height: height * 0.015,
             ),
-            !hasAbalImage && widget.isAbalFormSubmitted
+            !widget.hasAbalImage && widget.isAbalFormSubmitted
                 ? Text('**ፎቶ ያስፈልጋል**',
                     style: Theme.of(context)
                         .textTheme
@@ -470,26 +478,5 @@ class _AbalFormState extends State<AbalForm> {
         ),
       ),
     );
-  }
-
-  Future pickImage(ImageSource source) async {
-    try {
-      final image = await ImagePicker().pickImage(source: source);
-
-      if (image == null) return;
-
-      final imageTemp = File(image.path);
-
-      setState(() {
-        abalImage = imageTemp;
-        hasAbalImage = true;
-      });
-
-      if (!mounted) return;
-
-      Navigator.pop(context);
-    } on PlatformException catch (e) {
-      print('Failed to pick image: $e');
-    }
   }
 }

@@ -2,14 +2,21 @@ import 'dart:io';
 import 'package:finote_birhan_mobile/Presentation/Screens/Registration/widgets/abal_form.dart';
 import 'package:finote_birhan_mobile/Presentation/Screens/Registration/widgets/family_form.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:go_router/go_router.dart';
 import 'package:finote_birhan_mobile/Data/Data%20Providers/colors.dart';
 import 'package:finote_birhan_mobile/Data/Data%20Providers/light_theme.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:lottie/lottie.dart';
 import '../../../../Business Logic/Bloc/cubit/abals/abal_cubit.dart';
 import '../../../../Data/Models/abal.dart';
+import 'package:logger/logger.dart';
+
+var logger = Logger(
+  printer: PrettyPrinter(),
+);
 
 class RegistrationScreen extends StatefulWidget {
   const RegistrationScreen({super.key});
@@ -58,7 +65,7 @@ class _RegistrationScreenState extends State<RegistrationScreen>
   final _commentControl = TextEditingController();
 
   String phoneNumber = "";
-
+  String emergencyPhoneNumber = "";
   String? sexValue = "Male";
   String? kifileValue;
   String? kefleKetemaValue = "ledeta";
@@ -213,6 +220,8 @@ class _RegistrationScreenState extends State<RegistrationScreen>
                           data: lightTheme,
                           child: TextButton(
                             onPressed: () => {
+                              logger.w("is there $hasAbalImage"),
+                              logger.w(_abalFormKey.currentState!.validate()),
                               //check if the the form is valid
                               _abalFormKey.currentState == null
                                   ? null
@@ -278,23 +287,23 @@ class _RegistrationScreenState extends State<RegistrationScreen>
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Lottie.asset('assets/animations/success.json', height: 350),
-                    Text(
+                    const Text(
                       'ተሳክትዋል',
                       style: TextStyle(
                           fontWeight: FontWeight.w600,
                           color: ColorResources.secondaryColor,
                           fontSize: 30),
                     ),
-                    Padding(
+                    const Padding(
                         padding: EdgeInsets.symmetric(horizontal: 15),
                         child: Text('አባሉን ወደ ቅዋቱ መመዝገብ ተሳክትዋል.')),
-                    SizedBox(
+                    const SizedBox(
                       height: 50,
                     ),
                     SizedBox(
                       width: double.infinity,
                       child: Padding(
-                          padding: EdgeInsets.symmetric(horizontal: 15),
+                          padding: const EdgeInsets.symmetric(horizontal: 15),
                           child: TextButton(
                             style: TextButton.styleFrom(
                                 padding: const EdgeInsets.all(0),
@@ -361,7 +370,11 @@ class _RegistrationScreenState extends State<RegistrationScreen>
             onKefeleKetemaChanged: (value) => {kefleKetemaValue = value},
             onPhoneNumberChanged: (value) => {phoneNumber = value},
             onEmergencyPhoneNumberChanged: (value) =>
-                {_emergencyContactPhoneNumberControl.text = value},
+                {emergencyPhoneNumber = value},
+            hasAbalImage: hasAbalImage, // Passing hasAbalImage
+            abalImage: abalImage, // Passing abalImage
+            onImagePicked: (imageSource, isForAbal) =>
+                pickImage(imageSource, isForAbal),
           ),
         ),
         Step(
@@ -395,6 +408,10 @@ class _RegistrationScreenState extends State<RegistrationScreen>
             onFamilySubCityChanged: (value) => {kefleKetemaValue = value},
             onFamilyPhoneNumberChanged: (value) =>
                 {_familyPhoneNumberControl.text = value},
+            hasWelageImage: hasWelageImage,
+            welageImage: welageImage,
+            onImagePicked: (imageSource, isForAbal) =>
+                pickImage(imageSource, isForAbal),
           ),
         ),
         Step(
@@ -454,7 +471,7 @@ class _RegistrationScreenState extends State<RegistrationScreen>
         kebele: _kebeleControl.text,
         houseNumber: _houseNumberControl.text,
         emergencyContactFullName: _emergencyContactFullNameControl.text,
-        emergencyContactPhoneNumber: _emergencyContactPhoneNumberControl.text,
+        emergencyContactPhoneNumber: emergencyPhoneNumber,
         kifile: _kifileControl.text,
         imagePath: '');
 
@@ -502,11 +519,37 @@ class _RegistrationScreenState extends State<RegistrationScreen>
 
     super.dispose();
   }
+
+  Future<void> pickImage(ImageSource source, bool isForAbal) async {
+    try {
+      final pickedFile = await ImagePicker().pickImage(source: source);
+
+      if (pickedFile == null) return;
+
+      setState(() {
+        final pickedImage = File(pickedFile.path);
+
+        if (isForAbal) {
+          abalImage = pickedImage;
+          hasAbalImage = true;
+        } else {
+          welageImage = pickedImage;
+          hasWelageImage = true;
+        }
+      });
+
+      if (!mounted) return;
+
+      Navigator.pop(context); // Close the image picker after picking
+    } catch (e) {
+      print('Failed to pick image: $e');
+    }
+  }
 }
 
 class Spinner extends StatelessWidget {
   final String text;
-  Spinner({super.key, required this.text});
+  const Spinner({super.key, required this.text});
 
   @override
   Widget build(BuildContext context) {

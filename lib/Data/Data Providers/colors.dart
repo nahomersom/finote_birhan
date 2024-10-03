@@ -11,7 +11,7 @@ class ColorResources {
 
   // static const Color darkPrimaryColor = Color(0xffE7EDF7);
   static const Color primaryColor = Color(0xff6e128f);
-  static const Color scaffoldColor = Color(0xffF6F8FA);
+  static const Color scaffoldColor = Color(0xffeeeeee);
 
   static const Color secondaryColor = Color(0xff7d4da1);
 

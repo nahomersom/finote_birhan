@@ -1,6 +1,5 @@
 import 'package:finote_birhan_mobile/Business%20Logic/Bloc/cubit/abals/abal_cubit.dart';
 import 'package:finote_birhan_mobile/Data/Models/abal.dart';
-import 'package:finote_birhan_mobile/Presentation/Screens/Abals/UI/Abal-List.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
