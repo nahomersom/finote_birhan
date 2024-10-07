@@ -164,7 +164,7 @@ class _LoginScreenState extends State<LoginScreen> {
 //             child: BlocConsumer<AuthenticationCubit, AuthenticationState>(
 //                 listener: (context, state) {
 //               if (state.authStatus.authenticated) {
-//                 context.go('/dashboard');
+//                 Get.toNamed('/dashboard');
 //               } else if (state.authStatus.codeSent) {
 //                 context.push('/verifyOtp');
 //               }

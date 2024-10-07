@@ -5,7 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:go_router/go_router.dart';
+import 'package:get/get_core/src/get_main.dart';
+import 'package:get/get_navigation/get_navigation.dart';
 import 'package:finote_birhan_mobile/Data/Data%20Providers/colors.dart';
 import 'package:finote_birhan_mobile/Data/Data%20Providers/light_theme.dart';
 import 'package:image_picker/image_picker.dart';
@@ -311,7 +312,7 @@ class _RegistrationScreenState extends State<RegistrationScreen>
                                     borderRadius:
                                         BorderRadius.all(Radius.circular(10))),
                                 backgroundColor: ColorResources.secondaryColor),
-                            onPressed: () => context.go('/dashboard'),
+                            onPressed: () => Get.toNamed('/dashboard'),
                             child: Text(
                               'መመለስ',
                               style: textTheme.titleSmall?.copyWith(

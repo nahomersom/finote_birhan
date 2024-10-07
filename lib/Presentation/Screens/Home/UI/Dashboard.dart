@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:go_router/go_router.dart';
 import 'package:finote_birhan_mobile/Business%20Logic/Bloc/cubit/abals/abal_cubit.dart';
 import 'package:finote_birhan_mobile/Data/Data%20Providers/colors.dart';
 import 'package:finote_birhan_mobile/Presentation/Screens/Home/Widgets/dashboard_card.dart';
+import 'package:get/get_core/src/get_main.dart';
+import 'package:get/get_navigation/get_navigation.dart';
 
 class DashboardScreen extends StatelessWidget {
   const DashboardScreen({super.key});
@@ -190,7 +191,7 @@ final dashboardItems = [
     onTap: (context) {
       // Replace with your actual functionality
       BlocProvider.of<AbalCubit>(context).getKifiles();
-      context.go('/dashboard/kifile');
+      Get.toNamed('/dashboard/kifile');
     },
   ),
   DashboardItem(
@@ -199,7 +200,7 @@ final dashboardItems = [
     onTap: (context) {
       // Replace with your actual functionality
       BlocProvider.of<AbalCubit>(context).getAbals();
-      context.go('/dashboard/abals');
+      Get.toNamed('/dashboard/abals');
     },
   ),
   DashboardItem(
@@ -208,7 +209,7 @@ final dashboardItems = [
     onTap: (context) {
       // Replace with your actual functionality
       BlocProvider.of<AbalCubit>(context).getKifiles();
-      context.go('/dashboard/kifile');
+      Get.toNamed('/dashboard/kifile');
     },
   ),
   DashboardItem(
@@ -217,7 +218,7 @@ final dashboardItems = [
     onTap: (context) {
       // Replace with your actual functionality
       BlocProvider.of<AbalCubit>(context).getKifiles();
-      context.go('/dashboard/kifile');
+      Get.toNamed('/dashboard/kifile');
     },
   ),
   DashboardItem(
@@ -226,7 +227,7 @@ final dashboardItems = [
     onTap: (context) {
       // Replace with your actual functionality
       BlocProvider.of<AbalCubit>(context).getKifiles();
-      context.go('/dashboard/kifile');
+      Get.toNamed('/dashboard/kifile');
     },
   ),
   DashboardItem(
@@ -235,7 +236,7 @@ final dashboardItems = [
     onTap: (context) {
       // Replace with your actual functionality
       BlocProvider.of<AbalCubit>(context).getKifiles();
-      context.go('/dashboard/kifile');
+      Get.toNamed('/dashboard/kifile');
     },
   ),
   DashboardItem(
@@ -244,7 +245,7 @@ final dashboardItems = [
     onTap: (context) {
       // Replace with your actual functionality
       BlocProvider.of<AbalCubit>(context).getKifiles();
-      context.go('/dashboard/kifile');
+      Get.toNamed('/dashboard/kifile');
     },
   ),
   DashboardItem(
@@ -253,7 +254,7 @@ final dashboardItems = [
     onTap: (context) {
       // Replace with your actual functionality
       BlocProvider.of<AbalCubit>(context).getKifiles();
-      context.go('/dashboard/kifile');
+      Get.toNamed('/dashboard/kifile');
     },
   ),
 ];

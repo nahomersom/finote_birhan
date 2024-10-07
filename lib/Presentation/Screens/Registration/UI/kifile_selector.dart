@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:go_router/go_router.dart';
+import 'package:get/get_core/src/get_main.dart';
+import 'package:get/get_navigation/get_navigation.dart';
 import 'package:finote_birhan_mobile/Business%20Logic/Bloc/cubit/abals/abal_cubit.dart';
 import 'package:finote_birhan_mobile/Data/Data%20Providers/light_theme.dart';
 
@@ -118,7 +119,7 @@ class _KifileSelectorState extends State<KifileSelector> {
                                       state.kifiles.elementAt(0)['id'],
                                       state.kifiles
                                           .elementAt(0)['childCollectionName']);
-                              context.go('/dashboard/kifile/registration');
+                              Get.toNamed('/dashboard/kifile/registration');
                             },
                             child: Text(
                               'ወደ ቀጣይ',

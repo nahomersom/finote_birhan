@@ -1,9 +1,11 @@
+import 'package:finote_birhan_mobile/Presentation/Screens/Home/UI/Dashboard.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:go_router/go_router.dart';
 import 'package:finote_birhan_mobile/Business%20Logic/Bloc/cubit/authentication/authentication_cubit.dart';
 import 'package:finote_birhan_mobile/Data/Data%20Providers/colors.dart';
+import 'package:get/get_core/src/get_main.dart';
+import 'package:get/get_navigation/get_navigation.dart';
 import 'package:pinput/pinput.dart';
 import '../../../../Utils/utils.dart';
 
@@ -41,13 +43,13 @@ class _VerifyOtpScreenState extends State<VerifyOtpScreen> {
           child: BlocConsumer<AuthenticationCubit, AuthenticationState>(
               listener: (context, state) {
             if (state.authStatus.authenticated) {
-              context.go('/dashboard');
+              Get.to(DashboardScreen());
             }
             if (state.authStatus.hasError) {
               Utils.showSnackBar(
                   context, state.errorMessage, Colors.red.shade400);
               if (state.verificationId == null) {
-                context.pop();
+                Get.back();
               }
             }
           }, builder: (context, state) {
