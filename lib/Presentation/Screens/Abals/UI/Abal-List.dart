@@ -1,3 +1,4 @@
+import 'package:finote_birhan_mobile/Business%20Logic/Controllers/abal/abal_controller.dart';
 import 'package:finote_birhan_mobile/Data/Data%20Providers/app_constants.dart';
 import 'package:finote_birhan_mobile/Presentation/Components/search_bar.dart';
 import 'package:finote_birhan_mobile/Presentation/Screens/Abals/Widgetes/user-list-item.dart';
@@ -5,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:finote_birhan_mobile/Business%20Logic/Bloc/cubit/abals/abal_cubit.dart';
+import 'package:get/get.dart';
 
 import '../../../../Data/Data Providers/colors.dart';
 
@@ -16,18 +18,28 @@ class AbalListScreen extends StatefulWidget {
 }
 
 class _AbalListScreenState extends State<AbalListScreen> {
+  final AbalController controller = Get.find<AbalController>();
+  List<User> filteredUsers = [];
   final List<User> users = [
     User('John Doe', 25, 'john.doe@example.com'),
     User('Jane Smith', 30, 'jane.smith@example.com'),
     User('Mike Johnson', 35, 'mike.johnson@example.com'),
     // Add more users as needed
   ];
-
-  List<User> filteredUsers = [];
-
   @override
   void initState() {
     super.initState();
+    // Fetch abals on initState
+    controller.getAbals().catchError((error) {
+      // Show error message as a snackbar if fetching fails
+      Get.snackbar(
+        'Error',
+        'Failed to load abals: $error',
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+      );
+    });
     filteredUsers = users;
   }
 
@@ -44,12 +56,12 @@ class _AbalListScreenState extends State<AbalListScreen> {
   @override
   Widget build(BuildContext context) {
     TextTheme textTheme = Theme.of(context).textTheme;
+
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
           title: Padding(
-            padding: const EdgeInsets.only(
-                bottom: 5.0), // Reduce bottom padding of the title
+            padding: const EdgeInsets.only(bottom: 5.0),
             child: Text(
               'የአባል ዝርዝር',
               style:
@@ -65,7 +77,7 @@ class _AbalListScreenState extends State<AbalListScreen> {
               children: [
                 Padding(
                   padding:
-                      const EdgeInsets.only(left: 8.0, right: 8.0, bottom: 10),
+                      const EdgeInsets.symmetric(horizontal: 8.0, vertical: 10),
                   child: SearchPage(
                       onSearch: filterUsers), // Pass callback to filter users
                 ),
@@ -74,40 +86,45 @@ class _AbalListScreenState extends State<AbalListScreen> {
             ),
           ),
         ),
-        body: BlocBuilder<AbalCubit, AbalState>(
-          builder: (BuildContext context, state) {
-            if (state.abalStatus.isSuccess) {
-              return Padding(
-                padding: const EdgeInsets.all(AppConstants.bodyPadding),
-                child: ListView.separated(
-                  itemCount: state.abals.length,
-                  itemBuilder: (BuildContext context, int index) {
-                    return AbalListItem(abal: state.abals[index]);
-                  },
-                  separatorBuilder: (BuildContext context, int index) {
-                    return const Divider(
-                      color: Colors.black,
-                      thickness: 0.2,
-                    );
-                  },
-                ),
-              );
-            }
-
+        body: Obx(() {
+          if (controller.isLoading.value) {
+            // Show loading indicator when fetching data
             return const Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  SpinKitFadingCircle(
-                    color: ColorResources.secondaryColor,
-                  ),
+                  CircularProgressIndicator(),
                   SizedBox(height: 10),
-                  Text('ዝግጅት ላይ'),
+                  Text('Loading...'),
                 ],
               ),
             );
-          },
-        ),
+          } else if (controller.hasError.value) {
+            // Show error message when an error occurs
+            return const Center(
+              child: Text('Failed to load data.'),
+            );
+          } else if (controller.abals.isEmpty) {
+            // Show placeholder when there are no abals
+            return const Center(
+              child: Text('No abals found.'),
+            );
+          } else {
+            // Show the list of abals when data is successfully fetched
+            return Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: ListView.separated(
+                itemCount: controller.abals.length,
+                itemBuilder: (BuildContext context, int index) {
+                  return AbalListItem(abal: controller.abals[index]);
+                },
+                separatorBuilder: (BuildContext context, int index) {
+                  return const Divider(color: Colors.black, thickness: 0.2);
+                },
+              ),
+            );
+          }
+        }),
       ),
     );
   }

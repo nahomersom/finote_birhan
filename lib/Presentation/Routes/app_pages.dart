@@ -1,3 +1,4 @@
+import 'package:finote_birhan_mobile/Business%20Logic/Controllers/abal/abal_binding.dart';
 import 'package:finote_birhan_mobile/Presentation/Screens/Abals/UI/Abal-List.dart';
 import 'package:finote_birhan_mobile/Presentation/Screens/Home/UI/Dashboard.dart';
 import 'package:finote_birhan_mobile/Presentation/Screens/Login/UI/login.dart';
@@ -37,6 +38,7 @@ class RouteConfig {
         GetPage(
           name: AppRoutes.ABALS,
           page: () => const AbalListScreen(),
+          binding: AbalBinding(),
           children: [
             GetPage(
               name: AppRoutes.REGISTRAION,
