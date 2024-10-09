@@ -26,22 +26,22 @@ class RouteConfig {
       page: () => const DashboardScreen(),
       children: [
         GetPage(
-          name: AppRoutes.KIFILE,
+          name: AppRoutes.KIFILE.toRoute(),
           page: () => const KifileSelector(),
           children: [
             GetPage(
-              name: AppRoutes.REGISTRAION,
+              name: AppRoutes.REGISTRAION.toRoute(),
               page: () => const RegistrationScreen(),
             ),
           ],
         ),
         GetPage(
-          name: AppRoutes.ABALS,
+          name: AppRoutes.ABALS.toRoute(),
           page: () => const AbalListScreen(),
           binding: AbalBinding(),
           children: [
             GetPage(
-              name: AppRoutes.REGISTRAION,
+              name: AppRoutes.REGISTRAION.toRoute(),
               page: () => const RegistrationScreen(),
             ),
           ],

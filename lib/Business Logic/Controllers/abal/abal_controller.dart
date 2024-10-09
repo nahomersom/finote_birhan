@@ -3,7 +3,13 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:finote_birhan_mobile/Business%20Logic/Algorithm/file-uploader.dart';
 import 'package:finote_birhan_mobile/Data/Models/abal.dart';
 import 'package:finote_birhan_mobile/Data/Repositories/abal.dart';
+import 'package:finote_birhan_mobile/Presentation/Screens/Registration/UI/registeration.dart';
 import 'package:get/get.dart';
+import 'package:logger/logger.dart';
+
+var logger = Logger(
+  printer: PrettyPrinter(),
+);
 
 class AbalController extends GetxController {
   final AbalRepository abalRepository;
@@ -103,10 +109,10 @@ class AbalController extends GetxController {
     }
   }
 
-  // Fetch abals from Firestore
   Future<List<AbalRegistrationModel>> getAbals() async {
     isLoading.value = true;
     hasError.value = false;
+    logger.w('called here');
 
     try {
       QuerySnapshot querySnapshot = await abalRepository.getAbals();
@@ -114,13 +120,15 @@ class AbalController extends GetxController {
           .map((doc) => AbalRegistrationModel.fromDoc(doc))
           .toList();
       isLoading.value = false;
+      logger.w('called here 2');
       return abals;
     } catch (e) {
       isLoading.value = false;
       hasError.value = true;
       errorMessage.value = e.toString();
-      throw Exception(e.toString());
+      logger.w('called here 3');
     }
+    return [];
   }
 
   // Set the selected Abal for editing

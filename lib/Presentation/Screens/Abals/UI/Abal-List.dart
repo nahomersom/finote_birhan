@@ -1,23 +1,18 @@
 import 'package:finote_birhan_mobile/Business%20Logic/Controllers/abal/abal_controller.dart';
-import 'package:finote_birhan_mobile/Data/Data%20Providers/app_constants.dart';
 import 'package:finote_birhan_mobile/Presentation/Components/search_bar.dart';
 import 'package:finote_birhan_mobile/Presentation/Screens/Abals/Widgetes/user-list-item.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:finote_birhan_mobile/Business%20Logic/Bloc/cubit/abals/abal_cubit.dart';
-import 'package:get/get.dart';
 
-import '../../../../Data/Data Providers/colors.dart';
+import 'package:get/get.dart';
 
 class AbalListScreen extends StatefulWidget {
   const AbalListScreen({super.key});
 
   @override
-  _AbalListScreenState createState() => _AbalListScreenState();
+  AbalListScreenState createState() => AbalListScreenState();
 }
 
-class _AbalListScreenState extends State<AbalListScreen> {
+class AbalListScreenState extends State<AbalListScreen> {
   final AbalController controller = Get.find<AbalController>();
   List<User> filteredUsers = [];
   final List<User> users = [
@@ -30,16 +25,7 @@ class _AbalListScreenState extends State<AbalListScreen> {
   void initState() {
     super.initState();
     // Fetch abals on initState
-    controller.getAbals().catchError((error) {
-      // Show error message as a snackbar if fetching fails
-      Get.snackbar(
-        'Error',
-        'Failed to load abals: $error',
-        snackPosition: SnackPosition.BOTTOM,
-        backgroundColor: Colors.red,
-        colorText: Colors.white,
-      );
-    });
+    controller.getAbals();
     filteredUsers = users;
   }
 
