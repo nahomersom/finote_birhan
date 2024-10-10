@@ -112,22 +112,30 @@ class AbalController extends GetxController {
   Future<List<AbalRegistrationModel>> getAbals() async {
     isLoading.value = true;
     hasError.value = false;
-    logger.w('called here');
+    logger.w('called here - starting to fetch data');
 
     try {
       QuerySnapshot querySnapshot = await abalRepository.getAbals();
       abals.value = querySnapshot.docs
           .map((doc) => AbalRegistrationModel.fromDoc(doc))
           .toList();
+
+      if (abals.isEmpty) {
+        logger.w('No abals found');
+      } else {
+        logger.w('Abals fetched successfully');
+        logger.w(abals.value.elementAt(0).abal.fullName);
+      }
+
       isLoading.value = false;
-      logger.w('called here 2');
       return abals;
     } catch (e) {
       isLoading.value = false;
       hasError.value = true;
       errorMessage.value = e.toString();
-      logger.w('called here 3');
+      logger.w('Error fetching abals: $e');
     }
+
     return [];
   }
 

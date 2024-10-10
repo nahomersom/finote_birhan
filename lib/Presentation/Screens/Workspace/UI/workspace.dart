@@ -2,6 +2,7 @@ import 'package:finote_birhan_mobile/Business%20Logic/Controllers/abal/abal_cont
 import 'package:finote_birhan_mobile/Data/Data%20Providers/colors.dart';
 import 'package:finote_birhan_mobile/Data/Repositories/abal.dart';
 import 'package:finote_birhan_mobile/Data/Services/firebase_service.dart';
+import 'package:finote_birhan_mobile/Presentation/Screens/Abals/UI/Abal-List.dart';
 import 'package:finote_birhan_mobile/Presentation/Screens/Home/UI/Dashboard.dart';
 import 'package:finote_birhan_mobile/Presentation/Screens/Registration/UI/kifile_selector.dart';
 import 'package:flutter/material.dart';
@@ -39,7 +40,7 @@ class Workspace extends StatelessWidget {
               // Replace these with your actual screens
               DashboardScreen(),
               DashboardScreen(),
-              KifileSelector(),
+              AbalListScreen(),
               DashboardScreen(),
             ],
           ),
