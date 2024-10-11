@@ -99,13 +99,10 @@ class AbalListScreenState extends State<AbalListScreen> {
             // Show the list of abals when data is successfully fetched
             return Padding(
               padding: const EdgeInsets.all(16.0),
-              child: ListView.separated(
+              child: ListView.builder(
                 itemCount: controller.abals.length,
                 itemBuilder: (BuildContext context, int index) {
                   return AbalListItem(abal: controller.abals[index]);
-                },
-                separatorBuilder: (BuildContext context, int index) {
-                  return const Divider(color: Colors.black, thickness: 0.2);
                 },
               ),
             );

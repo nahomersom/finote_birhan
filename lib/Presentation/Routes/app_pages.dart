@@ -23,7 +23,7 @@ class RouteConfig {
     ),
     GetPage(
       name: AppRoutes.DASHOBARD.toRoute(),
-      page: () => const DashboardScreen(),
+      page: () => DashboardScreen(),
       children: [
         GetPage(
           name: AppRoutes.KIFILE.toRoute(),

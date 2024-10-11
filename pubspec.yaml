@@ -55,6 +55,8 @@ dependencies:
   flutter_custom_clippers: ^2.1.0
   logger: ^2.4.0
   get: ^4.6.6
+  carousel_slider: ^5.0.0
+  flutter_screenutil: ^5.9.3
 dev_dependencies:
   flutter_test:
     sdk: flutter

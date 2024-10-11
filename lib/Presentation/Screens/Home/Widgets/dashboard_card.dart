@@ -4,14 +4,12 @@ import 'package:finote_birhan_mobile/Data/Data%20Providers/colors.dart';
 class DashboardCard extends StatelessWidget {
   const DashboardCard({
     super.key,
-    required this.sizeH,
     required this.text,
     required this.icon,
     required this.onTap,
     required this.height,
   });
 
-  final double sizeH;
   final String text;
   final IconData icon;
   final Function() onTap;
@@ -22,7 +20,6 @@ class DashboardCard extends StatelessWidget {
     return InkWell(
       onTap: onTap,
       child: Container(
-        height: height,
         decoration: BoxDecoration(
           borderRadius: const BorderRadius.all(Radius.circular(20)),
           color: Colors.white,
@@ -35,18 +32,16 @@ class DashboardCard extends StatelessWidget {
             children: [
               Icon(
                 icon,
-                size: 30,
+                size: 22,
                 color: ColorResources.primaryColor,
               ),
-              const SizedBox(height: 10),
-              Expanded(
-                child: Text(
-                  text,
-                  style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black,
-                      ),
-                ),
+              const SizedBox(height: 5),
+              Text(
+                text,
+                style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black,
+                    ),
               ),
             ],
           ),

@@ -36,7 +36,7 @@ class Workspace extends StatelessWidget {
     return Obx(() => Scaffold(
           body: IndexedStack(
             index: controller.selectedIndex.value,
-            children: const [
+            children: [
               // Replace these with your actual screens
               DashboardScreen(),
               DashboardScreen(),

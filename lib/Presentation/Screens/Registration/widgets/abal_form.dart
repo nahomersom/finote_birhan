@@ -81,400 +81,490 @@ class _AbalFormState extends State<AbalForm> {
       key: widget.formKey,
       autovalidateMode: AutovalidateMode.onUserInteraction,
       child: SingleChildScrollView(
-        child: Column(
-          children: <Widget>[
-            Stack(
-              children: [
-                SizedBox(
-                  height: 130,
-                  width: 130,
-                  child: CircleAvatar(
-                      backgroundImage: widget.hasAbalImage
-                          ? FileImage(
-                              widget.abalImage!,
-                            )
-                          : Image.network('').image,
-                      backgroundColor: Colors.white,
-                      child: widget.hasAbalImage
-                          ? const SizedBox()
-                          : const Icon(
-                              Icons.person_outline_outlined,
-                              size: 60,
-                              color: ColorResources.secondaryColor,
-                            )),
-                ),
-                Positioned(
-                  bottom: 0,
-                  right: 0,
-                  child: GestureDetector(
-                    onTap: () => showModalBottomSheet(
-                        backgroundColor: Colors.transparent,
-                        context: context,
-                        builder: (context) {
-                          return Container(
-                            height: 160,
-                            decoration: const BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.only(
-                                    topRight: Radius.circular(20),
-                                    topLeft: Radius.circular(20))),
-                            child: Padding(
-                              padding: const EdgeInsets.all(20),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: [
-                                  Center(
-                                    child: Text('ፎቶዎን ከየት ይወስዳሉ?',
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .displaySmall
-                                            ?.copyWith(
-                                                color:
-                                                    ColorResources.textColor)),
-                                  ),
-                                  const SizedBox(
-                                    height: 15,
-                                  ),
-                                  InkWell(
-                                    onTap: () async {
-                                      await widget.onImagePicked(
-                                          ImageSource.camera, true);
-                                    },
-                                    child: Row(
-                                      children: [
-                                        const Icon(
-                                          Icons.camera_alt_outlined,
-                                          size: 20,
-                                          color: ColorResources.textColor,
-                                        ),
-                                        const SizedBox(
-                                          width: 15,
-                                        ),
-                                        Text('ካሜራ ያንሱ',
-                                            style: Theme.of(context)
-                                                .textTheme
-                                                .titleMedium
-                                                ?.copyWith(
-                                                    fontWeight: FontWeight.w500,
-                                                    color: ColorResources
-                                                        .textColor))
-                                      ],
+        child: Container(
+          decoration: BoxDecoration(
+            borderRadius: const BorderRadius.all(Radius.circular(20)),
+            color: Colors.white,
+            border: Border.all(color: const Color(0xffA3ADB6).withOpacity(0.3)),
+          ),
+          child: Column(
+            children: <Widget>[
+              Stack(
+                children: [
+                  SizedBox(
+                    height: 130,
+                    width: 130,
+                    child: CircleAvatar(
+                        backgroundImage: widget.hasAbalImage
+                            ? FileImage(
+                                widget.abalImage!,
+                              )
+                            : Image.network('').image,
+                        backgroundColor: Colors.white,
+                        child: widget.hasAbalImage
+                            ? const SizedBox()
+                            : const Icon(
+                                Icons.person_outline_outlined,
+                                size: 60,
+                                color: ColorResources.secondaryColor,
+                              )),
+                  ),
+                  Positioned(
+                    bottom: 0,
+                    right: 0,
+                    child: GestureDetector(
+                      onTap: () => showModalBottomSheet(
+                          backgroundColor: Colors.transparent,
+                          context: context,
+                          builder: (context) {
+                            return Container(
+                              height: 160,
+                              decoration: const BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.only(
+                                      topRight: Radius.circular(20),
+                                      topLeft: Radius.circular(20))),
+                              child: Padding(
+                                padding: const EdgeInsets.all(20),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: [
+                                    Center(
+                                      child: Text('ፎቶዎን ከየት ይወስዳሉ?',
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .displaySmall
+                                              ?.copyWith(
+                                                  color: ColorResources
+                                                      .textColor)),
                                     ),
-                                  ),
-                                  const SizedBox(
-                                    height: 15,
-                                  ),
-                                  InkWell(
-                                    onTap: () async {
-                                      await widget.onImagePicked(
-                                          ImageSource.gallery, true);
-                                    },
-                                    child: Row(
-                                      children: [
-                                        const Icon(
-                                          Icons
-                                              .photo_size_select_actual_outlined,
-                                          size: 20,
-                                          color: ColorResources.textColor,
-                                        ),
-                                        const SizedBox(
-                                          width: 15,
-                                        ),
-                                        Text('ከጋለሪ ይውሰዱ',
-                                            style: Theme.of(context)
-                                                .textTheme
-                                                .titleMedium
-                                                ?.copyWith(
-                                                    fontWeight: FontWeight.w500,
-                                                    color: ColorResources
-                                                        .textColor))
-                                      ],
+                                    const SizedBox(
+                                      height: 15,
                                     ),
-                                  )
-                                ],
+                                    InkWell(
+                                      onTap: () async {
+                                        await widget.onImagePicked(
+                                            ImageSource.camera, true);
+                                      },
+                                      child: Row(
+                                        children: [
+                                          const Icon(
+                                            Icons.camera_alt_outlined,
+                                            size: 20,
+                                            color: ColorResources.textColor,
+                                          ),
+                                          const SizedBox(
+                                            width: 15,
+                                          ),
+                                          Text('ካሜራ ያንሱ',
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .titleMedium
+                                                  ?.copyWith(
+                                                      fontWeight:
+                                                          FontWeight.w500,
+                                                      color: ColorResources
+                                                          .textColor))
+                                        ],
+                                      ),
+                                    ),
+                                    const SizedBox(
+                                      height: 15,
+                                    ),
+                                    InkWell(
+                                      onTap: () async {
+                                        await widget.onImagePicked(
+                                            ImageSource.gallery, true);
+                                      },
+                                      child: Row(
+                                        children: [
+                                          const Icon(
+                                            Icons
+                                                .photo_size_select_actual_outlined,
+                                            size: 20,
+                                            color: ColorResources.textColor,
+                                          ),
+                                          const SizedBox(
+                                            width: 15,
+                                          ),
+                                          Text('ከጋለሪ ይውሰዱ',
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .titleMedium
+                                                  ?.copyWith(
+                                                      fontWeight:
+                                                          FontWeight.w500,
+                                                      color: ColorResources
+                                                          .textColor))
+                                        ],
+                                      ),
+                                    )
+                                  ],
+                                ),
                               ),
-                            ),
-                          );
-                        }),
-                    child: const SizedBox(
-                      height: 50,
-                      width: 50,
-                      child: CircleAvatar(
-                        backgroundColor: ColorResources.primaryColor,
-                        child: Icon(
-                          Icons.camera_alt_outlined,
-                          color: Colors.white,
+                            );
+                          }),
+                      child: const SizedBox(
+                        height: 50,
+                        width: 50,
+                        child: CircleAvatar(
+                          backgroundColor: ColorResources.primaryColor,
+                          child: Icon(
+                            Icons.camera_alt_outlined,
+                            color: Colors.white,
+                          ),
                         ),
                       ),
                     ),
+                  )
+                ],
+              ),
+              SizedBox(
+                height: height * 0.015,
+              ),
+              !widget.hasAbalImage && widget.isAbalFormSubmitted
+                  ? Text('**ፎቶ ያስፈልጋል**',
+                      style: Theme.of(context)
+                          .textTheme
+                          .titleSmall
+                          ?.copyWith(color: ColorResources.errorColor))
+                  : const SizedBox(),
+              SizedBox(
+                height: height * 0.05,
+              ),
+              DropdownButtonHideUnderline(
+                child: DropdownButtonFormField(
+                  decoration: InputDecoration(
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8), // Rounded border
+                      borderSide:
+                          const BorderSide(color: Colors.grey), // Border color
+                    ),
+                    contentPadding: const EdgeInsets.symmetric(
+                        vertical: 10, horizontal: 10), // Control height
                   ),
-                )
-              ],
-            ),
-            SizedBox(
-              height: height * 0.015,
-            ),
-            !widget.hasAbalImage && widget.isAbalFormSubmitted
-                ? Text('**ፎቶ ያስፈልጋል**',
-                    style: Theme.of(context)
-                        .textTheme
-                        .titleSmall
-                        ?.copyWith(color: ColorResources.errorColor))
-                : const SizedBox(),
-            SizedBox(
-              height: height * 0.05,
-            ),
-            DropdownButtonHideUnderline(
-              child: DropdownButtonFormField(
-                decoration: const InputDecoration(
-                  border: OutlineInputBorder(),
-                ),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'ይህ ቦታ መሞላት አለበት';
-                  }
-                  return null;
-                },
-                value: widget.kifileValue,
-                isDense: true,
-                hint: const Text('ክፍል'),
-                isExpanded: true,
-                items: widget.kifiles.map(
-                  (e) {
-                    return DropdownMenuItem<String>(
-                        value: e['id'], child: Text(e['name']));
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'ይህ ቦታ መሞላት አለበት';
+                    }
+                    return null;
                   },
-                ).toList(),
-                onChanged: (newValue) {
-                  widget.kifileControl.text = newValue ?? '';
-                  widget.onKifileChanged(newValue);
-                },
-              ),
-            ),
-            SizedBox(
-              height: height * 0.02,
-            ),
-            TextFormField(
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'ይህ ቦታ መሞላት አለበት';
-                }
-                return null;
-              },
-              controller: widget.yekerestenaNameControl,
-              decoration: const InputDecoration(
-                  border: OutlineInputBorder(), label: Text('የክርስትና ስም')),
-            ),
-            SizedBox(
-              height: height * 0.02,
-            ),
-            TextFormField(
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'ይህ ቦታ መሞላት አለበት';
-                }
-                return null;
-              },
-              controller: widget.fullNameControl,
-              decoration: const InputDecoration(
-                  border: OutlineInputBorder(), label: Text('ሙሉ ስም')),
-            ),
-            SizedBox(
-              height: height * 0.02,
-            ),
-            TextFormField(
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'ይህ ቦታ መሞላት አለበት';
-                }
-                return null;
-              },
-              controller: widget.ageControl,
-              keyboardType: TextInputType.number,
-              decoration: const InputDecoration(
-                  border: OutlineInputBorder(), label: Text('ዕድሜ')),
-            ),
-            SizedBox(
-              height: height * 0.02,
-            ),
-            DropdownButtonHideUnderline(
-              child: DropdownButtonFormField(
-                decoration: const InputDecoration(
-                  border: OutlineInputBorder(),
+                  value: widget.kifileValue,
+                  isDense: true,
+                  hint: const Text('ክፍል'),
+                  isExpanded: true,
+                  items: widget.kifiles.map(
+                    (e) {
+                      return DropdownMenuItem<String>(
+                          value: e['id'], child: Text(e['name']));
+                    },
+                  ).toList(),
+                  onChanged: (newValue) {
+                    widget.kifileControl.text = newValue ?? '';
+                    widget.onKifileChanged(newValue);
+                  },
                 ),
+              ),
+              SizedBox(
+                height: height * 0.02,
+              ),
+              TextFormField(
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'ይህ ቦታ መሞላት አለበት';
                   }
                   return null;
                 },
-                value: widget.sexValue,
-                isDense: true,
-                hint: const Text('ጾታ'),
-                isExpanded: true,
-                items: const [
-                  DropdownMenuItem(value: "Male", child: Text("ወንድ")),
-                  DropdownMenuItem(value: "Female", child: Text("ሴት")),
-                ],
-                onChanged: (newValue) {
-                  widget.genderControl.text = newValue ?? '';
-                  widget.onSexChanged(newValue);
-                },
+                controller: widget.yekerestenaNameControl,
+                decoration: InputDecoration(
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8), // Rounded border
+                      borderSide:
+                          const BorderSide(color: Colors.grey), // Border color
+                    ),
+                    contentPadding: const EdgeInsets.symmetric(
+                        vertical: 10, horizontal: 10),
+                    label: Text('የክርስትና ስም')),
               ),
-            ),
-            SizedBox(
-              height: height * 0.02,
-            ),
-            IntlPhoneField(
-              controller: widget.phoneNumberControl,
-              autovalidateMode: AutovalidateMode.onUserInteraction,
-              decoration: const InputDecoration(
-                labelText: 'ስልክ ቁጥር',
-                border: OutlineInputBorder(
-                  borderSide: BorderSide(),
-                ),
+              SizedBox(
+                height: height * 0.02,
               ),
-              initialCountryCode: 'ET',
-              onChanged: (phone) {
-                widget.onPhoneNumberChanged(phone.completeNumber);
-              },
-            ),
-            SizedBox(
-              height: height * 0.02,
-            ),
-            TextFormField(
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'ይህ ቦታ መሞላት አለበት';
-                }
-                return null;
-              },
-              controller: widget.birthPlaceControl,
-              decoration: const InputDecoration(
-                  border: OutlineInputBorder(), label: Text('የትውልድ ስፍራ')),
-            ),
-            SizedBox(
-              height: height * 0.02,
-            ),
-            TextFormField(
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'ይህ ቦታ መሞላት አለበት';
-                }
-                return null;
-              },
-              controller: widget.birthDateControl,
-              decoration: const InputDecoration(
-                  border: OutlineInputBorder(), label: Text('የትውልድ ዘመን')),
-            ),
-            SizedBox(
-              height: height * 0.02,
-            ),
-            DropdownButtonHideUnderline(
-              child: DropdownButtonFormField(
-                decoration: const InputDecoration(
-                  border: OutlineInputBorder(),
-                ),
+              TextFormField(
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'ይህ ቦታ መሞላት አለበት';
                   }
                   return null;
                 },
-                value: widget.kefleKetemaValue,
-                isDense: true,
-                hint: const Text('ክፈለ ከተማ'),
-                isExpanded: true,
-                items: const [
-                  DropdownMenuItem(value: "ledeta", child: Text("ልደታ")),
-                  DropdownMenuItem(
-                      value: "addis ketema", child: Text("አዲስ ከተማ")),
-                  DropdownMenuItem(value: "arada", child: Text("አራዳ")),
-                ],
-                onChanged: (newValue) {
-                  widget.subCityControl.text = newValue ?? '';
-                  widget.onKefeleKetemaChanged(newValue);
-                },
+                controller: widget.fullNameControl,
+                decoration: InputDecoration(
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8), // Rounded border
+                      borderSide:
+                          const BorderSide(color: Colors.grey), // Border color
+                    ),
+                    contentPadding: const EdgeInsets.symmetric(
+                        vertical: 10, horizontal: 10),
+                    label: Text('ሙሉ ስም')),
               ),
-            ),
-            SizedBox(
-              height: height * 0.02,
-            ),
-            TextFormField(
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'ይህ ቦታ መሞላት አለበት';
-                }
-                return null;
-              },
-              controller: widget.woredaControl,
-              keyboardType: TextInputType.number,
-              decoration: const InputDecoration(
-                  border: OutlineInputBorder(), label: Text('ወረዳ')),
-            ),
-            SizedBox(
-              height: height * 0.02,
-            ),
-            TextFormField(
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'ይህ ቦታ መሞላት አለበት';
-                }
-                return null;
-              },
-              controller: widget.kebeleControl,
-              keyboardType: TextInputType.number,
-              decoration: const InputDecoration(
-                  border: OutlineInputBorder(), label: Text('ቀበሌ')),
-            ),
-            SizedBox(
-              height: height * 0.02,
-            ),
-            TextFormField(
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'ይህ ቦታ መሞላት አለበት';
-                }
-                return null;
-              },
-              controller: widget.houseNumberControl,
-              keyboardType: TextInputType.number,
-              decoration: const InputDecoration(
-                  border: OutlineInputBorder(), label: Text('የቤት ቁጥር')),
-            ),
-            SizedBox(
-              height: height * 0.02,
-            ),
-            TextFormField(
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'ይህ ቦታ መሞላት አለበት';
-                }
-                return null;
-              },
-              controller: widget.emergencyContactFullNameControl,
-              decoration: const InputDecoration(
-                  border: OutlineInputBorder(), label: Text('የአደጋ ጊዜ ተጠሪ')),
-            ),
-            SizedBox(
-              height: height * 0.02,
-            ),
-            IntlPhoneField(
-              controller: widget.emergencyContactPhoneNumberControl,
-              autovalidateMode: AutovalidateMode.onUserInteraction,
-              decoration: const InputDecoration(
-                labelText: 'የአደጋ ጊዜ ተጠሪ ስልክ ቁጥር',
-                border: OutlineInputBorder(
-                  borderSide: BorderSide(),
+              SizedBox(
+                height: height * 0.02,
+              ),
+              TextFormField(
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'ይህ ቦታ መሞላት አለበት';
+                  }
+                  return null;
+                },
+                controller: widget.ageControl,
+                keyboardType: TextInputType.number,
+                decoration: InputDecoration(
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8), // Rounded border
+                      borderSide:
+                          const BorderSide(color: Colors.grey), // Border color
+                    ),
+                    contentPadding: const EdgeInsets.symmetric(
+                        vertical: 10, horizontal: 10),
+                    label: Text('ዕድሜ')),
+              ),
+              SizedBox(
+                height: height * 0.02,
+              ),
+              DropdownButtonHideUnderline(
+                child: DropdownButtonFormField(
+                  decoration: InputDecoration(
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8), // Rounded border
+                      borderSide:
+                          const BorderSide(color: Colors.grey), // Border color
+                    ),
+                    contentPadding: const EdgeInsets.symmetric(
+                        vertical: 10, horizontal: 10),
+                  ),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'ይህ ቦታ መሞላት አለበት';
+                    }
+                    return null;
+                  },
+                  value: widget.sexValue,
+                  isDense: true,
+                  hint: const Text('ጾታ'),
+                  isExpanded: true,
+                  items: const [
+                    DropdownMenuItem(value: "Male", child: Text("ወንድ")),
+                    DropdownMenuItem(value: "Female", child: Text("ሴት")),
+                  ],
+                  onChanged: (newValue) {
+                    widget.genderControl.text = newValue ?? '';
+                    widget.onSexChanged(newValue);
+                  },
                 ),
               ),
-              initialCountryCode: 'ET',
-              onChanged: (phone) {
-                widget.onEmergencyPhoneNumberChanged(phone.completeNumber);
-              },
-            ),
-          ],
+              SizedBox(
+                height: height * 0.02,
+              ),
+              IntlPhoneField(
+                controller: widget.phoneNumberControl,
+                autovalidateMode: AutovalidateMode.onUserInteraction,
+                decoration: InputDecoration(
+                  labelText: 'ስልክ ቁጥር',
+                  border: OutlineInputBorder(
+                    borderSide: BorderSide(),
+                  ),
+                ),
+                initialCountryCode: 'ET',
+                onChanged: (phone) {
+                  widget.onPhoneNumberChanged(phone.completeNumber);
+                },
+              ),
+              SizedBox(
+                height: height * 0.02,
+              ),
+              TextFormField(
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'ይህ ቦታ መሞላት አለበት';
+                  }
+                  return null;
+                },
+                controller: widget.birthPlaceControl,
+                decoration: InputDecoration(
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8), // Rounded border
+                      borderSide:
+                          const BorderSide(color: Colors.grey), // Border color
+                    ),
+                    contentPadding: const EdgeInsets.symmetric(
+                        vertical: 10, horizontal: 10),
+                    label: Text('የትውልድ ስፍራ')),
+              ),
+              SizedBox(
+                height: height * 0.02,
+              ),
+              TextFormField(
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'ይህ ቦታ መሞላት አለበት';
+                  }
+                  return null;
+                },
+                controller: widget.birthDateControl,
+                decoration: InputDecoration(
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8), // Rounded border
+                      borderSide:
+                          const BorderSide(color: Colors.grey), // Border color
+                    ),
+                    contentPadding: const EdgeInsets.symmetric(
+                        vertical: 10, horizontal: 10),
+                    label: Text('የትውልድ ዘመን')),
+              ),
+              SizedBox(
+                height: height * 0.02,
+              ),
+              DropdownButtonHideUnderline(
+                child: DropdownButtonFormField(
+                  decoration: InputDecoration(
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8), // Rounded border
+                      borderSide:
+                          const BorderSide(color: Colors.grey), // Border color
+                    ),
+                    contentPadding: const EdgeInsets.symmetric(
+                        vertical: 10, horizontal: 10),
+                  ),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'ይህ ቦታ መሞላት አለበት';
+                    }
+                    return null;
+                  },
+                  value: widget.kefleKetemaValue,
+                  isDense: true,
+                  hint: const Text('ክፈለ ከተማ'),
+                  isExpanded: true,
+                  items: const [
+                    DropdownMenuItem(value: "ledeta", child: Text("ልደታ")),
+                    DropdownMenuItem(
+                        value: "addis ketema", child: Text("አዲስ ከተማ")),
+                    DropdownMenuItem(value: "arada", child: Text("አራዳ")),
+                  ],
+                  onChanged: (newValue) {
+                    widget.subCityControl.text = newValue ?? '';
+                    widget.onKefeleKetemaChanged(newValue);
+                  },
+                ),
+              ),
+              SizedBox(
+                height: height * 0.02,
+              ),
+              TextFormField(
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'ይህ ቦታ መሞላት አለበት';
+                  }
+                  return null;
+                },
+                controller: widget.woredaControl,
+                keyboardType: TextInputType.number,
+                decoration: InputDecoration(
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8), // Rounded border
+                      borderSide:
+                          const BorderSide(color: Colors.grey), // Border color
+                    ),
+                    contentPadding: const EdgeInsets.symmetric(
+                        vertical: 10, horizontal: 10),
+                    label: Text('ወረዳ')),
+              ),
+              SizedBox(
+                height: height * 0.02,
+              ),
+              TextFormField(
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'ይህ ቦታ መሞላት አለበት';
+                  }
+                  return null;
+                },
+                controller: widget.kebeleControl,
+                keyboardType: TextInputType.number,
+                decoration: InputDecoration(
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8), // Rounded border
+                      borderSide:
+                          const BorderSide(color: Colors.grey), // Border color
+                    ),
+                    contentPadding: const EdgeInsets.symmetric(
+                        vertical: 10, horizontal: 10),
+                    label: Text('ቀበሌ')),
+              ),
+              SizedBox(
+                height: height * 0.02,
+              ),
+              TextFormField(
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'ይህ ቦታ መሞላት አለበት';
+                  }
+                  return null;
+                },
+                controller: widget.houseNumberControl,
+                keyboardType: TextInputType.number,
+                decoration: InputDecoration(
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8), // Rounded border
+                      borderSide:
+                          const BorderSide(color: Colors.grey), // Border color
+                    ),
+                    contentPadding: const EdgeInsets.symmetric(
+                        vertical: 10, horizontal: 10),
+                    label: Text('የቤት ቁጥር')),
+              ),
+              SizedBox(
+                height: height * 0.02,
+              ),
+              TextFormField(
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'ይህ ቦታ መሞላት አለበት';
+                  }
+                  return null;
+                },
+                controller: widget.emergencyContactFullNameControl,
+                decoration: InputDecoration(
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8), // Rounded border
+                      borderSide:
+                          const BorderSide(color: Colors.grey), // Border color
+                    ),
+                    contentPadding: const EdgeInsets.symmetric(
+                        vertical: 10, horizontal: 10),
+                    label: Text('የአደጋ ጊዜ ተጠሪ')),
+              ),
+              SizedBox(
+                height: height * 0.02,
+              ),
+              IntlPhoneField(
+                controller: widget.emergencyContactPhoneNumberControl,
+                autovalidateMode: AutovalidateMode.onUserInteraction,
+                decoration: InputDecoration(
+                  labelText: 'የአደጋ ጊዜ ተጠሪ ስልክ ቁጥር',
+                  border: OutlineInputBorder(
+                    borderSide: BorderSide(),
+                  ),
+                ),
+                initialCountryCode: 'ET',
+                onChanged: (phone) {
+                  widget.onEmergencyPhoneNumberChanged(phone.completeNumber);
+                },
+              ),
+            ],
+          ),
         ),
       ),
     );
