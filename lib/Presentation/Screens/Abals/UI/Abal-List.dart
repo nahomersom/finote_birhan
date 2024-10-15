@@ -99,10 +99,18 @@ class AbalListScreenState extends State<AbalListScreen> {
             // Show the list of abals when data is successfully fetched
             return Padding(
               padding: const EdgeInsets.all(16.0),
-              child: ListView.builder(
+              child: GridView.builder(
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2,
+                  childAspectRatio:
+                      0.75, // Adjust this ratio to make the height larger (1.0 means width = height)
+                ),
                 itemCount: controller.abals.length,
                 itemBuilder: (BuildContext context, int index) {
-                  return AbalListItem(abal: controller.abals[index]);
+                  return Padding(
+                    padding: const EdgeInsets.only(left: 8.0),
+                    child: AbalListItem(abal: controller.abals[index]),
+                  );
                 },
               ),
             );

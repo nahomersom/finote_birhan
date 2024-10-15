@@ -3,7 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:finote_birhan_mobile/Business%20Logic/Algorithm/file-uploader.dart';
 import 'package:finote_birhan_mobile/Data/Models/abal.dart';
 import 'package:finote_birhan_mobile/Data/Repositories/abal.dart';
-import 'package:finote_birhan_mobile/Presentation/Screens/Registration/UI/registeration.dart';
+import 'package:finote_birhan_mobile/Presentation/Screens/Registration/views/registeration.dart';
 import 'package:get/get.dart';
 import 'package:logger/logger.dart';
 
@@ -21,7 +21,7 @@ class AbalController extends GetxController {
   RxString errorMessage = ''.obs; // Store error messages
 
   // Data state
-  var kifiles = <dynamic>[].obs;
+  RxList kifiles = <dynamic>[].obs;
   var nestedKifiles = <dynamic>[].obs;
   var abals = <AbalRegistrationModel>[].obs;
   var selectedAbal = Rxn<AbalRegistrationModel>(); // Allows null values

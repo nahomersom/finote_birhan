@@ -2,7 +2,6 @@ import 'dart:io';
 import 'package:finote_birhan_mobile/Presentation/Screens/Registration/widgets/abal_form.dart';
 import 'package:finote_birhan_mobile/Presentation/Screens/Registration/widgets/family_form.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:get/get_core/src/get_main.dart';

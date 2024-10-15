@@ -15,8 +15,13 @@ class AbalListItem extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 5),
       child: Container(
+        height: 300,
         decoration: BoxDecoration(
-          borderRadius: const BorderRadius.all(Radius.circular(15)),
+          image: DecorationImage(
+            image: NetworkImage(abal.abal.imagePath),
+            fit: BoxFit.cover,
+          ),
+          borderRadius: const BorderRadius.all(Radius.circular(5)),
           color: Colors.white,
           border: Border.all(color: const Color(0xffA3ADB6).withOpacity(0.3)),
           boxShadow: [
@@ -28,58 +33,91 @@ class AbalListItem extends StatelessWidget {
             ),
           ],
         ),
-        child: Padding(
-          padding: const EdgeInsets.all(10),
-          child: ListTile(
-            leading: CircleAvatar(
-              radius: 30,
-              backgroundImage: NetworkImage(abal.abal.imagePath),
-            ),
-            // title: Text(user.fullName),
-            subtitle: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  abal.abal.fullName,
-                  style: textTheme.bodySmall
-                      ?.copyWith(fontWeight: FontWeight.w500),
+        child: Stack(
+          children: [
+            Positioned(
+              bottom: 0, // Align to the bottom
+              left: 0,
+              right: 0, // Make it full width
+              child: Container(
+                padding: const EdgeInsets.symmetric(
+                  vertical: 3,
+                  horizontal: 10,
                 ),
-                Text(
-                  abal.abal.kifile,
-                  style: textTheme.bodySmall,
+                decoration: BoxDecoration(
+                  borderRadius: const BorderRadius.only(
+                    bottomLeft: Radius.circular(5),
+                    bottomRight: Radius.circular(5),
+                  ),
+                  gradient: LinearGradient(
+                    colors: [
+                      const Color(0xff6115da)
+                          .withOpacity(0.7), // Opacity set to 50%
+                      const Color(0xffbd2aec)
+                          .withOpacity(0.7), // Opacity set to 50%
+                    ],
+                    stops: const [0, 1],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  ),
                 ),
-              ],
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          abal.abal.fullName,
+                          style: textTheme.bodySmall?.copyWith(
+                            fontWeight: FontWeight.w500,
+                            color: Colors
+                                .white, // White text to contrast background
+                          ),
+                        ),
+                        Text(
+                          abal.abal.kifile,
+                          style: textTheme.bodySmall?.copyWith(
+                            color: Colors
+                                .white, // White text to contrast background
+                          ),
+                        ),
+                      ],
+                    ),
+                    PopupMenuButton<String>(
+                      color: Colors.white,
+                      onSelected: (value) {
+                        switch (value) {
+                          case 'Edit':
+                            context.read<AbalCubit>().setSelectedAbal(abal);
+                            break;
+                          case 'Delete':
+                            // Handle delete option
+                            break;
+                          default:
+                            break;
+                        }
+                      },
+                      itemBuilder: (BuildContext context) {
+                        return <PopupMenuEntry<String>>[
+                          const PopupMenuItem<String>(
+                            value: 'Edit',
+                            child: Text('Edit'),
+                          ),
+                          const PopupMenuItem<String>(
+                            value: 'Delete',
+                            child: Text('Delete'),
+                          ),
+                        ];
+                      },
+                      icon: const Icon(Icons.more_vert,
+                          color: Colors.white), // White icon
+                    ),
+                  ],
+                ),
+              ),
             ),
-            trailing: PopupMenuButton<String>(
-              color: Colors.white,
-              onSelected: (value) {
-                // Handle the selected option here
-                switch (value) {
-                  case 'Edit':
-                    context.read<AbalCubit>().setSelectedAbal(abal);
-                    break;
-                  case 'Delete':
-                    // Handle delete option
-                    break;
-                  default:
-                    break;
-                }
-              },
-              itemBuilder: (BuildContext context) {
-                return <PopupMenuEntry<String>>[
-                  const PopupMenuItem<String>(
-                    value: 'Edit',
-                    child: Text('Edit'),
-                  ),
-                  const PopupMenuItem<String>(
-                    value: 'Delete',
-                    child: Text('Delete'),
-                  ),
-                ];
-              },
-              icon: const Icon(Icons.more_vert), // Three-dot vertical icon
-            ),
-          ),
+          ],
         ),
       ),
     );

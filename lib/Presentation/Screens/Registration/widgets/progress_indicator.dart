@@ -1,25 +1,37 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
-class TabIndicator extends StatelessWidget {
+class TabIndicator extends StatelessWidget implements PreferredSizeWidget {
   const TabIndicator({
     required this.selectedIndex, // current selected screen index
+    required this.title,
     super.key,
   });
   final int selectedIndex;
-
+  final String title;
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: [
-        for (int i = 0; i < 4; i++) ...[
-          if (i > 0)
-            SizedBox(
-                width:
-                    5), // Spacing between indicators if it's not the first indicatior add space
-          Expanded(child: _buildTabIndicator(i)),
-        ],
-      ],
+    TextTheme textTheme = Theme.of(context).textTheme;
+    return AppBar(
+      title: Text(
+        'ክፍል',
+        style: textTheme.bodyMedium
+            ?.copyWith(color: Colors.black, fontWeight: FontWeight.bold),
+      ),
+      centerTitle: true,
+      bottom: PreferredSize(
+          preferredSize:
+              const Size.fromHeight(4.0), // Height of the bottom border
+          child: Row(
+            children: [
+              for (int i = 0; i < 4; i++) ...[
+                if (i > 0)
+                  const SizedBox(
+                    width: 5,
+                  ), // Spacing between indicators if it's not the first indicatior add space
+                Expanded(child: _buildTabIndicator(i)),
+              ],
+            ],
+          )),
     );
   }
 
@@ -45,4 +57,9 @@ class TabIndicator extends StatelessWidget {
       ),
     );
   }
+
+  // Implement preferredSize, which defines the height of the AppBar
+  @override
+  Size get preferredSize =>
+      const Size.fromHeight(kToolbarHeight + 10); // Customize height if needed
 }

@@ -31,18 +31,7 @@ class _KifileSelectorState extends State<KifileSelector> {
       ),
       child: SafeArea(
         child: Scaffold(
-          appBar: AppBar(
-            title: Text(
-              'ክፍል',
-              style: textTheme.bodyMedium
-                  ?.copyWith(color: Colors.black, fontWeight: FontWeight.bold),
-            ),
-            centerTitle: true,
-            bottom: const PreferredSize(
-                preferredSize:
-                    Size.fromHeight(4.0), // Height of the bottom border
-                child: TabIndicator(selectedIndex: 0)),
-          ),
+          appBar: const TabIndicator(selectedIndex: 0, title: 'ክፍል'),
           body: BlocBuilder<AbalCubit, AbalState>(
             builder: (BuildContext context, state) {
               if (state.abalStatus.isSuccess) {
