@@ -547,4 +547,93 @@
 //   }
 // }
 
+import 'package:finote_birhan_mobile/Presentation/Screens/Registration/views/abal_form.dart';
+import 'package:finote_birhan_mobile/Presentation/Screens/Registration/views/family_form.dart';
+import 'package:finote_birhan_mobile/Presentation/Screens/Registration/views/kifile_selector.dart';
+import 'package:finote_birhan_mobile/Presentation/Screens/Registration/widgets/progress_indicator.dart';
+import 'package:flutter/material.dart';
 
+class RegistrationView extends StatefulWidget {
+  const RegistrationView({super.key});
+
+  @override
+  RegistrationViewState createState() => RegistrationViewState();
+}
+
+class RegistrationViewState extends State<RegistrationView> {
+  late PageController _pageController;
+  int _selectedIndex = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    _pageController = PageController(initialPage: 0);
+  }
+
+  void _onPageChanged(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+  }
+
+  // Navigate to the next page using the PageController
+  void _navigateToNextPage() {
+    if (_selectedIndex < 2) {
+      _pageController.animateToPage(
+        _selectedIndex + 1,
+        duration: Duration(milliseconds: 300),
+        curve: Curves.easeInOut,
+      );
+    } else {
+      // Handle final action, e.g., form submission
+      print('Last page reached, handle final action.');
+    }
+  }
+
+  // Intercept the back button press
+  Future<bool> _onWillPop() async {
+    if (_selectedIndex > 0) {
+      // Go to the previous page in PageView if not on the first page
+      _pageController.previousPage(
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeInOut,
+      );
+      return false; // Don't pop the route
+    }
+    return true; // Allow the route to be popped if on the first page
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return WillPopScope(
+      onWillPop: _onWillPop,
+      child: Scaffold(
+        appBar: TabIndicator(
+          selectedIndex: _selectedIndex,
+          title: _getTitleForPage(_selectedIndex),
+        ),
+        body: PageView(
+          controller: _pageController,
+          onPageChanged: _onPageChanged,
+          children: [
+            KifileSelector(navigateToNextPage: _navigateToNextPage),
+            AbalForm(navigateToNextPage: _navigateToNextPage),
+            FamilyForm(),
+          ],
+        ),
+      ),
+    );
+  }
+
+  String _getTitleForPage(int index) {
+    switch (index) {
+      case 0:
+        return 'ክፍል';
+      case 1:
+        return 'አባል መረጃ';
+      case 2:
+      default:
+        return 'የወላጅ መረጃ';
+    }
+  }
+}

@@ -36,7 +36,6 @@ class _FamilyFormState extends State<FamilyForm> {
   Widget build(BuildContext context) {
     var height = MediaQuery.of(context).size.height;
     return Scaffold(
-      appBar: const TabIndicator(selectedIndex: 2, title: 'የወላጅ መረጃ'),
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(25),

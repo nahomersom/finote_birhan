@@ -15,7 +15,8 @@ import 'package:finote_birhan_mobile/Presentation/Screens/Registration/widgets/p
 import '../../../../Data/Data Providers/colors.dart';
 
 class KifileSelector extends StatefulWidget {
-  const KifileSelector({super.key});
+  const KifileSelector({super.key, required this.navigateToNextPage});
+  final VoidCallback navigateToNextPage; // Passed from parent
 
   @override
   State<KifileSelector> createState() => _KifileSelectorState();
@@ -31,7 +32,6 @@ class _KifileSelectorState extends State<KifileSelector> {
     TextTheme textTheme = Theme.of(context).textTheme;
     return SafeArea(
       child: Scaffold(
-        appBar: const TabIndicator(selectedIndex: 0, title: 'ክፍል'),
         body: BlocBuilder<AbalCubit, AbalState>(
           builder: (BuildContext context, state) {
             if (state.abalStatus.isSuccess) {
@@ -173,7 +173,8 @@ class _KifileSelectorState extends State<KifileSelector> {
                           state.kifiles.elementAt(0)['id'],
                           state.kifiles.elementAt(0)['childCollectionName'],
                         );
-                        AppNavigator.startAbalFormRegistration();
+                        widget.navigateToNextPage();
+                        // AppNavigator.startAbalFormRegistration();
                       },
                     )
                   ],

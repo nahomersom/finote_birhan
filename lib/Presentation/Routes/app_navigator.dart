@@ -23,6 +23,10 @@ class AppNavigator {
     Get.toNamed(AppRoutes.KIFILE);
   }
 
+  static void startRegistraion() {
+    Get.toNamed(AppRoutes.REGISTRATION);
+  }
+
   static void startAbalFormRegistration() {
     Get.toNamed(
         '${AppRoutes.DASHOBARD.toRoute()}${AppRoutes.KIFILE.toRoute()}${AppRoutes.ABALFORM.toRoute()}');

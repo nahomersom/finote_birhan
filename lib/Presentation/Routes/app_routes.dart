@@ -7,7 +7,7 @@ abstract class AppRoutes {
   static const KIFILE = 'kifile';
   static const ABALFORM = 'abal-form';
   static const FAMILYFORM = 'family-form';
-
+  static const REGISTRATION = 'registration';
   static const ABALS = 'abals';
 }
 

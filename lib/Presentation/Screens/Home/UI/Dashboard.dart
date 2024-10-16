@@ -238,7 +238,7 @@ final dashboardItems = [
     onTap: (context) {
       // Replace with your actual functionality
       BlocProvider.of<AbalCubit>(context).getKifiles();
-      Get.toNamed('/dashboard/kifile');
+      Get.toNamed('/registration');
     },
   ),
   DashboardItem(

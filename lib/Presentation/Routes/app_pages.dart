@@ -24,35 +24,39 @@ class RouteConfig {
       page: () => const Workspace(),
     ),
     GetPage(
+      name: AppRoutes.REGISTRATION.toRoute(),
+      page: () => const RegistrationView(),
+    ),
+    GetPage(
       name: AppRoutes.DASHOBARD.toRoute(),
       page: () => DashboardScreen(),
-      children: [
-        GetPage(
-          name: AppRoutes.KIFILE.toRoute(),
-          page: () => const KifileSelector(),
-          children: [
-            GetPage(
-              name: AppRoutes.ABALFORM.toRoute(),
-              page: () => const AbalForm(),
-            ),
-            GetPage(
-              name: AppRoutes.FAMILYFORM.toRoute(),
-              page: () => const FamilyForm(),
-            ),
-          ],
-        ),
-        // GetPage(
-        //   name: AppRoutes.ABALS.toRoute(),
-        //   page: () => const AbalListScreen(),
-        //   binding: AbalBinding(),
-        //   children: [
-        //     GetPage(
-        //       name: AppRoutes.REGISTRAION.toRoute(),
-        //       page: () => const RegistrationScreen(),
-        //     ),
-        //   ],
-        // ),
-      ],
+      // children: [
+      //   GetPage(
+      //     name: AppRoutes.KIFILE.toRoute(),
+      //     page: () => const KifileSelector(),
+      //     children: [
+      //       GetPage(
+      //         name: AppRoutes.ABALFORM.toRoute(),
+      //         page: () => const AbalForm(),
+      //       ),
+      //       GetPage(
+      //         name: AppRoutes.FAMILYFORM.toRoute(),
+      //         page: () => const FamilyForm(),
+      //       ),
+      //     ],
+      //   ),
+      //   // GetPage(
+      //   //   name: AppRoutes.ABALS.toRoute(),
+      //   //   page: () => const AbalListScreen(),
+      //   //   binding: AbalBinding(),
+      //   //   children: [
+      //   //     GetPage(
+      //   //       name: AppRoutes.REGISTRAION.toRoute(),
+      //   //       page: () => const RegistrationScreen(),
+      //   //     ),
+      //   //   ],
+      //   // ),
+      // ],
     ),
   ];
 }

@@ -13,9 +13,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class AbalForm extends StatefulWidget {
-  const AbalForm({
-    super.key,
-  });
+  const AbalForm({super.key, required this.navigateToNextPage});
+  final VoidCallback navigateToNextPage; // Passed from parent
 
   @override
   State<AbalForm> createState() => _AbalFormState();
@@ -36,7 +35,6 @@ class _AbalFormState extends State<AbalForm> {
   Widget build(BuildContext context) {
     var height = MediaQuery.of(context).size.height;
     return Scaffold(
-      appBar: const TabIndicator(selectedIndex: 1, title: 'አባል መረጃ'),
       body: Obx(() {
         if (controller.hasError.value) {
           return Dialog(
@@ -210,10 +208,10 @@ class _AbalFormState extends State<AbalForm> {
                     SharedButton(
                         buttonText: 'ወደ ቀጣይ',
                         onTap: () => {
-                              AppNavigator.startFamilyFormRegistration(),
                               setState(() {
                                 isAbalFormSubmitted = true;
-                              })
+                              }),
+                              widget.navigateToNextPage()
                             })
                   ],
                 ),
