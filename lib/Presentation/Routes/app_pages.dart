@@ -4,8 +4,8 @@ import 'package:finote_birhan_mobile/Presentation/Screens/Home/UI/Dashboard.dart
 import 'package:finote_birhan_mobile/Presentation/Screens/Login/UI/login.dart';
 import 'package:finote_birhan_mobile/Presentation/Screens/Registration/views/kifile_selector.dart';
 import 'package:finote_birhan_mobile/Presentation/Screens/Registration/views/registeration.dart';
-import 'package:finote_birhan_mobile/Presentation/Screens/Registration/widgets/abal_form.dart';
-import 'package:finote_birhan_mobile/Presentation/Screens/Registration/widgets/family_form.dart';
+import 'package:finote_birhan_mobile/Presentation/Screens/Registration/views/abal_form.dart';
+import 'package:finote_birhan_mobile/Presentation/Screens/Registration/views/family_form.dart';
 import 'package:finote_birhan_mobile/Presentation/Screens/Workspace/UI/workspace.dart';
 
 import 'package:get/get.dart';
@@ -33,27 +33,25 @@ class RouteConfig {
           children: [
             GetPage(
               name: AppRoutes.ABALFORM.toRoute(),
-              page: () => AbalF
-              
-              orm(),
+              page: () => const AbalForm(),
             ),
             GetPage(
               name: AppRoutes.FAMILYFORM.toRoute(),
-              page: () => FamilyForm(),
+              page: () => const FamilyForm(),
             ),
           ],
         ),
-        GetPage(
-          name: AppRoutes.ABALS.toRoute(),
-          page: () => const AbalListScreen(),
-          binding: AbalBinding(),
-          children: [
-            GetPage(
-              name: AppRoutes.REGISTRAION.toRoute(),
-              page: () => const RegistrationScreen(),
-            ),
-          ],
-        ),
+        // GetPage(
+        //   name: AppRoutes.ABALS.toRoute(),
+        //   page: () => const AbalListScreen(),
+        //   binding: AbalBinding(),
+        //   children: [
+        //     GetPage(
+        //       name: AppRoutes.REGISTRAION.toRoute(),
+        //       page: () => const RegistrationScreen(),
+        //     ),
+        //   ],
+        // ),
       ],
     ),
   ];

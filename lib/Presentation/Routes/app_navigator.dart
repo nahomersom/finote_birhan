@@ -23,10 +23,15 @@ class AppNavigator {
     Get.toNamed(AppRoutes.KIFILE);
   }
 
-  static void startRegistration() {
-    Get.toNamed(AppRoutes.REGISTRAION);
+  static void startAbalFormRegistration() {
+    Get.toNamed(
+        '${AppRoutes.DASHOBARD.toRoute()}${AppRoutes.KIFILE.toRoute()}${AppRoutes.ABALFORM.toRoute()}');
   }
 
+  static void startFamilyFormRegistration() {
+    Get.toNamed(
+        '${AppRoutes.DASHOBARD.toRoute()}${AppRoutes.KIFILE.toRoute()}${AppRoutes.FAMILYFORM.toRoute()}');
+  }
   // static void startMiniApp({required String url}) {
   //   Get.toNamed(AppRoutes.MINIAPP, arguments: url);
   // }

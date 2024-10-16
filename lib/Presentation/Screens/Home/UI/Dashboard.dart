@@ -21,214 +21,202 @@ class DashboardScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     var sizeH = MediaQuery.of(context).size.height;
     var sizeW = MediaQuery.of(context).size.width;
-    return AnnotatedRegion(
-      value: const SystemUiOverlayStyle(
-        statusBarColor: ColorResources.scaffoldColor,
-        statusBarIconBrightness: Brightness.dark,
-      ),
-      child: Scaffold(
-        body: SafeArea(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Container(
-                height: sizeH * 0.17,
-                color: ColorResources.scaffoldColor,
-                child: const Padding(
-                  padding: EdgeInsets.all(15),
+    return Scaffold(
+      body: SafeArea(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Container(
+              height: sizeH * 0.17,
+              color: ColorResources.scaffoldColor,
+              child: const Padding(
+                padding: EdgeInsets.all(15),
+                child: Column(
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            CircleAvatar(
+                              radius: 20,
+                              backgroundImage: NetworkImage(
+                                  'https://images.pexels.com/photos/1681010/pexels-photo-1681010.jpeg?auto=compress&cs=tinysrgb&w=800'),
+                            ),
+                            SizedBox(width: 10),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                Text(
+                                  'ሰላም',
+                                ),
+                                Text('ሰላም'),
+                              ],
+                            ),
+                          ],
+                        ),
+                        Icon(
+                          Icons.notifications_none_outlined,
+                          size: 25,
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 5),
+                    Divider(
+                      color: ColorResources.scaffoldColor,
+                    ),
+                    // SizedBox(height: 5),
+                    // Expanded(
+                    //   child: SearchPage(),
+                    // ),
+                  ],
+                ),
+              ),
+            ),
+            Expanded(
+              child: SingleChildScrollView(
+                child: Padding(
+                  padding: const EdgeInsets.all(15.0),
                   child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              CircleAvatar(
-                                radius: 20,
-                                backgroundImage: NetworkImage(
-                                    'https://images.pexels.com/photos/1681010/pexels-photo-1681010.jpeg?auto=compress&cs=tinysrgb&w=800'),
-                              ),
-                              SizedBox(width: 10),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.end,
-                                children: [
-                                  Text(
-                                    'ሰላም',
-                                  ),
-                                  Text('ሰላም'),
-                                ],
-                              ),
-                            ],
-                          ),
-                          Icon(
-                            Icons.notifications_none_outlined,
-                            size: 25,
-                          ),
-                        ],
-                      ),
-                      SizedBox(height: 5),
-                      Divider(
-                        color: ColorResources.scaffoldColor,
-                      ),
-                      // SizedBox(height: 5),
-                      // Expanded(
-                      //   child: SearchPage(),
+                      // Container(
+                      //   child: Column(
+                      //     crossAxisAlignment: CrossAxisAlignment.stretch,
+                      //     children: [
+                      //       Text(
+                      //         'የክፍሌ ልጆች',
+                      //         style: Theme.of(context)
+                      //             .textTheme
+                      //             .titleMedium
+                      //             ?.copyWith(
+                      //                 color: Colors.black,
+                      //                 fontWeight: FontWeight.bold),
+                      //       ),
+                      //       const SizedBox(height: 10),
+                      //       SizedBox(
+                      //         height: 100,
+                      //         child: ListView(
+                      //           scrollDirection: Axis.horizontal,
+                      //           physics: const BouncingScrollPhysics(),
+                      //           children: List.generate(
+                      //             7,
+                      //             (index) => Column(
+                      //               children: [
+                      //                 const Padding(
+                      //                   padding: EdgeInsets.only(right: 10),
+                      //                   child: CircleAvatar(
+                      //                     radius: 30,
+                      //                     backgroundImage: NetworkImage(
+                      //                         'https://images.pexels.com/photos/614810/pexels-photo-614810.jpeg?auto=compress&cs=tinysrgb&w=800'),
+                      //                   ),
+                      //                 ),
+                      //                 const SizedBox(height: 10),
+                      //                 Text(
+                      //                   'አበበ',
+                      //                   style: Theme.of(context)
+                      //                       .textTheme
+                      //                       .titleSmall
+                      //                       ?.copyWith(
+                      //                         fontWeight: FontWeight.bold,
+                      //                         color: Colors.black,
+                      //                       ),
+                      //                 ),
+                      //               ],
+                      //             ),
+                      //           ),
+                      //         ),
+                      //       ),
+                      //     ],
+                      //   ),
                       // ),
+                      CarouselSlider(
+                        options: CarouselOptions(height: 140, autoPlay: true),
+                        items: imageList
+                            .map(
+                              (data) => Builder(
+                                builder: (BuildContext context) => Stack(
+                                  children: [
+                                    Container(
+                                      width: MediaQuery.of(context).size.width,
+                                      margin: const EdgeInsets.symmetric(
+                                          horizontal: 4.0),
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(10),
+                                        image: const DecorationImage(
+                                          image: AssetImage(
+                                              'assets/images/kids.jpg'), // Pass the image URL
+                                          fit: BoxFit
+                                              .cover, // Cover the entire area
+                                        ),
+                                      ),
+                                    ),
+                                    Container(
+                                      width: MediaQuery.of(context).size.width,
+                                      margin: const EdgeInsets.symmetric(
+                                          horizontal: 4.0),
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(10),
+                                        gradient: LinearGradient(
+                                          colors: [
+                                            const Color(0xff6115da).withOpacity(
+                                                0.7), // Opacity set to 50%
+                                            const Color(0xffbd2aec).withOpacity(
+                                                0.7), // Opacity set to 50%
+                                          ],
+                                          stops: const [0, 1],
+                                          begin: Alignment.topLeft,
+                                          end: Alignment.bottomRight,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            )
+                            .toList(), // Convert the map to a list
+                      ),
+
+                      const SizedBox(height: 10),
+                      Text(
+                        'አገልግሎቶች',
+                        style: Theme.of(context)
+                            .textTheme
+                            .titleMedium
+                            ?.copyWith(
+                                color: Colors.black,
+                                fontWeight: FontWeight.bold),
+                      ),
+                      const SizedBox(height: 10),
+                      GridView.builder(
+                        gridDelegate:
+                            const SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 4,
+                          mainAxisSpacing: 10.0,
+                          crossAxisSpacing: 5.0,
+                          // childAspectRatio: 1,
+                        ),
+                        itemCount: dashboardItems.length,
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        itemBuilder: (context, index) {
+                          final item = dashboardItems[index];
+                          return DashboardCard(
+                            height: 50, // Set the desired height here
+                            text: item.text,
+                            icon: item.icon,
+                            onTap: () => item.onTap(context),
+                          );
+                        },
+                      ),
                     ],
                   ),
                 ),
               ),
-              Expanded(
-                child: SingleChildScrollView(
-                  child: Padding(
-                    padding: const EdgeInsets.all(15.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        // Container(
-                        //   child: Column(
-                        //     crossAxisAlignment: CrossAxisAlignment.stretch,
-                        //     children: [
-                        //       Text(
-                        //         'የክፍሌ ልጆች',
-                        //         style: Theme.of(context)
-                        //             .textTheme
-                        //             .titleMedium
-                        //             ?.copyWith(
-                        //                 color: Colors.black,
-                        //                 fontWeight: FontWeight.bold),
-                        //       ),
-                        //       const SizedBox(height: 10),
-                        //       SizedBox(
-                        //         height: 100,
-                        //         child: ListView(
-                        //           scrollDirection: Axis.horizontal,
-                        //           physics: const BouncingScrollPhysics(),
-                        //           children: List.generate(
-                        //             7,
-                        //             (index) => Column(
-                        //               children: [
-                        //                 const Padding(
-                        //                   padding: EdgeInsets.only(right: 10),
-                        //                   child: CircleAvatar(
-                        //                     radius: 30,
-                        //                     backgroundImage: NetworkImage(
-                        //                         'https://images.pexels.com/photos/614810/pexels-photo-614810.jpeg?auto=compress&cs=tinysrgb&w=800'),
-                        //                   ),
-                        //                 ),
-                        //                 const SizedBox(height: 10),
-                        //                 Text(
-                        //                   'አበበ',
-                        //                   style: Theme.of(context)
-                        //                       .textTheme
-                        //                       .titleSmall
-                        //                       ?.copyWith(
-                        //                         fontWeight: FontWeight.bold,
-                        //                         color: Colors.black,
-                        //                       ),
-                        //                 ),
-                        //               ],
-                        //             ),
-                        //           ),
-                        //         ),
-                        //       ),
-                        //     ],
-                        //   ),
-                        // ),
-                        CarouselSlider(
-                          options: CarouselOptions(height: 140, autoPlay: true),
-                          items: imageList
-                              .map(
-                                (data) => Builder(
-                                  builder: (BuildContext context) => Stack(
-                                    children: [
-                                      Container(
-                                        width:
-                                            MediaQuery.of(context).size.width,
-                                        margin: const EdgeInsets.symmetric(
-                                            horizontal: 4.0),
-                                        decoration: BoxDecoration(
-                                          borderRadius:
-                                              BorderRadius.circular(10),
-                                          image: const DecorationImage(
-                                            image: AssetImage(
-                                                'assets/images/kids.jpg'), // Pass the image URL
-                                            fit: BoxFit
-                                                .cover, // Cover the entire area
-                                          ),
-                                        ),
-                                      ),
-                                      Container(
-                                        width:
-                                            MediaQuery.of(context).size.width,
-                                        margin: const EdgeInsets.symmetric(
-                                            horizontal: 4.0),
-                                        decoration: BoxDecoration(
-                                          borderRadius:
-                                              BorderRadius.circular(10),
-                                          gradient: LinearGradient(
-                                            colors: [
-                                              const Color(0xff6115da)
-                                                  .withOpacity(
-                                                      0.7), // Opacity set to 50%
-                                              const Color(0xffbd2aec)
-                                                  .withOpacity(
-                                                      0.7), // Opacity set to 50%
-                                            ],
-                                            stops: const [0, 1],
-                                            begin: Alignment.topLeft,
-                                            end: Alignment.bottomRight,
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              )
-                              .toList(), // Convert the map to a list
-                        ),
-
-                        const SizedBox(height: 10),
-                        Text(
-                          'አገልግሎቶች',
-                          style: Theme.of(context)
-                              .textTheme
-                              .titleMedium
-                              ?.copyWith(
-                                  color: Colors.black,
-                                  fontWeight: FontWeight.bold),
-                        ),
-                        const SizedBox(height: 10),
-                        GridView.builder(
-                          gridDelegate:
-                              const SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount: 4,
-                            mainAxisSpacing: 10.0,
-                            crossAxisSpacing: 5.0,
-                            // childAspectRatio: 1,
-                          ),
-                          itemCount: dashboardItems.length,
-                          shrinkWrap: true,
-                          physics: const NeverScrollableScrollPhysics(),
-                          itemBuilder: (context, index) {
-                            final item = dashboardItems[index];
-                            return DashboardCard(
-                              height: 50, // Set the desired height here
-                              text: item.text,
-                              icon: item.icon,
-                              onTap: () => item.onTap(context),
-                            );
-                          },
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

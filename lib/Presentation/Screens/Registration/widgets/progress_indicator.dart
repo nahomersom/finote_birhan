@@ -13,7 +13,7 @@ class TabIndicator extends StatelessWidget implements PreferredSizeWidget {
     TextTheme textTheme = Theme.of(context).textTheme;
     return AppBar(
       title: Text(
-        'ክፍል',
+        title,
         style: textTheme.bodyMedium
             ?.copyWith(color: Colors.black, fontWeight: FontWeight.bold),
       ),
@@ -23,7 +23,7 @@ class TabIndicator extends StatelessWidget implements PreferredSizeWidget {
               const Size.fromHeight(4.0), // Height of the bottom border
           child: Row(
             children: [
-              for (int i = 0; i < 4; i++) ...[
+              for (int i = 0; i < 3; i++) ...[
                 if (i > 0)
                   const SizedBox(
                     width: 5,

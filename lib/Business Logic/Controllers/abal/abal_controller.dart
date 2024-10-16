@@ -63,6 +63,10 @@ class AbalController extends GetxController {
       QuerySnapshot querySnapshot = await abalRepository.getNestedKifiles(
           documentId, childCollectionName);
       for (var doc in querySnapshot.docs) {
+        print(
+            '------------------------------------------------------------------');
+        print(doc.data());
+
         Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
         data['id'] = doc.reference.id;
         nestedKifiles.add(data);

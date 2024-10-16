@@ -19,7 +19,6 @@ class FormController extends GetxController {
   final emergencyContactFullNameControl = TextEditingController();
   final emergencyContactPhoneNumberControl = TextEditingController();
   final kifileControl = TextEditingController();
-  late File? abalImage;
 
   // welage form controllers
   final familyYekerestenaNameControl = TextEditingController();
@@ -34,7 +33,19 @@ class FormController extends GetxController {
   final familyWoredaControl = TextEditingController();
   final familyKebeleControl = TextEditingController();
   final familyHouseNumberControl = TextEditingController();
-  late File? welageImage;
+// Use a map to store images dynamically based on image type
+  final Map<String, File?> imageMap = <String, File?>{}.obs;
+
+  // Function to update the image in the map
+  void setImage(String imageType, File? image) {
+    imageMap[imageType] = image;
+    update(); // Update the UI when image changes
+  }
+
+  // Function to get the image from the map
+  File? getImage(String imageType) {
+    return imageMap[imageType];
+  }
 
   // Method to collect all form data across pages
   Map<String, dynamic> getAllFormData() {
@@ -55,7 +66,6 @@ class FormController extends GetxController {
       'emergencyContactPhoneNumberControl':
           emergencyContactPhoneNumberControl.text,
       'kifileControl': kifileControl.text,
-      'abalImage': abalImage,
 
       // family data
       'familyYekerestenaNameControl': familyYekerestenaNameControl.text,
@@ -70,7 +80,6 @@ class FormController extends GetxController {
       'familyWoredaControl': familyWoredaControl.text,
       'familyKebeleControl': familyKebeleControl.text,
       'familyHouseNumberControl': familyHouseNumberControl.text,
-      'welageImage': welageImage
       // Continue for Page 3
     };
   }

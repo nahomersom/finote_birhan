@@ -5,8 +5,8 @@ abstract class AppRoutes {
   static const WORKSPACE = 'workspace';
   static const DASHOBARD = 'dashboard';
   static const KIFILE = 'kifile';
-  static const ABALFORM = 'registration';
-  static const FAMILYFORM = 'registration';
+  static const ABALFORM = 'abal-form';
+  static const FAMILYFORM = 'family-form';
 
   static const ABALS = 'abals';
 }
