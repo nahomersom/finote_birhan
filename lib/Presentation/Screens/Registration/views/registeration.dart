@@ -614,6 +614,7 @@ class RegistrationViewState extends State<RegistrationView> {
         ),
         body: PageView(
           controller: _pageController,
+          physics: const NeverScrollableScrollPhysics(),
           onPageChanged: _onPageChanged,
           children: [
             KifileSelector(navigateToNextPage: _navigateToNextPage),

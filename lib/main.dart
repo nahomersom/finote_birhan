@@ -10,6 +10,7 @@ import 'package:finote_birhan_mobile/Presentation/Routes/app_pages.dart';
 import 'package:finote_birhan_mobile/Data/Repositories/user.dart';
 import 'package:finote_birhan_mobile/Data/Services/auth_service.dart';
 import 'package:get/get_navigation/src/root/get_material_app.dart';
+import 'package:toastification/toastification.dart';
 
 Future main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -37,12 +38,14 @@ class MyApp extends StatelessWidget {
                     abalRepository:
                         AbalRepository(abalService: FirestoreService()))),
           ],
-          child: GetMaterialApp(
-            title: 'Flutter Demo',
-            theme: lightTheme,
-            initialRoute: RouteConfig.initialLocation,
-            getPages: RouteConfig.routes,
-            debugShowCheckedModeBanner: false,
+          child: ToastificationWrapper(
+            child: GetMaterialApp(
+              title: 'Flutter Demo',
+              theme: lightTheme,
+              initialRoute: RouteConfig.initialLocation,
+              getPages: RouteConfig.routes,
+              debugShowCheckedModeBanner: false,
+            ),
           ),
         ));
   }

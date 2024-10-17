@@ -2,6 +2,7 @@ import 'package:finote_birhan_mobile/Business%20Logic/Controllers/abal/abal_cont
 import 'package:finote_birhan_mobile/Presentation/Components/shared_button.dart';
 import 'package:finote_birhan_mobile/Presentation/Components/spinner.dart';
 import 'package:finote_birhan_mobile/Presentation/Routes/app_navigator.dart';
+import 'package:finote_birhan_mobile/Presentation/Screens/Registration/controllers/form_controllers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -23,8 +24,15 @@ class KifileSelector extends StatefulWidget {
 }
 
 class _KifileSelectorState extends State<KifileSelector> {
-  int? selectedIndex;
+  int? selectedIndex = 0;
   final AbalController controller = Get.find<AbalController>();
+  final formController = Get.put(FormController()); // Initialize the controller
+
+  @override
+  void initState() {
+    formController.kifile = 'ህጻናት';
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -86,8 +94,11 @@ class _KifileSelectorState extends State<KifileSelector> {
                                   child: GestureDetector(
                                     onTap: () {
                                       setState(() {
-                                        selectedIndex =
-                                            index; // Update the selected index
+                                        if (index == 0) {
+                                          selectedIndex =
+                                              index; // Update the selected index
+                                          formController.kifile = kifileType;
+                                        }
                                       });
                                     },
                                     child: Container(

@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class AbalRegistrationModel {
@@ -85,6 +87,8 @@ class AbalModel {
   final String emergencyContactFullName;
   final String emergencyContactPhoneNumber;
   final String kifile;
+  final String subKifile;
+  final File? abalImage;
   String imagePath;
 
   AbalModel({
@@ -102,7 +106,9 @@ class AbalModel {
     required this.emergencyContactFullName,
     required this.emergencyContactPhoneNumber,
     required this.kifile,
+    required this.subKifile,
     required this.imagePath,
+    required this.abalImage,
   });
 
   // Factory method to create AbalModel from JSON
@@ -122,7 +128,9 @@ class AbalModel {
       emergencyContactFullName: json['emergencyContactFullName'] ?? '',
       emergencyContactPhoneNumber: json['emergencyContactPhoneNumber'] ?? '',
       kifile: json['kifile'] ?? '',
+      subKifile: json['subKifile'] ?? '',
       imagePath: json['imagePath'] ?? '',
+      abalImage: json['abalImage'] ?? '',
     );
   }
 
@@ -143,6 +151,7 @@ class AbalModel {
       'emergencyContactFullName': emergencyContactFullName,
       'emergencyContactPhoneNumber': emergencyContactPhoneNumber,
       'kifile': kifile,
+      'subKifile': subKifile,
       'imagePath': imagePath,
     };
   }
@@ -162,6 +171,7 @@ class FamilyInfo {
   final String familyKebele;
   final String familyHouseNumber;
   String imagePath;
+  final File? welageImage;
 
   FamilyInfo({
     required this.familyYekerestenaName,
@@ -177,6 +187,7 @@ class FamilyInfo {
     required this.familyKebele,
     required this.familyHouseNumber,
     required this.imagePath,
+    required this.welageImage,
   });
 
   // Factory method to create FamilyInfo from JSON
@@ -195,6 +206,7 @@ class FamilyInfo {
       familyKebele: json['familyKebele'] ?? '',
       familyHouseNumber: json['familyHouseNumber'] ?? '',
       imagePath: json['imagePath'] ?? '',
+      welageImage: json['welageImage'] ?? '',
     );
   }
 

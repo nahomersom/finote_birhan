@@ -1,11 +1,16 @@
 import 'package:finote_birhan_mobile/Data/Data%20Providers/light_theme.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 class SharedButton extends StatelessWidget {
   const SharedButton(
-      {super.key, required this.buttonText, required this.onTap});
+      {super.key,
+      required this.buttonText,
+      required this.onTap,
+      this.isLoading = false});
   final String buttonText;
   final GestureTapCallback onTap;
+  final bool isLoading;
 
   @override
   Widget build(BuildContext context) {
@@ -27,18 +32,24 @@ class SharedButton extends StatelessWidget {
             color: Colors.transparent,
             child: InkWell(
               borderRadius: BorderRadius.circular(8),
-              onTap: onTap,
+              onTap: isLoading ? () => {} : onTap,
               child: Padding(
                 padding:
                     const EdgeInsets.symmetric(vertical: 15, horizontal: 30),
                 child: Center(
-                  child: Text(
-                    buttonText,
-                    style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                  child: isLoading
+                      ? const SpinKitThreeBounce(
                           color: Colors.white,
-                          fontWeight: FontWeight.bold,
+                          size: 15,
+                        )
+                      : Text(
+                          buttonText,
+                          style:
+                              Theme.of(context).textTheme.titleSmall?.copyWith(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                  ),
                         ),
-                  ),
                 ),
               ),
             ),

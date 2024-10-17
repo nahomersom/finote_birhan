@@ -15,7 +15,14 @@ class PhoneNumberField extends StatelessWidget {
   Widget build(BuildContext context) {
     return IntlPhoneField(
       controller: controller,
-      autovalidateMode: AutovalidateMode.onUserInteraction,
+      autovalidateMode: AutovalidateMode.always,
+      invalidNumberMessage: 'ትክክለኛ ስልክ ያስገቡ',
+      validator: (value) {
+        if (value == null || value.number.isEmpty) {
+          return 'ይህ ቦታ መሞላት አለበት'; // Validation message
+        }
+        return null;
+      },
       decoration: InputDecoration(
         labelText: label,
 
@@ -30,11 +37,13 @@ class PhoneNumberField extends StatelessWidget {
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(8), // Rounded corners
-          borderSide: BorderSide(color: Colors.transparent), // Invisible border
+          borderSide:
+              const BorderSide(color: Colors.transparent), // Invisible border
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(8), // Rounded corners
-          borderSide: BorderSide(color: Colors.transparent), // Invisible border
+          borderSide:
+              const BorderSide(color: Colors.transparent), // Invisible border
         ),
         // Control padding
         contentPadding: const EdgeInsets.symmetric(

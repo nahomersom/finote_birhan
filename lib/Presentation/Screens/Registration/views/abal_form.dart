@@ -6,9 +6,7 @@ import 'package:finote_birhan_mobile/Presentation/Components/phone_number_field.
 import 'package:finote_birhan_mobile/Presentation/Components/shared_button.dart';
 import 'package:finote_birhan_mobile/Presentation/Components/shared_text_field.dart';
 import 'package:finote_birhan_mobile/Presentation/Components/spinner.dart';
-import 'package:finote_birhan_mobile/Presentation/Routes/app_navigator.dart';
 import 'package:finote_birhan_mobile/Presentation/Screens/Registration/controllers/form_controllers.dart';
-import 'package:finote_birhan_mobile/Presentation/Screens/Registration/widgets/progress_indicator.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -27,9 +25,9 @@ class _AbalFormState extends State<AbalForm> {
   bool isAbalFormSubmitted = false;
   String phoneNumber = "";
   String emergencyPhoneNumber = "";
-  String? sexValue = "Male";
+  String? sexValue;
   String? kifileValue;
-  String? kefleKetemaValue = "ledeta";
+  String? kefleKetemaValue;
   final formController = Get.put(FormController()); // Initialize the controller
   @override
   Widget build(BuildContext context) {
@@ -80,7 +78,7 @@ class _AbalFormState extends State<AbalForm> {
                         },
                       ).toList(),
                       onChanged: (newValue) {
-                        formController.kifileControl.text = newValue ?? '';
+                        formController.subKifileControl.text = newValue ?? '';
                       },
                     ),
                     SizedBox(
@@ -195,9 +193,6 @@ class _AbalFormState extends State<AbalForm> {
                       controller:
                           formController.emergencyContactPhoneNumberControl,
                       onChanged: (phone) {
-                        print(
-                            'phone number is ------------------------------------');
-                        print(phone);
                         formController.emergencyContactPhoneNumberControl.text =
                             phone.number;
                       },
@@ -211,7 +206,8 @@ class _AbalFormState extends State<AbalForm> {
                               setState(() {
                                 isAbalFormSubmitted = true;
                               }),
-                              widget.navigateToNextPage()
+                              if (_abalFormKey.currentState!.validate())
+                                {widget.navigateToNextPage()}
                             })
                   ],
                 ),

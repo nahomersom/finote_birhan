@@ -1,11 +1,11 @@
-import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:finote_birhan_mobile/Business%20Logic/Algorithm/file-uploader.dart';
 import 'package:finote_birhan_mobile/Data/Models/abal.dart';
 import 'package:finote_birhan_mobile/Data/Repositories/abal.dart';
-import 'package:finote_birhan_mobile/Presentation/Screens/Registration/views/registeration.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:logger/logger.dart';
+import 'package:toastification/toastification.dart';
 
 var logger = Logger(
   printer: PrettyPrinter(),
@@ -83,30 +83,51 @@ class AbalController extends GetxController {
   }
 
   // Register a new Abal
-  Future<void> registerAbal(
-      AbalRegistrationModel abal, File? welageImage, File? abalImage) async {
+  Future<void> registerAbal(AbalRegistrationModel abalInfo) async {
     final FileUploader fileUploader = FileUploader();
     isLoading.value = true;
     hasError.value = false;
 
     try {
-      // Upload images
-      String abalImagePath =
-          await fileUploader.uploadFile('ህጻናት/አባል', abalImage);
-      String welageImagePath =
-          await fileUploader.uploadFile('ህጻናት/ወላጅ', welageImage);
+      logger.w('called here - strat registring');
 
-      abal.abal.imagePath = abalImagePath;
-      abal.familyInfo.imagePath = welageImagePath;
+      // Upload images
+      String? abalImagePath = await fileUploader.uploadFile(
+        'አባል/${abalInfo.abal.kifile}/${abalInfo.abal.fullName}/አባል',
+        abalInfo.abal.abalImage,
+      );
+      if (abalImagePath == null) {
+        throw Exception("Failed to upload Abal image.");
+      }
+      String? welageImagePath = await fileUploader.uploadFile(
+        'አባል/${abalInfo.abal.kifile}/${abalInfo.abal.fullName}/ወላጅ',
+        abalInfo.familyInfo.welageImage,
+      );
+      if (welageImagePath == null) {
+        throw Exception("Failed to upload Abal image.");
+      }
+      logger.w('called here - image registring');
+
+      abalInfo.abal.imagePath = abalImagePath;
+      abalInfo.familyInfo.imagePath = welageImagePath;
+      logger.w('called here - image get');
 
       // Save to Firestore
       CollectionReference abalsCollection =
           FirebaseFirestore.instance.collection('abals');
-      await abalsCollection.add(abal.toJson());
+      await abalsCollection.add(abalInfo.toJson());
+      logger.w('called here -  successfully added');
 
       isRegistered.value = true;
       isLoading.value = false;
     } catch (err) {
+      logger.w('called here -  error registration $err');
+      toastification.show(
+        type: ToastificationType.error,
+        title: Text(err.toString()),
+        autoCloseDuration: const Duration(seconds: 5),
+      );
+
       isLoading.value = false;
       hasError.value = true;
       errorMessage.value = err.toString();

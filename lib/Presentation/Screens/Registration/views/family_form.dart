@@ -1,12 +1,12 @@
 import 'package:finote_birhan_mobile/Business%20Logic/Controllers/abal/abal_controller.dart';
 import 'package:finote_birhan_mobile/Data/Data%20Providers/colors.dart';
+import 'package:finote_birhan_mobile/Data/Models/abal.dart';
 import 'package:finote_birhan_mobile/Presentation/Components/dropdown_field.dart';
 import 'package:finote_birhan_mobile/Presentation/Components/image_picker.dart';
 import 'package:finote_birhan_mobile/Presentation/Components/phone_number_field.dart';
 import 'package:finote_birhan_mobile/Presentation/Components/shared_button.dart';
 import 'package:finote_birhan_mobile/Presentation/Components/shared_text_field.dart';
 import 'package:finote_birhan_mobile/Presentation/Screens/Registration/controllers/form_controllers.dart';
-import 'package:finote_birhan_mobile/Presentation/Screens/Registration/widgets/progress_indicator.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -26,10 +26,10 @@ class _FamilyFormState extends State<FamilyForm> {
   bool isWelageFormSubmitted = false;
   String phoneNumber = "";
   String emergencyPhoneNumber = "";
-  String? sexValue = "Male";
-  String? relationShipValue = "mother";
+  String? sexValue;
+  String? relationShipValue;
   String? kifileValue;
-  String? kefleKetemaValue = "ledeta";
+  String? kefleKetemaValue;
   final formController = Get.put(FormController()); // Initialize the controller
 
   @override
@@ -51,7 +51,7 @@ class _FamilyFormState extends State<FamilyForm> {
                   SizedBox(
                     height: height * 0.015,
                   ),
-                  formController.getImage('welageImage') != null &&
+                  formController.getImage('welageImage') == null &&
                           isWelageFormSubmitted
                       ? Text('**ፎቶ ያስፈልጋል**',
                           style: Theme.of(context)
@@ -63,7 +63,7 @@ class _FamilyFormState extends State<FamilyForm> {
                     height: height * 0.05,
                   ),
                   SharedTextField(
-                    formController: formController.yekerestenaNameControl,
+                    formController: formController.familyYekerestenaNameControl,
                     label: 'የክርስትና ስም',
                   ),
                   SizedBox(
@@ -122,16 +122,6 @@ class _FamilyFormState extends State<FamilyForm> {
                           phone.number;
                     },
                   ),
-                  const SizedBox(
-                    height: 3,
-                  ),
-                  if (formController.familyPhoneNumberControl.text.isEmpty &&
-                      isWelageFormSubmitted)
-                    Text('ይህ ቦታ ያስፈልጋል',
-                        style: Theme.of(context)
-                            .textTheme
-                            .titleSmall
-                            ?.copyWith(color: ColorResources.errorColor)),
                   SizedBox(
                     height: height * 0.02,
                   ),
@@ -188,12 +178,14 @@ class _FamilyFormState extends State<FamilyForm> {
                   ),
                   SharedButton(
                     buttonText: 'ጨርስ',
+                    isLoading: controller.isLoading.value,
                     onTap: () => {
                       setState(
                         () {
                           isWelageFormSubmitted = true;
                         },
                       ),
+                      if (_familyFormKey.currentState!.validate()) {submit()}
                     },
                   ),
                 ],
@@ -203,5 +195,47 @@ class _FamilyFormState extends State<FamilyForm> {
         ),
       ),
     );
+  }
+
+  Future submit() async {
+    FamilyInfo familyInfo = FamilyInfo(
+        familyYekerestenaName: formController.familyYekerestenaNameControl.text,
+        familyFullName: formController.familyFullNameControl.text,
+        relationShip: formController.relationShipControl.text,
+        familyAge: formController.familyAgeControl.text,
+        familyGender: formController.familyGenderControl.text,
+        familyPhoneNumber: formController.familyPhoneNumberControl.text,
+        familyBirthPlace: formController.familyBirthPlaceControl.text,
+        familyBirthDate: formController.familyBirthDateControl.text,
+        familySubCity: formController.familySubCityControl.text,
+        familyWoreda: formController.familyWoredaControl.text,
+        familyKebele: formController.familyKebeleControl.text,
+        familyHouseNumber: formController.familyHouseNumberControl.text,
+        imagePath: '',
+        welageImage: formController.getImage('welageImage'));
+    AbalModel abal = AbalModel(
+        kifile: formController.kifile,
+        yekerestenaName: formController.yekerestenaNameControl.text,
+        fullName: formController.fullNameControl.text,
+        age: formController.ageControl.text,
+        gender: formController.genderControl.text,
+        phoneNumber: formController.phoneNumberControl.text,
+        birthPlace: formController.birthPlaceControl.text,
+        birthDate: formController.birthDateControl.text,
+        subCity: formController.subCityControl.text,
+        woreda: formController.woredaControl.text,
+        kebele: formController.kebeleControl.text,
+        houseNumber: formController.houseNumberControl.text,
+        emergencyContactFullName:
+            formController.emergencyContactFullNameControl.text,
+        emergencyContactPhoneNumber:
+            formController.emergencyContactPhoneNumberControl.text,
+        subKifile: formController.subKifileControl.text,
+        imagePath: '',
+        abalImage: formController.getImage('abalImage'));
+
+    AbalRegistrationModel newAbal = AbalRegistrationModel(
+        familyInfo: familyInfo, abal: abal, registrarId: '23232332');
+    controller.registerAbal(newAbal);
   }
 }

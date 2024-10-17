@@ -18,7 +18,8 @@ class FormController extends GetxController {
   final houseNumberControl = TextEditingController();
   final emergencyContactFullNameControl = TextEditingController();
   final emergencyContactPhoneNumberControl = TextEditingController();
-  final kifileControl = TextEditingController();
+  String kifile = '';
+  final subKifileControl = TextEditingController();
 
   // welage form controllers
   final familyYekerestenaNameControl = TextEditingController();
@@ -65,7 +66,8 @@ class FormController extends GetxController {
       'emergencyContactFullNameControl': emergencyContactFullNameControl.text,
       'emergencyContactPhoneNumberControl':
           emergencyContactPhoneNumberControl.text,
-      'kifileControl': kifileControl.text,
+      'kifile': kifile,
+      'subKifileControl': subKifileControl.text,
 
       // family data
       'familyYekerestenaNameControl': familyYekerestenaNameControl.text,
@@ -100,7 +102,8 @@ class FormController extends GetxController {
     houseNumberControl.clear();
     emergencyContactFullNameControl.clear();
     emergencyContactPhoneNumberControl.clear();
-    kifileControl.clear();
+    kifile = '';
+    subKifileControl.clear();
 
     // welage form controllers
     familyYekerestenaNameControl.clear();
@@ -134,7 +137,8 @@ class FormController extends GetxController {
     houseNumberControl.dispose();
     emergencyContactFullNameControl.dispose();
     emergencyContactPhoneNumberControl.dispose();
-    kifileControl.dispose();
+    kifile = '';
+    subKifileControl.dispose();
 
     // welage form controllers
     familyYekerestenaNameControl.dispose();
