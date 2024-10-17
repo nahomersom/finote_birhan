@@ -117,7 +117,11 @@ class AbalController extends GetxController {
           FirebaseFirestore.instance.collection('abals');
       await abalsCollection.add(abalInfo.toJson());
       logger.w('called here -  successfully added');
-
+      toastification.show(
+        type: ToastificationType.success,
+        title: const Text('አባሉ በተሳካ ሁኔት ተመዝግብዋል።'),
+        autoCloseDuration: const Duration(seconds: 5),
+      );
       isRegistered.value = true;
       isLoading.value = false;
     } catch (err) {

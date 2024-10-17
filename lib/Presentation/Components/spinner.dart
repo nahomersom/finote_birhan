@@ -3,19 +3,25 @@ import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 class Spinner extends StatelessWidget {
-  final String text;
-  const Spinner({super.key, required this.text});
+  const Spinner({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-      const SpinKitFadingCircle(
-        color: ColorResources.secondaryColor,
-      ),
-      const SizedBox(
-        height: 10,
-      ),
-      Text(text)
+      ShaderMask(
+          shaderCallback: (Rect bounds) {
+            return const LinearGradient(
+              colors: [
+                Color(0xff6115da),
+                Color(0xffbd2aec),
+              ],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ).createShader(bounds);
+          },
+          child: SpinKitThreeBounce(
+            color: Colors.white,
+          ))
     ]);
   }
 }

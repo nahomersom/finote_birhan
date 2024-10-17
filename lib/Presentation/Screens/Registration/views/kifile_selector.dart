@@ -194,7 +194,7 @@ class _KifileSelectorState extends State<KifileSelector> {
             }
 
             // Loading spinner if state is loading or not successful yet
-            return const Center(child: Spinner(text: 'ዝግጅት ላይ'));
+            return const Center(child: Spinner());
           },
         ),
       ),

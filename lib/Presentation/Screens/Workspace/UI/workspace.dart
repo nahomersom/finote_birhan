@@ -30,16 +30,12 @@ class Workspace extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Instantiate the MainController
     final MainController controller = Get.put(MainController());
 
     return Obx(() => Scaffold(
           body: IndexedStack(
             index: controller.selectedIndex.value,
-            children: 
-            
-            [
-              // Replace these with your actual screens
+            children: [
               DashboardScreen(),
               DashboardScreen(),
               AbalListScreen(),
@@ -52,54 +48,74 @@ class Workspace extends StatelessWidget {
             backgroundColor: Colors.white,
             type: BottomNavigationBarType.fixed,
             selectedLabelStyle: const TextStyle(
-              fontWeight:
-                  FontWeight.w600, // Increased font weight for selected item
+              fontWeight: FontWeight.w600,
             ),
-            selectedItemColor: ColorResources.primaryColor,
+            selectedItemColor: ColorResources
+                .primaryColor, // Can be removed, since we are applying gradient
             unselectedItemColor: Colors.black,
-            items: const [
-              BottomNavigationBarItem(
-                icon: Padding(
-                  padding: EdgeInsets.only(top: 8.0), // Padding above the icon
-                  child: Icon(
-                    Icons.travel_explore_outlined,
-                    size: 20,
-                  ),
-                ),
+            items: [
+              _buildBottomNavigationBarItem(
+                iconData: Icons.travel_explore_outlined,
+                selectedIconData: Icons.travel_explore,
                 label: 'ዳሽቦርድ',
+                isSelected: controller.selectedIndex.value == 0,
               ),
-              BottomNavigationBarItem(
-                icon: Padding(
-                  padding: EdgeInsets.only(top: 8.0), // Padding above the icon
-                  child: Icon(
-                    Icons.message_outlined,
-                    size: 20,
-                  ),
-                ),
+              _buildBottomNavigationBarItem(
+                iconData: Icons.message_outlined,
+                selectedIconData: Icons.message,
                 label: 'መልዕክቶች',
+                isSelected: controller.selectedIndex.value == 1,
               ),
-              BottomNavigationBarItem(
-                icon: Padding(
-                  padding: EdgeInsets.only(top: 8.0), // Padding above the icon
-                  child: Icon(
-                    Icons.person_outline,
-                    size: 20,
-                  ),
-                ),
+              _buildBottomNavigationBarItem(
+                iconData: Icons.person_outline,
+                selectedIconData: Icons.person,
                 label: 'አባሎች',
+                isSelected: controller.selectedIndex.value == 2,
               ),
-              BottomNavigationBarItem(
-                icon: Padding(
-                  padding: EdgeInsets.only(top: 8.0), // Padding above the icon
-                  child: Icon(
-                    Icons.settings_outlined,
-                    size: 20,
-                  ),
-                ),
+              _buildBottomNavigationBarItem(
+                iconData: Icons.settings_outlined,
+                selectedIconData: Icons.settings,
                 label: 'ገጽታዎች',
+                isSelected: controller.selectedIndex.value == 3,
               ),
             ],
           ),
         ));
+  }
+
+  BottomNavigationBarItem _buildBottomNavigationBarItem({
+    required IconData iconData,
+    required IconData selectedIconData,
+    required String label,
+    required bool isSelected,
+  }) {
+    return BottomNavigationBarItem(
+      icon: Padding(
+        padding: const EdgeInsets.only(top: 8.0),
+        child: isSelected
+            ? ShaderMask(
+                shaderCallback: (Rect bounds) {
+                  return const LinearGradient(
+                    colors: [
+                      Color(0xff6115da),
+                      Color(0xffbd2aec),
+                    ],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  ).createShader(bounds);
+                },
+                child: Icon(
+                  selectedIconData,
+                  size: 24,
+                  color: Colors.white, // Gradient will override this color
+                ),
+              )
+            : Icon(
+                iconData,
+                size: 20,
+              ),
+      ),
+      label: label,
+    );
   }
 }

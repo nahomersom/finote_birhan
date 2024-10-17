@@ -28,6 +28,10 @@ class RouteConfig {
       page: () => const RegistrationView(),
     ),
     GetPage(
+      name: AppRoutes.ABALS.toRoute(),
+      page: () => const AbalListScreen(),
+    ),
+    GetPage(
       name: AppRoutes.DASHOBARD.toRoute(),
       page: () => DashboardScreen(),
       // children: [

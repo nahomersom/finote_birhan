@@ -1,7 +1,9 @@
 import 'package:finote_birhan_mobile/Business%20Logic/Controllers/abal/abal_controller.dart';
 import 'package:finote_birhan_mobile/Presentation/Components/search_bar.dart';
+import 'package:finote_birhan_mobile/Presentation/Components/spinner.dart';
 import 'package:finote_birhan_mobile/Presentation/Screens/Abals/Widgetes/user-list-item.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 import 'package:get/get.dart';
 
@@ -24,8 +26,10 @@ class AbalListScreenState extends State<AbalListScreen> {
   @override
   void initState() {
     super.initState();
-    // Fetch abals on initState
-    controller.getAbals();
+    // Fetch abals on initState after the initial build
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      controller.getAbals();
+    });
     filteredUsers = users;
   }
 
@@ -51,10 +55,9 @@ class AbalListScreenState extends State<AbalListScreen> {
             child: Text(
               'የአባል ዝርዝር',
               style:
-                  textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w500),
+                  textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold),
             ),
           ),
-          centerTitle: true,
           bottom: PreferredSize(
             preferredSize:
                 const Size.fromHeight(80.0), // Adjust height for search bar
@@ -75,16 +78,7 @@ class AbalListScreenState extends State<AbalListScreen> {
         body: Obx(() {
           if (controller.isLoading.value) {
             // Show loading indicator when fetching data
-            return const Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  CircularProgressIndicator(),
-                  SizedBox(height: 10),
-                  Text('Loading...'),
-                ],
-              ),
-            );
+            return const Center(child: Spinner());
           } else if (controller.hasError.value) {
             // Show error message when an error occurs
             return const Center(
@@ -103,7 +97,7 @@ class AbalListScreenState extends State<AbalListScreen> {
                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 2,
                   childAspectRatio:
-                      0.75, // Adjust this ratio to make the height larger (1.0 means width = height)
+                      0.8, // Adjust this ratio to make the height larger (1.0 means width = height)
                 ),
                 itemCount: controller.abals.length,
                 itemBuilder: (BuildContext context, int index) {

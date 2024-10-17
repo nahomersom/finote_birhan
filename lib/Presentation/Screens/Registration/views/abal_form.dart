@@ -215,7 +215,7 @@ class _AbalFormState extends State<AbalForm> {
             ),
           );
         }
-        return const Spinner(text: 'ዝግጅት ላይ');
+        return const Center(child: Spinner());
       }),
     );
   }

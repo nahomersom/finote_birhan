@@ -19,7 +19,15 @@ class FileUploader {
       print(
           '----------------------------File uploaded start2 ${storageReference.fullPath}');
       // Upload the image
-      UploadTask uploadTask = storageReference.putFile(photo);
+      // Upload the image with metadata
+      UploadTask uploadTask = storageReference.putFile(
+        photo,
+        SettableMetadata(
+          contentType: 'image/jpeg', // Set appropriate MIME type
+          cacheControl: 'public, max-age=3600', // Example cache control
+        ),
+      );
+
       await uploadTask.whenComplete(() {});
       print('----------------------------File uploaded successfully.');
 

@@ -130,7 +130,7 @@ class AbalModel {
       kifile: json['kifile'] ?? '',
       subKifile: json['subKifile'] ?? '',
       imagePath: json['imagePath'] ?? '',
-      abalImage: json['abalImage'] ?? '',
+      abalImage: null,
     );
   }
 
@@ -206,7 +206,7 @@ class FamilyInfo {
       familyKebele: json['familyKebele'] ?? '',
       familyHouseNumber: json['familyHouseNumber'] ?? '',
       imagePath: json['imagePath'] ?? '',
-      welageImage: json['welageImage'] ?? '',
+      welageImage: null,
     );
   }
 

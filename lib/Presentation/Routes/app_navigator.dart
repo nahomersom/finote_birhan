@@ -27,6 +27,10 @@ class AppNavigator {
     Get.toNamed(AppRoutes.REGISTRATION);
   }
 
+  static void starAbalList() {
+    Get.toNamed(AppRoutes.ABALS);
+  }
+
   static void startAbalFormRegistration() {
     Get.toNamed(
         '${AppRoutes.DASHOBARD.toRoute()}${AppRoutes.KIFILE.toRoute()}${AppRoutes.ABALFORM.toRoute()}');
