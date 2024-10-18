@@ -24,7 +24,7 @@ class AbalController extends GetxController {
   RxList kifiles = <dynamic>[].obs;
   var nestedKifiles = <dynamic>[].obs;
   var abals = <AbalRegistrationModel>[].obs;
-  var selectedAbal = Rxn<AbalRegistrationModel>(); // Allows null values
+  final _selectedAbal = Rxn<AbalRegistrationModel>(); // Allows null values
 
   AbalController({required this.abalRepository});
 
@@ -99,18 +99,20 @@ class AbalController extends GetxController {
       if (abalImagePath == null) {
         throw Exception("Failed to upload Abal image.");
       }
-      String? welageImagePath = await fileUploader.uploadFile(
-        'አባል/${abalInfo.abal.kifile}/${abalInfo.abal.fullName}/ወላጅ',
-        abalInfo.familyInfo.welageImage,
-      );
-      if (welageImagePath == null) {
-        throw Exception("Failed to upload Abal image.");
+      if (abalInfo.abal.kifile == 'ህጻናት' &&
+          abalInfo.familyInfo?.welageImage != null) {
+        String? welageImagePath = await fileUploader.uploadFile(
+          'አባል/${abalInfo.abal.kifile}/${abalInfo.abal.fullName}/ወላጅ',
+          abalInfo.familyInfo?.welageImage,
+        );
+        abalInfo.familyInfo?.imagePath = welageImagePath!;
+
+        if (welageImagePath == null) {
+          throw Exception("Failed to upload Abal image.");
+        }
       }
-      logger.w('called here - image registring');
 
       abalInfo.abal.imagePath = abalImagePath;
-      abalInfo.familyInfo.imagePath = welageImagePath;
-      logger.w('called here - image get');
 
       // Save to Firestore
       CollectionReference abalsCollection =
@@ -169,7 +171,10 @@ class AbalController extends GetxController {
   }
 
   // Set the selected Abal for editing
-  void setSelectedAbal(AbalRegistrationModel abal) {
-    selectedAbal.value = abal;
+  set setSelectedAbal(AbalRegistrationModel abal) {
+    _selectedAbal.value = abal;
   }
+
+  //get the selected value
+  AbalRegistrationModel? get selectedAbal => _selectedAbal.value;
 }

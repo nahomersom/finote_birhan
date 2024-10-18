@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class AbalRegistrationModel {
-  final FamilyInfo familyInfo;
+  final FamilyInfo? familyInfo;
   final String registrarId;
   final AbalModel abal;
   final String? comment;
@@ -11,7 +11,7 @@ class AbalRegistrationModel {
   final String accountType; // Added accountType field
 
   AbalRegistrationModel({
-    required this.familyInfo,
+    this.familyInfo,
     required this.registrarId,
     required this.abal,
     this.comment,
@@ -62,7 +62,7 @@ class AbalRegistrationModel {
   // Convert AbalRegistrationModel to JSON
   Map<String, dynamic> toJson() {
     return {
-      'familyInfo': familyInfo.toJson(),
+      'familyInfo': familyInfo?.toJson(),
       'registrarId': registrarId,
       'abal': abal.toJson(),
       'comment': comment,

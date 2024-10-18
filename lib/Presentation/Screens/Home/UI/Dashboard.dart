@@ -1,4 +1,5 @@
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:finote_birhan_mobile/Data/Data%20Providers/app_constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -172,6 +173,38 @@ class DashboardScreen extends StatelessWidget {
                                         ),
                                       ),
                                     ),
+                                    Padding(
+                                      padding: const EdgeInsets.all(
+                                          AppConstants.bodyPadding),
+                                      child: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.end,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            'የጥምቀት በአል አገልግሎት',
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .titleMedium
+                                                ?.copyWith(
+                                                    color: Colors.white,
+                                                    fontWeight:
+                                                        FontWeight.bold),
+                                          ),
+                                          Text(
+                                            '10 ቀን ቀረው',
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .titleMedium
+                                                ?.copyWith(
+                                                    color: Colors.white,
+                                                    fontWeight:
+                                                        FontWeight.bold),
+                                          ),
+                                        ],
+                                      ),
+                                    )
                                   ],
                                 ),
                               ),
@@ -179,7 +212,7 @@ class DashboardScreen extends StatelessWidget {
                             .toList(), // Convert the map to a list
                       ),
 
-                      const SizedBox(height: 10),
+                      const SizedBox(height: 15),
                       Text(
                         'አገልግሎቶች',
                         style: Theme.of(context)

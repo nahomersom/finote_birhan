@@ -73,6 +73,8 @@ class _FamilyFormState extends State<FamilyForm> {
                       formController:
                           formController.familyYekerestenaNameControl,
                       label: 'የክርስትና ስም',
+                      initialValue: controller
+                          .selectedAbal?.familyInfo?.familyYekerestenaName,
                     ),
                     SizedBox(
                       height: height * 0.02,
@@ -80,12 +82,16 @@ class _FamilyFormState extends State<FamilyForm> {
                     SharedTextField(
                       formController: formController.familyFullNameControl,
                       label: 'ሙሉ ስም',
+                      initialValue:
+                          controller.selectedAbal?.familyInfo?.familyFullName,
                     ),
                     SizedBox(
                       height: height * 0.02,
                     ),
                     sharedDropdownField(
-                        value: relationShipValue,
+                        value:
+                            controller.selectedAbal?.familyInfo?.relationShip ??
+                                relationShipValue,
                         hintText: 'ከአባሉ ጋር ያለው ግንኙነት',
                         items: const [
                           DropdownMenuItem(value: "mother", child: Text("እናት")),
@@ -106,12 +112,16 @@ class _FamilyFormState extends State<FamilyForm> {
                     SharedTextField(
                       formController: formController.familyAgeControl,
                       label: 'ዕድሜ',
+                      initialValue:
+                          controller.selectedAbal?.familyInfo?.familyAge,
                     ),
                     SizedBox(
                       height: height * 0.02,
                     ),
                     sharedDropdownField(
-                      value: sexValue,
+                      value:
+                          controller.selectedAbal?.familyInfo?.familyGender ??
+                              sexValue,
                       hintText: 'ጾታ',
                       items: const [
                         DropdownMenuItem(value: "Male", child: Text("ወንድ")),
@@ -127,6 +137,8 @@ class _FamilyFormState extends State<FamilyForm> {
                     ),
                     PhoneNumberField(
                       label: 'ስልክ ቁጥር',
+                      initialValue: controller
+                          .selectedAbal?.familyInfo?.familyPhoneNumber,
                       controller: formController.familyPhoneNumberControl,
                       onChanged: (phone) {
                         formController.familyPhoneNumberControl.text =
@@ -139,6 +151,8 @@ class _FamilyFormState extends State<FamilyForm> {
                     SharedTextField(
                       formController: formController.familyBirthPlaceControl,
                       label: 'የትውልድ ስፍራ',
+                      initialValue:
+                          controller.selectedAbal?.familyInfo?.familyBirthPlace,
                     ),
                     SizedBox(
                       height: height * 0.02,
@@ -146,12 +160,16 @@ class _FamilyFormState extends State<FamilyForm> {
                     SharedTextField(
                       formController: formController.familyBirthDateControl,
                       label: 'የትውልድ ዘመን',
+                      initialValue:
+                          controller.selectedAbal?.familyInfo?.familyBirthDate,
                     ),
                     SizedBox(
                       height: height * 0.02,
                     ),
                     sharedDropdownField(
-                      value: kefleKetemaValue,
+                      value:
+                          controller.selectedAbal?.familyInfo?.familySubCity ??
+                              kefleKetemaValue,
                       hintText: 'ክፈለ ከተማ',
                       items: const [
                         DropdownMenuItem(value: "ledeta", child: Text("ልደታ")),
@@ -170,6 +188,8 @@ class _FamilyFormState extends State<FamilyForm> {
                     SharedTextField(
                       formController: formController.familyWoredaControl,
                       label: 'ወረዳ',
+                      initialValue:
+                          controller.selectedAbal?.familyInfo?.familyWoreda,
                     ),
                     SizedBox(
                       height: height * 0.02,
@@ -177,6 +197,8 @@ class _FamilyFormState extends State<FamilyForm> {
                     SharedTextField(
                       formController: formController.familyKebeleControl,
                       label: 'ቀበሌ',
+                      initialValue:
+                          controller.selectedAbal?.familyInfo?.familyKebele,
                     ),
                     SizedBox(
                       height: height * 0.02,
@@ -184,6 +206,8 @@ class _FamilyFormState extends State<FamilyForm> {
                     SharedTextField(
                       formController: formController.familyHouseNumberControl,
                       label: 'የቤት ቁጥር',
+                      initialValue: controller
+                          .selectedAbal?.familyInfo?.familyHouseNumber,
                     ),
                     const SizedBox(
                       height: 25,

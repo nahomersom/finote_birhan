@@ -3,18 +3,22 @@ import 'package:intl_phone_field/intl_phone_field.dart';
 import 'package:intl_phone_field/phone_number.dart';
 
 class PhoneNumberField extends StatelessWidget {
-  const PhoneNumberField(
-      {super.key,
-      required this.label,
-      required this.controller,
-      required this.onChanged});
+  const PhoneNumberField({
+    super.key,
+    required this.label,
+    required this.controller,
+    required this.onChanged,
+    this.initialValue,
+  });
   final String label;
+  final String? initialValue;
   final TextEditingController controller;
   final ValueChanged<PhoneNumber>? onChanged;
   @override
   Widget build(BuildContext context) {
     return IntlPhoneField(
       controller: controller,
+      initialValue: initialValue,
       autovalidateMode: AutovalidateMode.always,
       invalidNumberMessage: 'ትክክለኛ ስልክ ያስገቡ',
       validator: (value) {

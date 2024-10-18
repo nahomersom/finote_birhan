@@ -1,5 +1,6 @@
 import 'package:finote_birhan_mobile/Business%20Logic/Controllers/abal/abal_controller.dart';
 import 'package:finote_birhan_mobile/Data/Data%20Providers/colors.dart';
+import 'package:finote_birhan_mobile/Data/Models/abal.dart';
 import 'package:finote_birhan_mobile/Presentation/Components/dropdown_field.dart';
 import 'package:finote_birhan_mobile/Presentation/Components/image_picker.dart';
 import 'package:finote_birhan_mobile/Presentation/Components/phone_number_field.dart';
@@ -69,7 +70,8 @@ class _AbalFormState extends State<AbalForm> {
                       height: height * 0.05,
                     ),
                     sharedDropdownField(
-                      value: kifileValue,
+                      value:
+                          controller.selectedAbal?.abal.kifile ?? kifileValue,
                       hintText: 'ክፍል',
                       items: controller.nestedKifiles.map(
                         (e) {
@@ -87,6 +89,8 @@ class _AbalFormState extends State<AbalForm> {
                     SharedTextField(
                       formController: formController.yekerestenaNameControl,
                       label: 'የክርስትና ስም',
+                      initialValue:
+                          controller.selectedAbal?.abal.yekerestenaName,
                     ),
                     SizedBox(
                       height: height * 0.02,
@@ -94,6 +98,7 @@ class _AbalFormState extends State<AbalForm> {
                     SharedTextField(
                       formController: formController.fullNameControl,
                       label: 'ሙሉ ስም',
+                      initialValue: controller.selectedAbal?.abal.fullName,
                     ),
                     SizedBox(
                       height: height * 0.02,
@@ -101,12 +106,13 @@ class _AbalFormState extends State<AbalForm> {
                     SharedTextField(
                       formController: formController.ageControl,
                       label: 'ዕድሜ',
+                      initialValue: controller.selectedAbal?.abal.age,
                     ),
                     SizedBox(
                       height: height * 0.02,
                     ),
                     sharedDropdownField(
-                      value: sexValue,
+                      value: controller.selectedAbal?.abal.gender ?? sexValue,
                       hintText: 'ጾታ',
                       items: const [
                         DropdownMenuItem(value: "Male", child: Text("ወንድ")),
@@ -121,6 +127,7 @@ class _AbalFormState extends State<AbalForm> {
                     ),
                     PhoneNumberField(
                       label: 'ስልክ ቁጥር',
+                      initialValue: controller.selectedAbal?.abal.phoneNumber,
                       controller: formController.phoneNumberControl,
                       onChanged: (phone) {
                         formController.phoneNumberControl.text = phone.number;
@@ -132,6 +139,7 @@ class _AbalFormState extends State<AbalForm> {
                     SharedTextField(
                       formController: formController.birthPlaceControl,
                       label: 'የትውልድ ስፍራ',
+                      initialValue: controller.selectedAbal?.abal.birthPlace,
                     ),
                     SizedBox(
                       height: height * 0.02,
@@ -139,12 +147,14 @@ class _AbalFormState extends State<AbalForm> {
                     SharedTextField(
                       formController: formController.birthDateControl,
                       label: 'የትውልድ ዘመን',
+                      initialValue: controller.selectedAbal?.abal.birthDate,
                     ),
                     SizedBox(
                       height: height * 0.02,
                     ),
                     sharedDropdownField(
-                      value: kefleKetemaValue,
+                      value: controller.selectedAbal?.abal.subCity ??
+                          kefleKetemaValue,
                       hintText: 'ክፍለ ከተማ',
                       items: const [
                         DropdownMenuItem(value: "ledeta", child: Text("ልደታ")),
@@ -162,6 +172,7 @@ class _AbalFormState extends State<AbalForm> {
                     SharedTextField(
                       formController: formController.woredaControl,
                       label: 'ወረዳ',
+                      initialValue: controller.selectedAbal?.abal.woreda,
                     ),
                     SizedBox(
                       height: height * 0.02,
@@ -169,6 +180,7 @@ class _AbalFormState extends State<AbalForm> {
                     SharedTextField(
                       formController: formController.kebeleControl,
                       label: 'ቀበሌ',
+                      initialValue: controller.selectedAbal?.abal.kebele,
                     ),
                     SizedBox(
                       height: height * 0.02,
@@ -176,6 +188,7 @@ class _AbalFormState extends State<AbalForm> {
                     SharedTextField(
                       formController: formController.houseNumberControl,
                       label: 'የቤት ቁጥር',
+                      initialValue: controller.selectedAbal?.abal.houseNumber,
                     ),
                     SizedBox(
                       height: height * 0.02,
@@ -184,12 +197,16 @@ class _AbalFormState extends State<AbalForm> {
                       formController:
                           formController.emergencyContactFullNameControl,
                       label: 'የአደጋ ጊዜ ተጠሪ',
+                      initialValue: controller
+                          .selectedAbal?.abal.emergencyContactFullName,
                     ),
                     SizedBox(
                       height: height * 0.02,
                     ),
                     PhoneNumberField(
                       label: 'የአደጋ ጊዜ ተጠሪ ስልክ ቁጥር',
+                      initialValue: controller
+                          .selectedAbal?.abal.emergencyContactPhoneNumber,
                       controller:
                           formController.emergencyContactPhoneNumberControl,
                       onChanged: (phone) {
@@ -201,13 +218,24 @@ class _AbalFormState extends State<AbalForm> {
                       height: 10,
                     ),
                     SharedButton(
-                        buttonText: 'ወደ ቀጣይ',
+                        buttonText:
+                            formController.kifile == 'ህጻናት' ? 'ወደ ቀጣይ' : 'ጨርስ',
+                        isLoading: controller.isLoading.value,
                         onTap: () => {
                               setState(() {
                                 isAbalFormSubmitted = true;
                               }),
                               if (_abalFormKey.currentState!.validate())
-                                {widget.navigateToNextPage()}
+                                {
+                                  if (formController.kifile == 'ህጻናት')
+                                    {
+                                      widget.navigateToNextPage(),
+                                    }
+                                  else
+                                    {
+                                      onSubmit(),
+                                    }
+                                }
                             })
                   ],
                 ),
@@ -218,5 +246,32 @@ class _AbalFormState extends State<AbalForm> {
         return const Center(child: Spinner());
       }),
     );
+  }
+
+  void onSubmit() {
+    AbalModel abal = AbalModel(
+        kifile: formController.kifile,
+        yekerestenaName: formController.yekerestenaNameControl.text,
+        fullName: formController.fullNameControl.text,
+        age: formController.ageControl.text,
+        gender: formController.genderControl.text,
+        phoneNumber: formController.phoneNumberControl.text,
+        birthPlace: formController.birthPlaceControl.text,
+        birthDate: formController.birthDateControl.text,
+        subCity: formController.subCityControl.text,
+        woreda: formController.woredaControl.text,
+        kebele: formController.kebeleControl.text,
+        houseNumber: formController.houseNumberControl.text,
+        emergencyContactFullName:
+            formController.emergencyContactFullNameControl.text,
+        emergencyContactPhoneNumber:
+            formController.emergencyContactPhoneNumberControl.text,
+        subKifile: formController.subKifileControl.text,
+        imagePath: '',
+        abalImage: formController.getImage('abalImage'));
+
+    AbalRegistrationModel newAbal =
+        AbalRegistrationModel(abal: abal, registrarId: '23232332');
+    controller.registerAbal(newAbal);
   }
 }

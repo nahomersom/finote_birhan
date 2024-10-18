@@ -91,7 +91,7 @@ class AbalCubit extends Cubit<AbalState> {
         await fileUploader.uploadFile('ህጻናት/ወላጅ', welageImage);
 
     abal.abal.imagePath = abalImagePath!;
-    abal.familyInfo.imagePath = welageImagePath!;
+    abal.familyInfo?.imagePath = welageImagePath!;
     print(jsonEncode(abal));
     emit(state.copyWith(abalStatus: AbalStatus.registered, errorMessage: ''));
     abals

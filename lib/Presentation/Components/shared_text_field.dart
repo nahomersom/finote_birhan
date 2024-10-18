@@ -2,11 +2,14 @@ import 'package:flutter/material.dart';
 
 class SharedTextField extends StatelessWidget {
   const SharedTextField(
-      {super.key, required this.formController, required this.label});
+      {super.key,
+      required this.formController,
+      required this.label,
+      this.initialValue});
 
   final TextEditingController formController;
   final String label;
-
+  final String? initialValue;
   @override
   Widget build(BuildContext context) {
     return TextFormField(
@@ -16,6 +19,7 @@ class SharedTextField extends StatelessWidget {
         }
         return null;
       },
+      initialValue: initialValue,
       controller: formController,
       decoration: InputDecoration(
         // Background color
